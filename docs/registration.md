@@ -1,5 +1,3 @@
-Here's the English translation for the contents of registration.md file under the tw-did project:
-
 ![Registration Flow](../assets/tw-did-flow-registration.png)
 
 Firstly, we establish a did bridge server responsible for the authentication processes of TW FidO and Sign-in With Ethereum.
@@ -11,7 +9,7 @@ Before starting the following procedure, it's checked whether the user has a wal
    1. Push notification: Directly via TW FidO app push notification, the user can carry out user authentication after clicking the notification.
    2. QR Code: tw-did bridge website generates a QR code, the user logs in by scanning it with TW FidO app.
 3. Users unlock the key pair stored in their device through biometric devices like fingerprints or facial recognition, and perform signature verification.
-4. Tw-fido and tw-did bridge fetch the user authentication result through the API `SP-API-ATH-02`.
+4. tw-did obtains user verification results from tw-fido through the API `SP-API-ATH-02`.
 5. Did bridge uses Sign-In with Ethereum to request the user to log in with their Ethereum account.
 6. The user signs via their Ethereum private key and generates a semaphore identity.
 7. After obtaining the user's information, did bridge records two things:

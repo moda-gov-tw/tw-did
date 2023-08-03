@@ -8,7 +8,7 @@ tw-did mainly has three functions:
 - Revocation: This is performed when users decide to revoke the link between their DID and their Taiwanese residency.
 - Verification: Any third party can request to verify the credentials issued by tw-did.
 
-This project supports the binding of TW FidO to Ethereum Address and Semaphore Identity. The former will issue a Verifiable Credential recording that an Ethereum Address holder is a Taiwanese resident. After tw-did has verified through TW FidO, the latter allows a holder to prove through Semaphore's zero-knowledge proof that they have passed TW FidO authentication as a Taiwanese resident. Furthermore, the following verification process does not require disclosure of the holder's identity. Neither the issuer nor the verifier can identify which Taiwanese resident is being verified during the verification process.
+This project supports the binding of TW FidO to Ethereum Address and [Semaphore](https://semaphore.appliedzkp.org/) Identity. The former will issue a Verifiable Credential recording that an Ethereum Address holder is a Taiwanese resident. After tw-did has verified through TW FidO, the latter allows a holder to prove through Semaphore's zero-knowledge proof that they have passed TW FidO authentication as a Taiwanese resident. Furthermore, the following verification process does not require disclosure of the holder's identity. Neither the issuer nor the verifier can identify which Taiwanese resident is being verified during the verification process.
 
 For more information, please refer to the following documents:
 
