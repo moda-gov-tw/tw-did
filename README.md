@@ -12,6 +12,7 @@ This project supports the binding of TW FidO to Ethereum Address and [Semaphore]
 
 For more information, please refer to the following documents:
 
+- [Requirements](docs/requirements.md)
 - [Use Cases](docs/use-cases.md)
 - [User Interface Design Wireframes](docs/wireframes.md)
 - Interaction Flow
