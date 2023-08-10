@@ -19,3 +19,29 @@ For more information, please refer to the following documents:
   - [Registration](docs/registration.md)
   - [Revocation](docs/revocation.md)
   - [Verification](docs/verification.md)
+
+# Usage
+
+`tw-did` uses nx for monorepo management. Please use the command below to install the dependencies:
+
+```shell
+$ npm install
+```
+
+This command installs all necessary packages for the project.
+
+To start a development server, use the following command:
+
+```shell
+$ npm start
+```
+
+This command starts a local development server for the web application.
+
+You can also use the following command to run acceptance test cases:
+
+```shell
+$ npm run acceptance
+```
+
+This command runs end-to-end acceptance tests for the project.
