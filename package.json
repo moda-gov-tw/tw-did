@@ -2,7 +2,10 @@
   "name": "@tw-did/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start": "nx serve web",
+    "acceptance": "nx e2e acceptance"
+  },
   "private": true,
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^18.0.3",
