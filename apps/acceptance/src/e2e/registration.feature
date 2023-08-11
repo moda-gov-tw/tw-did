@@ -1,4 +1,5 @@
 # Feature specifications sourced from /docs/requirements.md
+# Requirement ID: REQ-01
 
 Feature: Binding ID to Ethereum Address
 

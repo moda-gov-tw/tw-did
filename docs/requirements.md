@@ -2,11 +2,11 @@
 
 ## Final Requirements
 
-1. Integrate the Ministry of the Interior's TW FidO. After users validate their identities, a wallet address credential suitable for binding on the public blockchain is automatically produced.
-2. In the event of a lost wallet address, the associated binding can be revoked.
-3. When a credential gets revoked, users must reapply for a fresh wallet address binding.
-4. The wallet address credential issued by integrating the TW FidO will be compatible with EVM-based blockchains.
-5. The implementation must be based on the relevant standards for W3C certificate verification.
+- **REQ-01**: Integrate the Ministry of the Interior's TW FidO. After users validate their identities, a wallet address credential suitable for binding on the public blockchain is automatically produced.
+- **REQ-02**: In the event of a lost wallet address, the associated binding can be revoked.
+- **REQ-03**: When a credential gets revoked, users must reapply for a fresh wallet address binding.
+- **REQ-04**: The wallet address credential issued by integrating the TW FidO will be compatible with EVM-based blockchains.
+- **REQ-05**: The implementation must be based on the relevant standards for W3C certificate verification.
 
 In addition to the original requirements, this project will also implement a credential type based on the Semaphore Zero-Knowledge Proof framework, serving as an enhanced privacy credential solution.
 
