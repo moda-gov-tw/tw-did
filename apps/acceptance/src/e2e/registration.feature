@@ -8,7 +8,7 @@ Feature: Binding ID to Ethereum Address
   So that my identity is linked with my blockchain account
 
   Background:
-    Given I am on the registration page
+    Given I am on the "registration-page"
 
   Scenario: User inputs ID
     When I enter my ID
@@ -16,20 +16,23 @@ Feature: Binding ID to Ethereum Address
     Then the "qr-code-interface" should be presented
 
   Scenario: User confirms identity with TW FidO app
-    Given the QR code is displayed
-    When I scan the QR code with TW FidO app and log in
+    Given I authenticate with TW FidO app
     Then the website should verify my app login status via the API
     And redirect me to the "ethereum-address-confirmation" page
 
   Scenario: Ethereum address confirmation via wallet app signature
-    Given I am on the Ethereum sign-in page
+    Given I authenticate with TW FidO app
+    And I am on the "ethereum-sign-in-page"
     When I click on "sign-in-with-ethereum"
     And I complete the signature process in the wallet app
-    And the website receives and verifies the signature result
-    Then I should be redirected to the confirmation page
+    And the website receives the signature result
+    Then the website should successfully verify the signature result
+    And I should be redirected to the confirmation page
 
   Scenario: Successful ID and Ethereum Address Binding
-    Given my ID and Ethereum account address are displayed
+    Given I authenticate with TW FidO app
+    And I authenticate with Sign-in with Ethereum
+    And I am on the "binding-confirmation-page"
     When I click on "binding"
     Then the "successful-binding-message" should be presented
     And a list of my current credentials should be presented

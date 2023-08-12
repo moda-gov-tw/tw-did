@@ -8,7 +8,7 @@ Feature: Revoking ID and Ethereum Address Binding
   So that my identity is no longer linked with my blockchain account
 
   Background:
-    Given I am on the revocation page
+    Given I am on the "revocation-page"
     And I have a credential that binds my ID with an Ethereum address
 
   Scenario: User initiates the revocation process
@@ -17,8 +17,7 @@ Feature: Revoking ID and Ethereum Address Binding
     Then the "qr-code-interface" should be presented
 
   Scenario: User confirms identity with TW FidO app
-    Given the QR code is displayed
-    When I scan the QR code with TW FidO app and log in
+    Given I authenticate with TW FidO app
     Then the website should verify my app login status via the API
     And redirect me to the "revocation-confirmation" page
 
