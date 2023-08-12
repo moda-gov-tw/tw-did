@@ -11,7 +11,7 @@ Feature: Revoking ID and Ethereum Address Binding
     Given I am on the "revocation-page"
     And I have a credential that binds my ID with an Ethereum address
 
-  Scenario: User initiates the revocation process
+  Scenario: Displaying QR Code Interface for Revocation Process
     When I enter my ID
     And I click on "next"
     Then the "qr-code-interface" should be presented

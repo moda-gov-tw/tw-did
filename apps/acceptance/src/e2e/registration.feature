@@ -1,5 +1,5 @@
 # Feature specifications sourced from /docs/requirements.md
-# Requirement ID: REQ-01, REQ-03
+# Requirement ID: REQ-01, REQ-03, REQ-05
 
 Feature: Binding ID to Ethereum Address
 
@@ -10,7 +10,7 @@ Feature: Binding ID to Ethereum Address
   Background:
     Given I am on the "registration-page"
 
-  Scenario: User inputs ID
+  Scenario: Displaying QR Code Interface After ID Input
     When I enter my ID
     And I click on "next"
     Then the "qr-code-interface" should be presented
@@ -36,4 +36,5 @@ Feature: Binding ID to Ethereum Address
     When I click on "binding"
     Then the "successful-binding-message" should be presented
     And a list of my current credentials should be presented
-    And all credentials are valid
+    And all credentials are valid W3C Verifiable Credentials
+    And all subjects in the credentials can be resolved to valid W3C DID Documents
