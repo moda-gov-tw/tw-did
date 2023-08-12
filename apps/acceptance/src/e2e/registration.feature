@@ -1,4 +1,5 @@
 # Feature specifications sourced from /docs/requirements.md
+# Requirement ID: REQ-01
 
 Feature: Binding ID to Ethereum Address
 
@@ -18,7 +19,7 @@ Feature: Binding ID to Ethereum Address
     Given the QR code is displayed
     When I scan the QR code with TW FidO app and log in
     Then the website should verify my app login status via the API
-    And redirect me to the Ethereum account address confirmation page
+    And redirect me to the "ethereum-address-confirmation" page
 
   Scenario: Ethereum address confirmation via wallet app signature
     Given I am on the Ethereum sign-in page
@@ -32,3 +33,4 @@ Feature: Binding ID to Ethereum Address
     When I click on "binding"
     Then the "successful-binding-message" should be presented
     And a list of my current credentials should be presented
+    And all credentials are valid
