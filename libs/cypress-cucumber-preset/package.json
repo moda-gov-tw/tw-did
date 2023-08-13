@@ -2,7 +2,7 @@
   "name": "@tw-did/cypress-cucumber-preset",
   "version": "0.0.1",
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^18.0.4",
+    "@badeball/cypress-cucumber-preprocessor": "^18.0.3",
     "@cypress/webpack-preprocessor": "^5.17.1",
     "@nx/devkit": "^16.6.0",
     "tslib": "^2.3.0"
