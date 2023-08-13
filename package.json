@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve web",
-    "acceptance": "nx e2e acceptance"
+    "acceptance": "nx acceptance acceptance"
   },
   "private": true,
   "devDependencies": {
