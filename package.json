@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve web",
-    "acceptance": "nx e2e acceptance"
+    "acceptance": "nx acceptance acceptance"
   },
   "private": true,
   "devDependencies": {
@@ -41,6 +41,7 @@
     "prettier": "^2.6.2",
     "ts-loader": "^9.4.4",
     "typescript": "~5.1.3",
+    "verdaccio": "^5.0.4",
     "vite": "~4.3.9",
     "vitest": "~0.32.0"
   },
@@ -48,5 +49,8 @@
     "@swc/helpers": "~0.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

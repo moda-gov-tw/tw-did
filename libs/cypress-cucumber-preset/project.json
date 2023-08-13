@@ -1,0 +1,33 @@
+{
+  "name": "cypress-cucumber-preset",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/cypress-cucumber-preset/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/cypress-cucumber-preset",
+        "main": "libs/cypress-cucumber-preset/src/index.ts",
+        "tsConfig": "libs/cypress-cucumber-preset/tsconfig.lib.json",
+        "assets": ["libs/cypress-cucumber-preset/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs cypress-cucumber-preset {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/cypress-cucumber-preset/**/*.ts",
+          "libs/cypress-cucumber-preset/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

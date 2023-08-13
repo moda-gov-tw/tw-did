@@ -4,7 +4,7 @@
   "sourceRoot": "apps/acceptance/src",
   "projectType": "application",
   "targets": {
-    "e2e": {
+    "acceptance": {
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/acceptance/cypress.config.ts",
