@@ -48,7 +48,9 @@
   "dependencies": {
     "@swc/helpers": "~0.5.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "viem": "^1.6.0",
+    "wagmi": "^1.3.10"
   },
   "nx": {
     "includedScripts": []
