@@ -1,10 +1,12 @@
-import NxWelcome from './nx-welcome';
+import { EthereumProvider, Profile } from '@tw-did/react-library';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="web" />
-    </div>
+    <EthereumProvider>
+      <div>
+        <Profile />
+      </div>
+    </EthereumProvider>
   );
 }
 
