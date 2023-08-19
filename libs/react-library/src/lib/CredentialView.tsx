@@ -1,17 +1,9 @@
 import React from 'react';
+import { CredentialType, Credential } from './types';
 
-type CredentialType = 'ethereum' | 'semaphore';
 type Action = { label: string; handler: () => void };
 
-interface Field {
-  key: string;
-  value: string;
-}
-
-interface CredentialViewProps {
-  type: CredentialType;
-  description?: string;
-  fields: Field[];
+interface CredentialViewProps extends Credential {
   actions: Action[];
 }
 
@@ -47,4 +39,4 @@ const CredentialView: React.FC<CredentialViewProps> = ({
 };
 
 export default CredentialView;
-export type { CredentialType, CredentialViewProps as CredentialProps, Field };
+export type { CredentialType, CredentialViewProps };
