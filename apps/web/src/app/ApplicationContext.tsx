@@ -1,3 +1,4 @@
+import { CredentialProvider } from '@tw-did/react-library';
 import React, { ReactNode, createContext } from 'react';
 import { createPublicClient, http } from 'viem';
 import { WagmiConfig, createConfig, mainnet } from 'wagmi';
@@ -21,7 +22,9 @@ export const ApplicationContext: React.FC<ApplicationContextProps> = ({
 
   return (
     <ApplicationConfig.Provider value={null}>
-      <WagmiConfig config={config}>{children}</WagmiConfig>
+      <WagmiConfig config={config}>
+        <CredentialProvider>{children}</CredentialProvider>
+      </WagmiConfig>
     </ApplicationConfig.Provider>
   );
 };

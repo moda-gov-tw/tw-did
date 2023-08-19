@@ -1,5 +1,7 @@
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { useCredentials } from '../context';
+import { CredentialCardList } from '../../';
 
 export function Profile() {
   const { address, isConnected } = useAccount();
@@ -7,6 +9,7 @@ export function Profile() {
     connector: new InjectedConnector(),
   });
   const { disconnect } = useDisconnect();
+  const { credentials } = useCredentials();
 
   if (isConnected)
     return (
@@ -15,6 +18,13 @@ export function Profile() {
         <button data-testid="disconnect-button" onClick={() => disconnect()}>
           Disconnect
         </button>
+        <CredentialCardList
+          credentials={credentials}
+          actionLabels={['select']}
+          onAction={(index, label) => {
+            console.log(`Selected credential ${index} with action ${label}`);
+          }}
+        />
       </div>
     );
   return (

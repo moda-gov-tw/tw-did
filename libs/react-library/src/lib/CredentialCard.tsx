@@ -1,16 +1,15 @@
 import React from 'react';
 import { CredentialType, Credential } from './types';
 
-type Action = { label: string; handler: () => void };
+type Action = { label: string; handler: (actionLabel: string) => void };
 
-interface CredentialCardProps extends Credential {
+interface CredentialCardProps {
+  credential: Credential;
   actions: Action[];
 }
 
-const CredentialCard: React.FC<CredentialCardProps> = ({
-  type,
-  description,
-  fields,
+export const CredentialCard: React.FC<CredentialCardProps> = ({
+  credential: { type, description, fields },
   actions,
 }) => {
   return (
@@ -28,7 +27,7 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
       {actions.map((action, index) => (
         <button
           key={index}
-          onClick={action.handler}
+          onClick={() => action.handler(action.label)}
           data-testid={`credential-action-${action.label}`}
         >
           {action.label}
@@ -38,5 +37,4 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
   );
 };
 
-export default CredentialCard;
 export type { CredentialType, CredentialCardProps };

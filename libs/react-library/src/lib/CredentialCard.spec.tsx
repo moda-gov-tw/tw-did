@@ -1,17 +1,20 @@
 import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
-import CredentialCard, { CredentialCardProps } from './CredentialCard';
 import { CredentialType } from './types';
+import { CredentialCardProps, Credential, CredentialCard } from '.';
 
 describe('<Credential />', () => {
-  const baseProps: CredentialCardProps = {
+  const credential: Credential = {
     type: CredentialType.ETHEREUM,
     description: 'Test description',
     fields: [
       { key: 'national-id', value: 'A123456789' },
       { key: 'ethereum-account-address', value: '0x1234567890abcdef' },
     ],
+  };
+  const baseProps: CredentialCardProps = {
+    credential,
     actions: [
       {
         label: 'Test Action',

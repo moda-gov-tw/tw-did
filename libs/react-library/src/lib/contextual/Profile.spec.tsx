@@ -9,6 +9,10 @@ vi.mock('wagmi', () => ({
   useDisconnect: vi.fn().mockReturnValue({ disconnect: vi.fn() }),
 }));
 
+vi.mock('../context', () => ({
+  useCredentials: vi.fn().mockReturnValue({ credentials: [] }),
+}));
+
 describe('Profile', () => {
   it('renders connect button when not connected', () => {
     (useAccount as Mock).mockReturnValue({
