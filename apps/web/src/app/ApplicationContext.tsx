@@ -2,13 +2,13 @@ import React, { ReactNode, createContext } from 'react';
 import { createPublicClient, http } from 'viem';
 import { WagmiConfig, createConfig, mainnet } from 'wagmi';
 
-const EthereumConfig = createContext(null);
+const ApplicationConfig = createContext(null);
 
-interface EthereumProviderProps {
+interface ApplicationContextProps {
   children: ReactNode;
 }
 
-export const EthereumProvider: React.FC<EthereumProviderProps> = ({
+export const ApplicationContext: React.FC<ApplicationContextProps> = ({
   children,
 }) => {
   const config = createConfig({
@@ -20,8 +20,8 @@ export const EthereumProvider: React.FC<EthereumProviderProps> = ({
   });
 
   return (
-    <EthereumConfig.Provider value={null}>
+    <ApplicationConfig.Provider value={null}>
       <WagmiConfig config={config}>{children}</WagmiConfig>
-    </EthereumConfig.Provider>
+    </ApplicationConfig.Provider>
   );
 };

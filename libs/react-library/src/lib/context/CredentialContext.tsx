@@ -1,5 +1,5 @@
 import React, { ReactNode, createContext, useContext } from 'react';
-import { CredentialType, Credential } from './types';
+import { CredentialType, Credential } from '../types';
 
 interface CredentialContextProps {
   credentials: Credential[];

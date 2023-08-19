@@ -1,11 +1,12 @@
 import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
-import CredentialView, { CredentialProps } from './CredentialView';
+import CredentialCard, { CredentialCardProps } from './CredentialCard';
+import { CredentialType } from './types';
 
 describe('<Credential />', () => {
-  const baseProps: CredentialProps = {
-    type: 'ethereum',
+  const baseProps: CredentialCardProps = {
+    type: CredentialType.ETHEREUM,
     description: 'Test description',
     fields: [
       { key: 'national-id', value: 'A123456789' },
@@ -20,19 +21,19 @@ describe('<Credential />', () => {
   };
 
   it('renders the type correctly', () => {
-    const { getByTestId } = render(<CredentialView {...baseProps} />);
+    const { getByTestId } = render(<CredentialCard {...baseProps} />);
     expect(getByTestId('credential-type-ethereum')).toBeInTheDocument();
   });
 
   it('renders the description if provided', () => {
-    const { getByTestId } = render(<CredentialView {...baseProps} />);
+    const { getByTestId } = render(<CredentialCard {...baseProps} />);
     expect(getByTestId('credential-description')).toHaveTextContent(
       'Test description'
     );
   });
 
   it('renders all the fields correctly', () => {
-    const { getByTestId } = render(<CredentialView {...baseProps} />);
+    const { getByTestId } = render(<CredentialCard {...baseProps} />);
     expect(getByTestId('field-key-national-id')).toHaveTextContent(
       'national-id'
     );
@@ -42,7 +43,7 @@ describe('<Credential />', () => {
   });
 
   it('renders all the actions and they can be triggered', () => {
-    const { getByTestId } = render(<CredentialView {...baseProps} />);
+    const { getByTestId } = render(<CredentialCard {...baseProps} />);
     const actionButton = getByTestId('credential-action-Test Action');
     expect(actionButton).toBeTruthy();
 

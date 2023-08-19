@@ -1,12 +1,13 @@
-import { EthereumProvider, Profile } from '@tw-did/react-library';
+import { Profile } from '@tw-did/react-library';
+import { ApplicationContext } from './ApplicationContext';
 
 export function App() {
   return (
-    <EthereumProvider>
+    <ApplicationContext>
       <div>
         <Profile />
       </div>
-    </EthereumProvider>
+    </ApplicationContext>
   );
 }
 

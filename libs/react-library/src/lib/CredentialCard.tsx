@@ -3,11 +3,11 @@ import { CredentialType, Credential } from './types';
 
 type Action = { label: string; handler: () => void };
 
-interface CredentialViewProps extends Credential {
+interface CredentialCardProps extends Credential {
   actions: Action[];
 }
 
-const CredentialView: React.FC<CredentialViewProps> = ({
+const CredentialCard: React.FC<CredentialCardProps> = ({
   type,
   description,
   fields,
@@ -38,5 +38,5 @@ const CredentialView: React.FC<CredentialViewProps> = ({
   );
 };
 
-export default CredentialView;
-export type { CredentialType, CredentialViewProps };
+export default CredentialCard;
+export type { CredentialType, CredentialCardProps };
