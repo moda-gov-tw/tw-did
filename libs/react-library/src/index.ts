@@ -1,2 +1,2 @@
-export * from './lib/ethereum-provider';
-export * from './lib/profile';
+export * from './lib/EthereumProvider';
+export * from './lib/Profile';

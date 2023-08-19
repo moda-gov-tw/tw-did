@@ -1,6 +1,6 @@
 import { Mock, vi, describe, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Profile } from './profile';
+import { Profile } from './Profile';
 import { useAccount } from 'wagmi';
 
 vi.mock('wagmi', () => ({

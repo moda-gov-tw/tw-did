@@ -1,5 +1,5 @@
 import React from 'react';
-import CredentialView, { CredentialProps } from './credential-view';
+import CredentialView, { CredentialProps } from './CredentialView';
 
 interface CredentialViewListProps {
   credentials: CredentialProps[];

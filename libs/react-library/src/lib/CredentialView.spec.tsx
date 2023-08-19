@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
-import CredentialView, { CredentialProps } from './credential-view';
+import CredentialView, { CredentialProps } from './CredentialView';
 
 describe('<Credential />', () => {
   const baseProps: CredentialProps = {
