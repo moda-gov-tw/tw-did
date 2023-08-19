@@ -8,14 +8,14 @@ interface Field {
   value: string;
 }
 
-interface CredentialProps {
+interface CredentialViewProps {
   type: CredentialType;
   description?: string;
   fields: Field[];
   actions: Action[];
 }
 
-const Credential: React.FC<CredentialProps> = ({
+const CredentialView: React.FC<CredentialViewProps> = ({
   type,
   description,
   fields,
@@ -46,5 +46,5 @@ const Credential: React.FC<CredentialProps> = ({
   );
 };
 
-export default Credential;
-export type { CredentialType, CredentialProps, Field };
+export default CredentialView;
+export type { CredentialType, CredentialViewProps as CredentialProps, Field };

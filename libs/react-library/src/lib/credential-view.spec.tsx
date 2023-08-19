@@ -1,6 +1,7 @@
+import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
-import Credential, { CredentialProps } from './credential';
+import CredentialView, { CredentialProps } from './credential-view';
 
 describe('<Credential />', () => {
   const baseProps: CredentialProps = {
@@ -19,19 +20,19 @@ describe('<Credential />', () => {
   };
 
   it('renders the type correctly', () => {
-    const { getByTestId } = render(<Credential {...baseProps} />);
+    const { getByTestId } = render(<CredentialView {...baseProps} />);
     expect(getByTestId('credential-type-ethereum')).toBeInTheDocument();
   });
 
   it('renders the description if provided', () => {
-    const { getByTestId } = render(<Credential {...baseProps} />);
+    const { getByTestId } = render(<CredentialView {...baseProps} />);
     expect(getByTestId('credential-description')).toHaveTextContent(
       'Test description'
     );
   });
 
   it('renders all the fields correctly', () => {
-    const { getByTestId } = render(<Credential {...baseProps} />);
+    const { getByTestId } = render(<CredentialView {...baseProps} />);
     expect(getByTestId('field-key-national-id')).toHaveTextContent(
       'national-id'
     );
@@ -41,7 +42,7 @@ describe('<Credential />', () => {
   });
 
   it('renders all the actions and they can be triggered', () => {
-    const { getByTestId } = render(<Credential {...baseProps} />);
+    const { getByTestId } = render(<CredentialView {...baseProps} />);
     const actionButton = getByTestId('credential-action-Test Action');
     expect(actionButton).toBeTruthy();
 
