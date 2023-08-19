@@ -1,12 +1,16 @@
 import { Mock, vi, describe, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Profile } from './profile';
+import { Profile } from './Profile';
 import { useAccount } from 'wagmi';
 
 vi.mock('wagmi', () => ({
   useAccount: vi.fn(),
   useConnect: vi.fn().mockReturnValue({ connect: vi.fn() }),
   useDisconnect: vi.fn().mockReturnValue({ disconnect: vi.fn() }),
+}));
+
+vi.mock('../context', () => ({
+  useCredentials: vi.fn().mockReturnValue({ credentials: [] }),
 }));
 
 describe('Profile', () => {

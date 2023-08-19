@@ -1,24 +1,15 @@
 import React from 'react';
+import { CredentialType, Credential } from './types';
 
-type CredentialType = 'ethereum' | 'semaphore';
-type Action = { label: string; handler: () => void };
+type Action = { label: string; handler: (actionLabel: string) => void };
 
-interface Field {
-  key: string;
-  value: string;
-}
-
-interface CredentialProps {
-  type: CredentialType;
-  description?: string;
-  fields: Field[];
+interface CredentialCardProps {
+  credential: Credential;
   actions: Action[];
 }
 
-const Credential: React.FC<CredentialProps> = ({
-  type,
-  description,
-  fields,
+export const CredentialCard: React.FC<CredentialCardProps> = ({
+  credential: { type, description, fields },
   actions,
 }) => {
   return (
@@ -36,7 +27,7 @@ const Credential: React.FC<CredentialProps> = ({
       {actions.map((action, index) => (
         <button
           key={index}
-          onClick={action.handler}
+          onClick={() => action.handler(action.label)}
           data-testid={`credential-action-${action.label}`}
         >
           {action.label}
@@ -46,5 +37,4 @@ const Credential: React.FC<CredentialProps> = ({
   );
 };
 
-export default Credential;
-export type { CredentialType, CredentialProps, Field };
+export type { CredentialType, CredentialCardProps };
