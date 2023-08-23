@@ -9,7 +9,7 @@ export function Profile() {
     connector: new InjectedConnector(),
   });
   const { disconnect } = useDisconnect();
-  const { credentials } = useCredentials();
+  const { credentialViews: credentials } = useCredentials();
 
   if (isConnected)
     return (
@@ -19,7 +19,7 @@ export function Profile() {
           Disconnect
         </button>
         <CredentialCardList
-          credentials={credentials}
+          credentialViews={credentials}
           actionLabels={['select']}
           onAction={(index, label) => {
             console.log(`Selected credential ${index} with action ${label}`);

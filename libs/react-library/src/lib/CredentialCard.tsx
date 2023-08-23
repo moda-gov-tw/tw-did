@@ -1,15 +1,15 @@
 import React from 'react';
-import { CredentialType, Credential } from './types';
+import { CredentialView } from './context/CredentialView';
 
 type Action = { label: string; handler: (actionLabel: string) => void };
 
 interface CredentialCardProps {
-  credential: Credential;
+  credentialView: CredentialView;
   actions: Action[];
 }
 
 export const CredentialCard: React.FC<CredentialCardProps> = ({
-  credential: { type, description, fields },
+  credentialView: { type, description, fields },
   actions,
 }) => {
   return (
@@ -37,4 +37,4 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
   );
 };
 
-export type { CredentialType, CredentialCardProps };
+export type { CredentialCardProps };
