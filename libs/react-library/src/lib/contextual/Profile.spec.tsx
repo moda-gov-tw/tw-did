@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 vi.mock('wagmi', () => ({
   useAccount: vi.fn(),
   useConnect: vi.fn().mockReturnValue({ connect: vi.fn() }),
+  useConfig: vi.fn().mockReturnValue({ connectors: [] }),
   useDisconnect: vi.fn().mockReturnValue({ disconnect: vi.fn() }),
 }));
 

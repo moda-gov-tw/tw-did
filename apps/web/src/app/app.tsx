@@ -1,18 +1,16 @@
 import { Link, Outlet } from '@tanstack/react-router';
-import { ApplicationContext } from './ApplicationContext';
-import { indexRoute, profileRoute } from '../router';
+import { authorizeRoute, indexRoute, profileRoute } from '../router';
 
 export function App() {
   return (
-    <ApplicationContext>
-      <div>
-        <div className="navigation">
-          <Link to={indexRoute.path}>Index</Link>{' '}
-          <Link to={profileRoute.path}>Profile</Link>
-        </div>
-        <Outlet />
+    <div>
+      <div className="navigation">
+        <Link to={indexRoute.id}>Index</Link>{' '}
+        <Link to={profileRoute.id}>Profile</Link>{' '}
+        <Link to={authorizeRoute.id}>Authorize</Link>
       </div>
-    </ApplicationContext>
+      <Outlet />
+    </div>
   );
 }
 

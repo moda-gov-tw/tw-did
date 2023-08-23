@@ -18,7 +18,17 @@ export const profileRoute = new Route({
   component: Profile,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, profileRoute]);
+export const authorizeRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/authorize',
+  component: () => <div>Authorize</div>,
+});
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  profileRoute,
+  authorizeRoute,
+]);
 export const router = new Router({ routeTree });
 
 declare module '@tanstack/react-router' {

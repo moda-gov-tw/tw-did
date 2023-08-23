@@ -1,12 +1,12 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { useAccount, useConfig, useConnect, useDisconnect } from 'wagmi';
 import { useCredentials } from '../context';
 import { CredentialCardList } from '../../';
 
 export function Profile() {
+  const { connectors } = useConfig();
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({
-    connector: new InjectedConnector(),
+    connector: connectors[0],
   });
   const { disconnect } = useDisconnect();
   const { credentialViews: credentials } = useCredentials();
