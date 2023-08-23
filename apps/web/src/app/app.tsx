@@ -1,11 +1,16 @@
-import { Profile } from '@tw-did/react-library';
+import { Link, Outlet } from '@tanstack/react-router';
 import { ApplicationContext } from './ApplicationContext';
+import { indexRoute, profileRoute } from '../router';
 
 export function App() {
   return (
     <ApplicationContext>
       <div>
-        <Profile />
+        <div className="navigation">
+          <Link to={indexRoute.path}>Index</Link>{' '}
+          <Link to={profileRoute.path}>Profile</Link>
+        </div>
+        <Outlet />
       </div>
     </ApplicationContext>
   );
