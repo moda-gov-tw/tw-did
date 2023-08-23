@@ -10,7 +10,7 @@ vi.mock('wagmi', () => ({
 }));
 
 vi.mock('../context', () => ({
-  useCredentials: vi.fn().mockReturnValue({ credentials: [] }),
+  useCredentials: vi.fn().mockReturnValue({ credentialViews: [] }),
 }));
 
 describe('Profile', () => {

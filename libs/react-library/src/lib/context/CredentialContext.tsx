@@ -1,8 +1,9 @@
 import React, { ReactNode, createContext, useContext } from 'react';
-import { CredentialType, Credential } from '../types';
+import * as ethereumCredential from './credentials/ethereum.json';
+import { CredentialType, CredentialView } from './CredentialView';
 
 interface CredentialContextProps {
-  credentials: Credential[];
+  credentialViews: CredentialView[];
 }
 
 const CredentialContext = createContext<CredentialContextProps | undefined>(
@@ -23,19 +24,12 @@ interface CredentialProviderProps {
 export const CredentialProvider: React.FC<CredentialProviderProps> = ({
   children,
 }) => {
-  const credentials: Credential[] = [
-    {
-      type: CredentialType.ETHEREUM,
-      fields: [],
-    },
-    {
-      type: CredentialType.SEMAPHORE,
-      fields: [],
-    },
+  const credentials: CredentialView[] = [
+    new CredentialView(CredentialType.ETHEREUM, ethereumCredential),
   ];
 
   return (
-    <CredentialContext.Provider value={{ credentials }}>
+    <CredentialContext.Provider value={{ credentialViews: credentials }}>
       {children}
     </CredentialContext.Provider>
   );

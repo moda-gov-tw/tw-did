@@ -1,21 +1,20 @@
 import React from 'react';
-import { Credential } from './types';
-import { CredentialCard } from '..';
+import { CredentialCard, CredentialView } from '..';
 
 interface CredentialCardListProps {
-  credentials: Credential[];
+  credentialViews: CredentialView[];
   actionLabels: string[];
   onAction: (index: number, actionLabel: string) => void;
 }
 
 export const CredentialCardList: React.FC<CredentialCardListProps> = ({
-  credentials,
+  credentialViews,
   actionLabels,
   onAction,
 }) => {
   return (
     <div className="credential-view-list">
-      {credentials.map((credential, index) => {
+      {credentialViews.map((credential, index) => {
         const actions = actionLabels.map((label) => ({
           label,
           handler: () => onAction(index, label),
@@ -23,7 +22,7 @@ export const CredentialCardList: React.FC<CredentialCardListProps> = ({
         return (
           <CredentialCard
             key={index}
-            credential={credential}
+            credentialView={credential}
             actions={actions}
           />
         );
