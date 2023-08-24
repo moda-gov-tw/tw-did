@@ -24,25 +24,27 @@ Given(
 
 When('I upload this Verifiable Credential file', function () {
   cy.get('@credentialType').then((credentialType) => {
-    cy.get('[data-cy=credential-file]').selectFile(`${credentialType}.json`);
+    cy.get('[data-testid=credential-file]').selectFile(
+      `${credentialType}.json`
+    );
   });
-  cy.get('[data-cy=credential-form]').submit();
+  cy.get('[data-testid=credential-form]').submit();
 });
 
 When('I upload an invalid Verifiable Credential file', function () {
   cy.get('@credentialType').then((credentialType) => {
-    cy.get('[data-cy=credential-file]').selectFile(
+    cy.get('[data-testid=credential-file]').selectFile(
       `invalid-${credentialType}.json`
     );
   });
-  cy.get('[data-cy=credential-form]').submit();
+  cy.get('[data-testid=credential-form]').submit();
 });
 
 Then(/the verification is (successful|failed)/, function (result) {
   if (result === 'successful') {
-    cy.get('[data-cy=verification-successful]').should('be.visible');
+    cy.get('[data-testid=verification-successful]').should('be.visible');
   } else if (result === 'failed') {
-    cy.get('[data-cy=verification-failed]').should('be.visible');
+    cy.get('[data-testid=verification-failed]').should('be.visible');
   }
 });
 
@@ -54,13 +56,13 @@ Given('I am logged into tw-did', function () {
 When(
   'I select the option to choose a credential from tw-did website',
   function () {
-    cy.get('[data-cy=select-from-tw-did]').click();
+    cy.get('[data-testid=select-from-tw-did]').click();
   }
 );
 
 When(
   'I choose a {credentialType} Verifiable Credential from tw-did website',
   function (credentialType: CredentialType) {
-    cy.get(`[data-cy=credential-type-${credentialType}]`).click();
+    cy.get(`[data-testid=credential-type-${credentialType}]`).click();
   }
 );
