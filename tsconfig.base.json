@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@tw-did/core": ["libs/core/src/index.ts"],
       "@tw-did/cypress-cucumber-preset": [
         "libs/cypress-cucumber-preset/src/index.ts"
       ],

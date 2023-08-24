@@ -2,10 +2,10 @@ import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import { CredentialCardProps, CredentialCard, CredentialType } from '.';
-import { CredentialView } from './contexts/CredentialView';
+import { CredentialData } from './contexts/CredentialData';
 
 describe('<Credential />', () => {
-  const credentialView = new CredentialView(
+  const credential = new CredentialData(
     CredentialType.ETHEREUM,
     undefined,
     [
@@ -16,7 +16,7 @@ describe('<Credential />', () => {
   );
 
   const baseProps: CredentialCardProps = {
-    credentialView,
+    credentialView: credential,
     actions: [
       {
         label: 'Test Action',

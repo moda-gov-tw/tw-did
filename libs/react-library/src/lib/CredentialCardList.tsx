@@ -1,20 +1,20 @@
 import React from 'react';
-import { CredentialCard, CredentialView } from '..';
+import { CredentialCard, CredentialData } from '..';
 
 interface CredentialCardListProps {
-  credentialViews: CredentialView[];
+  credentials: CredentialData[];
   actionLabels: string[];
   onAction: (index: number, actionLabel: string) => void;
 }
 
 export const CredentialCardList: React.FC<CredentialCardListProps> = ({
-  credentialViews,
+  credentials,
   actionLabels,
   onAction,
 }) => {
   return (
     <div className="credential-view-list">
-      {credentialViews.map((credential, index) => {
+      {credentials.map((credential, index) => {
         const actions = actionLabels.map((label) => ({
           label,
           handler: () => onAction(index, label),
