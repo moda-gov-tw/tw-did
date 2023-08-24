@@ -2,6 +2,7 @@ import { CredentialProvider } from '@tw-did/react-library';
 import React, { ReactNode, createContext } from 'react';
 import { createPublicClient, http } from 'viem';
 import { WagmiConfig, createConfig, mainnet } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 
 const ApplicationConfig = createContext(null);
 
@@ -18,6 +19,7 @@ export const ApplicationContext: React.FC<ApplicationContextProps> = ({
       chain: mainnet,
       transport: http(),
     }),
+    connectors: [new InjectedConnector()],
   });
 
   return (

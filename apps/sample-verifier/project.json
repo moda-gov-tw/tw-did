@@ -54,7 +54,7 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/apps/sample-verifier"],
+      "outputs": ["{workspaceRoot}/coverage/apps/sample-verifier"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/apps/sample-verifier"
