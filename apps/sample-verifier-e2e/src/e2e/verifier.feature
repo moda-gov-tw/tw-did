@@ -28,8 +28,9 @@ Feature: Verifying tw-did Verifiable Credential on sample-verifier website
     | ethereum       |
     | semaphore      |
 
-  Scenario Outline: Successful verification using the direct tw-did selection method
+  Scenario Outline: Successful verification using the tw-did selection method
     Given I am logged into tw-did
+    And I choose to go to tw-did website to select a credential
     When I choose a <credentialType> Verifiable Credential from tw-did website
     Then the verification succeeds
 
