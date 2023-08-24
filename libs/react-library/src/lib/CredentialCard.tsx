@@ -1,5 +1,5 @@
 import React from 'react';
-import { CredentialView } from './context/CredentialView';
+import { CredentialView } from './contexts/CredentialView';
 
 type Action = { label: string; handler: (actionLabel: string) => void };
 

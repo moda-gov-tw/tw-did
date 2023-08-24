@@ -1,34 +1,24 @@
 import { RootRoute, Route, Router } from '@tanstack/react-router';
-import App from './app/app';
-import { Profile } from '@tw-did/react-library';
+import App from './App';
+import { Authorize } from './pages';
 
 const rootRoute = new RootRoute({
   component: App,
 });
 
-export const indexRoute = new Route({
+export const homeRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => <div>Index</div>,
-});
-
-export const profileRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: '/profile',
-  component: Profile,
+  component: () => <div>Home</div>,
 });
 
 export const authorizeRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/authorize',
-  component: () => <div>Authorize</div>,
+  component: () => <Authorize />,
 });
 
-const routeTree = rootRoute.addChildren([
-  indexRoute,
-  profileRoute,
-  authorizeRoute,
-]);
+const routeTree = rootRoute.addChildren([homeRoute, authorizeRoute]);
 export const router = new Router({ routeTree });
 
 declare module '@tanstack/react-router' {

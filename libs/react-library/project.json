@@ -14,7 +14,7 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/libs/react-library"],
+      "outputs": ["{workspaceRoot}/coverage/libs/react-library"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/libs/react-library"
