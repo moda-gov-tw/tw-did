@@ -5,6 +5,22 @@
   "projectType": "library",
   "tags": [],
   "targets": {
+    "build": {
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      },
+      "defaultConfiguration": "production",
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "dist/libs/react-library"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
