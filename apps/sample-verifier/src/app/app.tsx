@@ -1,8 +1,15 @@
-import { ChangeEvent } from 'react';
+import { TwDidService } from '@tw-did/core';
+import { ChangeEvent, useState } from 'react';
 
 export function App() {
-  const handleSelectOnDid = () => {
-    console.log('Select on DID');
+  const [credential, setCredential] = useState<string>('');
+
+  const handleSelectOnDid = async () => {
+    // tw did service host
+    const serviceHost = 'http://localhost:4201';
+    const service = new TwDidService(serviceHost);
+    const msg = await service.selectCredential();
+    setCredential(JSON.stringify(msg, null, 2));
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +39,8 @@ export function App() {
         data-testid="credential-file"
         onChange={handleFileChange}
       />
+      <h2>Credential</h2>
+      <pre>{credential}</pre>
     </div>
   );
 }

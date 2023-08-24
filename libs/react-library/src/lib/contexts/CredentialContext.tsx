@@ -1,9 +1,13 @@
 import React, { ReactNode, createContext, useContext } from 'react';
 import * as ethereumCredential from './credentials/ethereum.json';
 import { CredentialType, CredentialData } from './CredentialData';
+import { useMessage } from '../hooks';
+import { VerifiableCredential } from '@veramo/core';
+import { MessageAction } from '@tw-did/core';
 
 interface CredentialContextProps {
   credentials: CredentialData[];
+  sendCredential: (action: MessageAction, credential?: CredentialData) => void;
 }
 
 const CredentialContext = createContext<CredentialContextProps | undefined>(
@@ -27,9 +31,17 @@ export const CredentialProvider: React.FC<CredentialProviderProps> = ({
   const credentials: CredentialData[] = [
     new CredentialData(CredentialType.ETHEREUM, ethereumCredential),
   ];
+  const { postMessage } = useMessage<VerifiableCredential>();
+
+  const sendCredential = (
+    action: MessageAction,
+    credential?: CredentialData
+  ) => {
+    postMessage(action, credential?.verifiableCredential);
+  };
 
   return (
-    <CredentialContext.Provider value={{ credentials }}>
+    <CredentialContext.Provider value={{ credentials, sendCredential }}>
       {children}
     </CredentialContext.Provider>
   );
