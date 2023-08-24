@@ -1,10 +1,10 @@
 import React from 'react';
-import { CredentialView } from './contexts/CredentialView';
+import { CredentialData } from './contexts/CredentialData';
 
 type Action = { label: string; handler: (actionLabel: string) => void };
 
 interface CredentialCardProps {
-  credentialView: CredentialView;
+  credentialView: CredentialData;
   actions: Action[];
 }
 

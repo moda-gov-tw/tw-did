@@ -10,7 +10,7 @@ export interface CredentialField {
   value: string;
 }
 
-export class CredentialView {
+export class CredentialData {
   type: CredentialType;
   description?: string;
   fields: CredentialField[];

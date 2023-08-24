@@ -1,2 +1,2 @@
 export * from './CredentialContext';
-export * from './CredentialView';
+export * from './CredentialData';
