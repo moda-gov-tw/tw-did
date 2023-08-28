@@ -17,6 +17,9 @@
         },
         "production": {
           "mode": "production"
+        },
+        "e2e": {
+          "mode": "e2e"
         }
       }
     },
@@ -69,8 +72,17 @@
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "sample-verifier:build"
+      "defaultConfiguration": "production",
+      "configurations": {
+        "development": {
+          "buildTarget": "sample-verifier:build:development"
+        },
+        "e2e": {
+          "buildTarget": "sample-verifier:build:e2e"
+        },
+        "production": {
+          "buildTarget": "sample-verifier:build:production"
+        }
       }
     }
   },

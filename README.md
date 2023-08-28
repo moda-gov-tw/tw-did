@@ -30,13 +30,32 @@ $ npm install
 
 This command installs all necessary packages for the project.
 
-To start a development server, use the following command:
+## Web and Sample Verifier
+
+Firstly, add a `.env.local` file to the `<rootFolder>/apps/sample-verifier` directory. You can simply copy `.env.local.example` to `.env.local` and insert your Infura project ID.
+
+Next, to set up a minimal development environment, you'll need to start both the `web` and `sample-verifier` servers. Execute the following commands to do so:
 
 ```shell
-$ npm start
+$ nx serve web --port 4201
+
+# Open a new terminal tab
+$ nx preview sample-verifier --watch
 ```
 
-This command starts a local development server for the web application.
+Once the servers are running, navigate to `http://localhost:4300/` in your browser.
+
+We use the `preview` subcommand for the `sample-verifier` server due to an issue with the `ethr-did-resolver` package, which causes errors on the Vite development server. An issue has already been filed to address this. Note that the service may operate more slowly than usual because the `preview` subcommand triggers a rebuild of `sample-verifier` whenever you save changes. This is a temporary workaround.
+
+## E2E Tests Locally
+
+If you are planning to run e2e tests locally, you'll also need to set a `VITE_MOCK_WALLET_PRIVATE_KEY` in your `.env.local` file. Due to security reasons, please reach out to @yurenju to obtain this key.
+
+```shell
+$ nx run-many -t e2e
+```
+
+## Acceptance tests
 
 You can also use the following command to run acceptance test cases:
 
