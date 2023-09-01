@@ -30,6 +30,7 @@ jobs:
       - run: npx nx affected -t e2e
         env:
           VITE_MOCK_WALLET_PRIVATE_KEY: ${{ secrets.MOCK_WALLET_PRIVATE_KEY }}
+          VITE_INFURA_PROJECT_ID: ${{ INFURA_PROJECT_ID }}
   acceptance:
     runs-on: ubuntu-latest
     continue-on-error: true
