@@ -12,13 +12,33 @@
 declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
-    login(accountIndex: number): void;
+    mockCredentialSelection(credentialType: string): void;
   }
 }
-//
-// -- This is a parent command --
-Cypress.Commands.add('login', (accountIndex: number) => {
-  console.log('Custom command example: Login', accountIndex);
+
+Cypress.Commands.add('mockCredentialSelection', (credentialType: string) => {
+  cy.fixture(`${credentialType}.json`).as('credential');
+  cy.window().then((win) => {
+    cy.stub(win, 'open');
+  });
+  cy.fixture(`${credentialType}.json`).then((credential) => {
+    cy.window().then((win) => {
+      const originalAddEventListener = win.addEventListener;
+      win.addEventListener = (type, listener, options) => {
+        if (type === 'message') {
+          listener({
+            origin: 'http://localhost:4201',
+            data: {
+              action: 'select-credential',
+              payload: credential,
+            },
+          });
+        } else {
+          originalAddEventListener(type, listener, options);
+        }
+      };
+    });
+  });
 });
 //
 // -- This is a child command --

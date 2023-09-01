@@ -1,4 +1,3 @@
-@skip
 Feature: Verifying tw-did Verifiable Credential on sample-verifier website
 
   As a user,
@@ -7,6 +6,7 @@ Feature: Verifying tw-did Verifiable Credential on sample-verifier website
 
   Background:
     Given I am on the sample-verifier website
+    And I am logged into sample-verifier website
 
   Scenario Outline: Successful verification using the file-based method
     Given I have a tw-did Verifiable Credential file of <credentialType>
@@ -16,7 +16,6 @@ Feature: Verifying tw-did Verifiable Credential on sample-verifier website
   Examples:
     | credentialType |
     | ethereum       |
-    | semaphore      |
 
   Scenario Outline: Failed verification using the file-based method
     Given I have a tw-did Verifiable Credential file of <credentialType>
@@ -26,15 +25,11 @@ Feature: Verifying tw-did Verifiable Credential on sample-verifier website
   Examples:
     | credentialType |
     | ethereum       |
-    | semaphore      |
 
   Scenario Outline: Successful verification using the tw-did selection method
-    Given I am logged into tw-did
-    And I choose to go to tw-did website to select a credential
     When I choose a <credentialType> Verifiable Credential from tw-did website
     Then the verification succeeds
 
   Examples:
     | credentialType |
     | ethereum       |
-    | semaphore      |

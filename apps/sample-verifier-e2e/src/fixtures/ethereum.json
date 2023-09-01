@@ -1,0 +1,31 @@
+{
+  "credentialSubject": {
+    "nationalIdentity": "A123456789",
+    "id": "did:ethr:goerli:0xB5A94205e64ce9aB792837F67f723ccF822f8a88"
+  },
+  "default": {
+    "credentialSubject": {
+      "nationalIdentity": "A123456789",
+      "id": "did:ethr:goerli:0xB5A94205e64ce9aB792837F67f723ccF822f8a88"
+    },
+    "issuer": {
+      "id": "did:ethr:goerli:0x029e56fc6784f2c9ec71be3d1b44f141b11a7f47e9a7c9f3501c379c293594694e"
+    },
+    "type": ["VerifiableCredential"],
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
+    "issuanceDate": "2023-08-30T05:50:47.000Z",
+    "proof": {
+      "type": "JwtProof2020",
+      "jwt": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Im5hdGlvbmFsSWRlbnRpdHkiOiJBMTIzNDU2Nzg5In19LCJzdWIiOiJkaWQ6ZXRocjpnb2VybGk6MHhCNUE5NDIwNWU2NGNlOWFCNzkyODM3RjY3ZjcyM2NjRjgyMmY4YTg4IiwibmJmIjoxNjkzMzc0NjQ3LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgwMjllNTZmYzY3ODRmMmM5ZWM3MWJlM2QxYjQ0ZjE0MWIxMWE3ZjQ3ZTlhN2M5ZjM1MDFjMzc5YzI5MzU5NDY5NGUifQ.D34pIX_3f_YvCL4iD_H9maSBtlgt08I24byY8a-326M9tpINbPt27xR8dQ0nKz89SIHz3w0F9fT9BcW_cDsdWg"
+    }
+  },
+  "issuanceDate": "2023-08-30T05:50:47.000Z",
+  "issuer": {
+    "id": "did:ethr:goerli:0x029e56fc6784f2c9ec71be3d1b44f141b11a7f47e9a7c9f3501c379c293594694e"
+  },
+  "proof": {
+    "type": "JwtProof2020",
+    "jwt": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7Im5hdGlvbmFsSWRlbnRpdHkiOiJBMTIzNDU2Nzg5In19LCJzdWIiOiJkaWQ6ZXRocjpnb2VybGk6MHhCNUE5NDIwNWU2NGNlOWFCNzkyODM3RjY3ZjcyM2NjRjgyMmY4YTg4IiwibmJmIjoxNjkzMzc0NjQ3LCJpc3MiOiJkaWQ6ZXRocjpnb2VybGk6MHgwMjllNTZmYzY3ODRmMmM5ZWM3MWJlM2QxYjQ0ZjE0MWIxMWE3ZjQ3ZTlhN2M5ZjM1MDFjMzc5YzI5MzU5NDY5NGUifQ.D34pIX_3f_YvCL4iD_H9maSBtlgt08I24byY8a-326M9tpINbPt27xR8dQ0nKz89SIHz3w0F9fT9BcW_cDsdWg"
+  },
+  "type": ["VerifiableCredential"]
+}

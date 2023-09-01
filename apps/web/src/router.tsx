@@ -12,13 +12,13 @@ export const homeRoute = new Route({
   component: () => <div>Home</div>,
 });
 
-export const authorizeRoute = new Route({
+export const selectCredentialRoute = new Route({
   getParentRoute: () => rootRoute,
-  path: '/authorize',
+  path: '/select-credential',
   component: () => <Authorize />,
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, authorizeRoute]);
+const routeTree = rootRoute.addChildren([homeRoute, selectCredentialRoute]);
 export const router = new Router({ routeTree });
 
 declare module '@tanstack/react-router' {

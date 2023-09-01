@@ -15,6 +15,10 @@ Given('I am on the sample-verifier website', () => {
   cy.visit('/');
 });
 
+Given('I am logged into sample-verifier website', () => {
+  cy.get('[data-testid=connect-button]').click();
+});
+
 Given(
   'I have a tw-did Verifiable Credential file of {credentialType}',
   function (credentialType: CredentialType) {
@@ -24,45 +28,33 @@ Given(
 
 When('I upload this Verifiable Credential file', function () {
   cy.get('@credentialType').then((credentialType) => {
-    cy.get('[data-testid=credential-file]').selectFile(
-      `${credentialType}.json`
-    );
+    cy.fixture(`${credentialType}.json`).as('credential');
+    cy.get('[data-testid=credential-file]').selectFile('@credential');
   });
-  cy.get('[data-testid=credential-form]').submit();
+  cy.get('[data-testid=verify-credential]').click();
 });
 
 When('I upload an invalid Verifiable Credential file', function () {
   cy.get('@credentialType').then((credentialType) => {
-    cy.get('[data-testid=credential-file]').selectFile(
-      `invalid-${credentialType}.json`
-    );
+    cy.fixture(`invalid-${credentialType}.json`).as('credential');
+    cy.get('[data-testid=credential-file]').selectFile('@credential');
   });
-  cy.get('[data-testid=credential-form]').submit();
+  cy.get('[data-testid=verify-credential]').click();
 });
 
-Then(/the verification is (successful|failed)/, function (result) {
-  if (result === 'successful') {
-    cy.get('[data-testid=verification-successful]').should('be.visible');
-  } else if (result === 'failed') {
-    cy.get('[data-testid=verification-failed]').should('be.visible');
+Then(/the verification (succeeds|fails)/, function (result) {
+  if (result === 'succeeds') {
+    cy.get('[data-testid=verification-succeeds]').should('be.visible');
+  } else if (result === 'fails') {
+    cy.get('[data-testid=verification-fails]').should('be.visible');
   }
 });
-
-Given('I am logged into tw-did', function () {
-  // use index 0 of ethereum private keys in fixtures folder to login
-  cy.login(0);
-});
-
-When(
-  'I select the option to choose a credential from tw-did website',
-  function () {
-    cy.get('[data-testid=select-from-tw-did]').click();
-  }
-);
 
 When(
   'I choose a {credentialType} Verifiable Credential from tw-did website',
   function (credentialType: CredentialType) {
-    cy.get(`[data-testid=credential-type-${credentialType}]`).click();
+    cy.mockCredentialSelection(credentialType);
+    cy.get(`[data-testid=select-on-did]`).click();
+    cy.get('[data-testid=verify-credential]').click();
   }
 );
