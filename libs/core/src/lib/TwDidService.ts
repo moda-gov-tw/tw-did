@@ -13,6 +13,12 @@ export type SelectCredentialMessage = {
   payload?: VerifiableCredential;
 };
 
+export type GroupInfo = {
+  id: string;
+  depth: number;
+  members: string[];
+};
+
 export class TwDidService {
   host: string;
   constructor(host: string) {
@@ -32,6 +38,17 @@ export class TwDidService {
       };
 
       window.addEventListener('message', handler, false);
+    });
+  }
+
+  // TODO: this is a mock implementation
+  fetchGroupInfo(groupId: string): Promise<GroupInfo> {
+    return Promise.resolve({
+      id: groupId,
+      depth: 20,
+      members: [
+        '18247677939749764709615722514754949329375911953462583983649646599131197861128',
+      ],
     });
   }
 }
