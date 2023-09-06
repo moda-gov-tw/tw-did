@@ -13,7 +13,10 @@ export type SelectCredentialMessage = {
   payload?: VerifiableCredential;
 };
 
-export class TwDidService {
+export interface ISemaphoreGroupService {
+  fetchGroupInfo(groupId: string): Promise<GroupInfo>;
+}
+export class TwDidService implements ISemaphoreGroupService {
   host: string;
   constructor(host: string) {
     this.host = host;
