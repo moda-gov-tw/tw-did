@@ -1,5 +1,5 @@
 import { VerifiableCredential } from '@veramo/core';
-import { MessageAction } from '.';
+import { GroupInfo, MessageAction } from '.';
 
 export class InvalidOriginError extends Error {
   constructor(origin: string) {
@@ -11,12 +11,6 @@ export class InvalidOriginError extends Error {
 export type SelectCredentialMessage = {
   action: MessageAction;
   payload?: VerifiableCredential;
-};
-
-export type GroupInfo = {
-  id: string;
-  depth: number;
-  members: string[];
 };
 
 export class TwDidService {

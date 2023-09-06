@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "dependencies": {
     "@nx/vite": "^16.6.0",
+    "@semaphore-protocol/group": "^3.11.0",
+    "@semaphore-protocol/identity": "^3.11.0",
+    "@semaphore-protocol/proof": "^3.11.0",
     "@veramo/core": "^5.4.1",
     "@veramo/core-types": "^5.4.1",
     "@veramo/credential-eip712": "^5.4.1",
