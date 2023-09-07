@@ -2,6 +2,7 @@
   "name": "@tw-did/credential-ld",
   "version": "0.0.1",
   "dependencies": {
+    "@veramo/core-types": "^5.4.1",
     "tslib": "^2.3.0"
   },
   "type": "commonjs",

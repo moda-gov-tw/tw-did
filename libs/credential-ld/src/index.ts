@@ -1,1 +1,1 @@
-export * from './lib/credential-ld';
+export * from './lib';

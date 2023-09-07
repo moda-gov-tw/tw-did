@@ -38,8 +38,8 @@ function getSemaphoreArtifacts(): SnarkArtifacts | undefined {
     return undefined;
   } else {
     return {
-      zkeyFilePath: join(__dirname, './assets/semaphore.zkey'),
-      wasmFilePath: join(__dirname, './assets/semaphore.wasm'),
+      zkeyFilePath: `${__dirname}/./assets/semaphore.zkey`,
+      wasmFilePath: `${__dirname}/./assets/semaphore.wasm`,
     };
   }
 }
@@ -156,7 +156,9 @@ export class SemaphoreKeyManagementSystem extends AbstractKeyManagementSystem {
     args: RequireOnly<ManagedPrivateKey, 'privateKeyHex' | 'type'>
   ): ManagedKeyInfo {
     const { commitment } = new Identity(args.privateKeyHex);
-    const publicKeyHex = normalizePublicKey(commitment.toString());
+    const originalPublicKeyHex = (args as any).publicKeyHex;
+    const publicKeyHex =
+      originalPublicKeyHex || normalizePublicKey(commitment.toString());
     const key = {
       type: args.type,
       kid: args.alias || publicKeyHex,

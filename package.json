@@ -50,6 +50,9 @@
     "vitest": "~0.32.0"
   },
   "dependencies": {
+    "@semaphore-protocol/group": "^3.11.0",
+    "@semaphore-protocol/identity": "^3.11.0",
+    "@semaphore-protocol/proof": "^3.11.0",
     "@swc/helpers": "~0.5.0",
     "@tanstack/react-router": "^0.0.1-beta.155",
     "@veramo/core": "^5.4.1",

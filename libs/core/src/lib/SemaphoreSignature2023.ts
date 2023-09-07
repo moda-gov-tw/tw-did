@@ -5,12 +5,11 @@ import {
   DIDDocComponent,
   VerifiableCredential,
 } from '@veramo/core-types';
-import { VeramoLdSignature } from '@veramo/credential-ld';
-import { RequiredAgentMethods } from '@veramo/credential-ld/build/ld-suites';
 import { DIDDocument, VerificationMethod } from 'did-resolver';
 import { SEMAPHORE_TYPE } from './SemaphoreConstants';
 import { ISemaphoreGroupService, TwDidService } from '.';
 import { FullProof, verifyProof } from '@semaphore-protocol/proof';
+import { RequiredAgentMethods, VeramoLdSignature } from '@tw-did/credential-ld';
 
 type SemaphoreSignature2023Options = {
   context?: IAgentContext<RequiredAgentMethods>;

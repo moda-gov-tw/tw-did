@@ -8,11 +8,6 @@ import {
 import { ICredentialIssuerEIP712 } from '@veramo/credential-eip712';
 import { DIDResolverPlugin } from '@veramo/did-resolver';
 import { Resolver } from 'did-resolver';
-import {
-  VeramoLdSignature,
-  CredentialIssuerLD,
-  LdDefaultContexts,
-} from '@veramo/credential-ld';
 import { EthrDIDProvider } from '@veramo/did-provider-ethr';
 import { WebDIDProvider } from '@veramo/did-provider-web';
 import { KeyManager, MemoryPrivateKeyStore } from '@veramo/key-manager';
@@ -29,6 +24,11 @@ import {
   WalletClientKeyManagementSystem,
 } from '@tw-did/core';
 import { getChain, getNetworkName, getWalletClient } from '../config';
+import {
+  LdDefaultContexts,
+  TwDidCredentialIssuerLD,
+  VeramoLdSignature,
+} from '@tw-did/credential-ld';
 
 /**
  * the error for Infura Project id not exist
@@ -99,7 +99,7 @@ export async function getAgent(): Promise<TAgent<InstalledPlugins>> {
         }),
       }),
       new CredentialPlugin(),
-      new CredentialIssuerLD({ suites, contextMaps }),
+      new TwDidCredentialIssuerLD({ suites, contextMaps }),
       new TwDidCredentialIssuerEIP712(),
     ],
   });
