@@ -1,14 +1,25 @@
-import { TwDidService } from '@tw-did/core';
+import { Identity } from '@semaphore-protocol/identity';
+import {
+  SEMAPHORE_CONTEXT_URI,
+  SEMAPHORE_HIDDEN_PUBLIC_KEY,
+  SEMAPHORE_TYPE,
+  TwDidService,
+} from '@tw-did/core';
 import { ChangeEvent, useState } from 'react';
 import {
   DID_CLIENT_NAME,
-  DID_KMS,
-  DID_PROVIDER,
+  WEB3_KMS,
+  ETHR_DID_PROVIDER,
   getAgent,
+  SEMAPHORE_KMS,
 } from '../veramo/setup';
 import { UserPanel } from '@tw-did/react-library';
 import { useAccount } from 'wagmi';
-import { MinimalImportableKey, VerifiableCredential } from '@veramo/core';
+import {
+  CredentialPayload,
+  MinimalImportableKey,
+  VerifiableCredential,
+} from '@veramo/core';
 
 enum VerificationResult {
   Verified = 'Verified',
@@ -24,6 +35,9 @@ export function App() {
   const [verified, setVerified] = useState<VerificationResult>(
     VerificationResult.Pending
   );
+  const [semaphoreCredential, setSemaphoreCredential] = useState<string>('');
+  const [semaphoreVerified, setSemaphoreVerified] =
+    useState<VerificationResult>(VerificationResult.Pending);
 
   const setPayload = async (cred: VerifiableCredential) => {
     const agent = await getAgent();
@@ -63,21 +77,70 @@ export function App() {
     reader.readAsText(file);
   };
 
+  const handleSemaphore = async () => {
+    const identity = new Identity('TOP-SECRET-KEY');
+
+    const agent = await getAgent();
+    const holder = await agent.didManagerImport({
+      did: 'did:web:tw-did.github.io:hidden',
+      provider: 'did:web',
+      keys: [
+        {
+          kid: 'default',
+          kms: SEMAPHORE_KMS,
+          type: SEMAPHORE_TYPE,
+          privateKeyHex: identity.toString(),
+          publicKeyHex: SEMAPHORE_HIDDEN_PUBLIC_KEY,
+        },
+      ],
+    });
+
+    const credential: CredentialPayload = {
+      '@context': [SEMAPHORE_CONTEXT_URI],
+      issuer: holder.did,
+      credentialSubject: {
+        group: '1',
+      },
+    };
+
+    const verifiableCredential = await agent.createVerifiableCredential({
+      credential,
+      proofFormat: 'lds',
+    });
+    setSemaphoreCredential(JSON.stringify(verifiableCredential, null, 2));
+
+    const verified = await agent.verifyCredential({
+      credential: verifiableCredential,
+    });
+    setSemaphoreVerified(
+      verified.verified
+        ? VerificationResult.Verified
+        : VerificationResult.NotVerified
+    );
+    console.log(verified);
+
+    verifiableCredential.proof.fullProof.externalNullifier = '1694084344541';
+    console.log(
+      'should fail',
+      await agent.verifyCredential({ credential: verifiableCredential })
+    );
+  };
+
   // verify via ethereum injected wallet and issue a verifiable presentation
   const handleVerify = async () => {
     const agent = await getAgent();
-    const didUri = `${DID_PROVIDER}:${address}`;
+    const didUri = `${ETHR_DID_PROVIDER}:${address}`;
     const controllerKeyId = `${DID_CLIENT_NAME}-${address}`;
 
     await agent.didManagerImport({
       did: didUri,
-      provider: DID_PROVIDER,
+      provider: ETHR_DID_PROVIDER,
       controllerKeyId,
       keys: [
         {
           kid: controllerKeyId,
           type: 'Secp256k1',
-          kms: DID_KMS,
+          kms: WEB3_KMS,
           privateKeyHex: '',
           publicKeyHex: '',
           meta: {
@@ -141,6 +204,17 @@ export function App() {
       <button data-testid="verify-credential" onClick={handleVerify}>
         Verify
       </button>
+      <h2>Semaphore Credential</h2>
+      <button
+        data-testid="semaphore-challenge-verify"
+        onClick={handleSemaphore}
+      >
+        Semaphore challenge and verify
+      </button>
+      <h2>Semaphore Credential</h2>
+      <pre>{semaphoreCredential}</pre>
+      <h2>Semaphore Verification</h2>
+      <pre>{semaphoreVerified}</pre>
     </div>
   );
 }
