@@ -1,0 +1,33 @@
+{
+  "name": "credential-ld",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/credential-ld/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/credential-ld",
+        "main": "libs/credential-ld/src/index.ts",
+        "tsConfig": "libs/credential-ld/tsconfig.lib.json",
+        "assets": ["libs/credential-ld/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs credential-ld {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/credential-ld/**/*.ts",
+          "libs/credential-ld/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
