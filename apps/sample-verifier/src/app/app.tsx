@@ -2,8 +2,8 @@ import { TwDidService } from '@tw-did/core';
 import { ChangeEvent, useState } from 'react';
 import {
   DID_CLIENT_NAME,
-  DID_KMS,
-  DID_PROVIDER,
+  WEB3_KMS,
+  ETHR_DID_PROVIDER,
   getAgent,
 } from '../veramo/setup';
 import { UserPanel } from '@tw-did/react-library';
@@ -66,18 +66,18 @@ export function App() {
   // verify via ethereum injected wallet and issue a verifiable presentation
   const handleVerify = async () => {
     const agent = await getAgent();
-    const didUri = `${DID_PROVIDER}:${address}`;
+    const didUri = `${ETHR_DID_PROVIDER}:${address}`;
     const controllerKeyId = `${DID_CLIENT_NAME}-${address}`;
 
     await agent.didManagerImport({
       did: didUri,
-      provider: DID_PROVIDER,
+      provider: ETHR_DID_PROVIDER,
       controllerKeyId,
       keys: [
         {
           kid: controllerKeyId,
           type: 'Secp256k1',
-          kms: DID_KMS,
+          kms: WEB3_KMS,
           privateKeyHex: '',
           publicKeyHex: '',
           meta: {

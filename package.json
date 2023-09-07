@@ -57,6 +57,7 @@
     "@veramo/credential-w3c": "^5.4.1",
     "@veramo/data-store-json": "^5.4.1",
     "@veramo/did-provider-ethr": "^5.4.1",
+    "@veramo/did-provider-web": "^5.4.1",
     "@veramo/did-resolver": "^5.4.1",
     "@veramo/key-manager": "^5.4.1",
     "@veramo/kms-web3": "^5.4.1",
@@ -65,7 +66,8 @@
     "react-dom": "18.2.0",
     "tslib": "^2.3.0",
     "viem": "^1.9.2",
-    "wagmi": "^1.3.10"
+    "wagmi": "^1.3.10",
+    "web-did-resolver": "^2.0.27"
   },
   "optionalDependencies": {
     "@nx/nx-darwin-arm64": "16.6.0",
