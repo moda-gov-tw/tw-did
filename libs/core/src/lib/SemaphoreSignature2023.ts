@@ -189,15 +189,20 @@ export class SemaphoreSignature2023 extends VeramoLdSignature {
   async verifyProof(args: VerifyProofArgs): Promise<VerifyProofReturns> {
     const { proof, document } = args;
     const id = proof.verificationMethod;
+    const controller = document.issuer as string;
     const group = await this.groupService.fetchGroupInfo(
       document.credentialSubject['group']
     );
+
+    if (!controller) {
+      throw new PropertyNotFountError('document', 'issuer');
+    }
 
     const verified = await verifyProof(proof.fullProof, group.depth);
     const verificationMethod: VerificationMethod = {
       id,
       type: this.getSupportedVerificationType(),
-      controller: this.issuerDid || '',
+      controller,
     };
 
     return { verified, verificationMethod };
