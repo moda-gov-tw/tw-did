@@ -24,7 +24,8 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "web:build"
+        "buildTarget": "web:build",
+        "proxyConfig": "apps/web/proxy.conf.json"
       },
       "configurations": {
         "development": {

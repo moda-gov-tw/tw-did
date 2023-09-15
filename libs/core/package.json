@@ -2,7 +2,6 @@
   "name": "@tw-did/core",
   "version": "0.0.1",
   "dependencies": {
-    "@nx/vite": "^16.6.0",
     "@semaphore-protocol/group": "^3.11.0",
     "@semaphore-protocol/identity": "^3.11.0",
     "@semaphore-protocol/proof": "^3.11.0",
@@ -15,11 +14,15 @@
     "did-resolver": "^4.1.0",
     "eip-712-types-generation": "^0.1.6",
     "tslib": "^2.3.0",
-    "uint8arrays": "^3.1.1",
+    "uint8arrays": "^4.0.6",
     "viem": "^1.9.2",
     "vite": "~4.3.9"
   },
   "type": "commonjs",
   "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "typings": "./src/index.d.ts",
+  "devDependencies": {
+    "@nx/vite": "^16.6.0",
+    "vitest": "^0.34.4"
+  }
 }

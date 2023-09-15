@@ -17,7 +17,6 @@ import { bytesToHex, hexToBytes } from '@veramo/utils';
 import { toString } from 'uint8arrays';
 import { SEMAPHORE_TYPE } from './SemaphoreConstants';
 import { GroupInfo } from './SemaphoreTypes';
-import { join } from 'path';
 
 /**
  * Normalizes the format of a public key to ensure compatibility with@veramo/credential-ld.
@@ -156,6 +155,7 @@ export class SemaphoreKeyManagementSystem extends AbstractKeyManagementSystem {
     args: RequireOnly<ManagedPrivateKey, 'privateKeyHex' | 'type'>
   ): ManagedKeyInfo {
     const { commitment } = new Identity(args.privateKeyHex);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const originalPublicKeyHex = (args as any).publicKeyHex;
     const publicKeyHex =
       originalPublicKeyHex || normalizePublicKey(commitment.toString());
