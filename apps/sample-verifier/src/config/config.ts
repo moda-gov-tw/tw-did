@@ -4,6 +4,7 @@ import {
   createWalletClient,
   custom,
   http,
+  WalletClient,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, goerli } from 'viem/chains';
@@ -68,7 +69,7 @@ function getMockConnector(chain: Chain) {
   return new MockConnector({ options: mockOptions });
 }
 
-export function getWalletClient() {
+export function getWalletClient(): WalletClient {
   const chain = getChain();
 
   if (import.meta.env.MODE === 'e2e') {
