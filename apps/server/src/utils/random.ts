@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 export function getRandomHexString(): string {
   const byteLength = 16;
   const hexDigits = 16;

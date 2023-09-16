@@ -2,7 +2,7 @@ import { MessageAction } from '@tw-did/core';
 import { CredentialCardList, useCredentials } from '@tw-did/react-library';
 import { useAccount } from 'wagmi';
 
-export function Authorize() {
+export function CredentialSelection() {
   const { isConnected } = useAccount();
   const { credentials, sendCredential } = useCredentials();
 

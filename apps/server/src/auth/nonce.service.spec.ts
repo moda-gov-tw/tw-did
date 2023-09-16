@@ -1,11 +1,11 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthService } from './auth.service';
+import { NonceService } from './nonce.service';
 import { Nonce } from './nonce.schema';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('NonceService', () => {
+  let service: NonceService;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockNonceModel: any;
 
@@ -17,7 +17,7 @@ describe('AuthService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuthService,
+        NonceService,
         {
           provide: getModelToken(Nonce.name),
           useValue: mockNonceModel,
@@ -25,7 +25,7 @@ describe('AuthService', () => {
       ],
     }).compile();
 
-    service = module.get<AuthService>(AuthService);
+    service = module.get<NonceService>(NonceService);
   });
 
   it('should be defined', () => {
@@ -45,7 +45,7 @@ describe('AuthService', () => {
     mockNonceModel.findOneAndDelete = jest.fn().mockReturnValue({
       exec: jest.fn().mockResolvedValue(verifingNonce),
     });
-    const result = await service.verify(verifingNonce);
+    const result = await service.verify(null, verifingNonce.value);
     expect(result).toBe(true);
   });
 
@@ -54,8 +54,8 @@ describe('AuthService', () => {
       exec: jest.fn().mockResolvedValue(null),
     });
 
-    await expect(
-      service.verify({ value: 'randomString' })
-    ).rejects.toThrowError('Nonce not found');
+    await expect(service.verify(null, 'randomString')).rejects.toThrowError(
+      'Nonce not found'
+    );
   });
 });
