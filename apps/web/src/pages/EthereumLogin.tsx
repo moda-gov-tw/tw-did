@@ -4,7 +4,7 @@ import { getAddress } from 'viem';
 export function EthereumLogin() {
   const handleLogin = async () => {
     const options = { method: 'POST' };
-    const url = '/api/auth/challenge';
+    const url = '/api/auth/ethereum/challenge';
     const { value } = await fetch(url, options).then((res) => res.json());
 
     if (window.ethereum) {
@@ -30,7 +30,7 @@ export function EthereumLogin() {
       console.log('signature', signature);
       console.log('message', rawMessage);
 
-      const result = await fetch('/api/auth/login', {
+      const result = await fetch('/api/auth/ethereum/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

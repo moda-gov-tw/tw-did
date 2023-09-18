@@ -1,9 +1,9 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ETHEREUM_STRATEGY_NAME, EthereumStrategy } from './ethereum.strategy';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('auth')
-export class AuthController {
+@Controller('auth/ethereum')
+export class EthereumController {
   constructor(private ethereumStrategy: EthereumStrategy) {}
 
   @Post('login')

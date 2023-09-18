@@ -1,6 +1,6 @@
 import { RootRoute, Route, Router } from '@tanstack/react-router';
 import App from './App';
-import { CredentialSelection, EthereumLogin } from './pages';
+import { CredentialSelection, EthereumLogin, NationalLogin } from './pages';
 
 const rootRoute = new RootRoute({
   component: App,
@@ -24,10 +24,17 @@ export const ethereumLoginRoute = new Route({
   component: () => <EthereumLogin />,
 });
 
+export const nationalLoginRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/national-login',
+  component: () => <NationalLogin />,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   selectCredentialRoute,
   ethereumLoginRoute,
+  nationalLoginRoute,
 ]);
 export const router = new Router({ routeTree });
 
