@@ -24,4 +24,8 @@ export class UsersService {
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
   }
+
+  findOne(nationalId: string): Promise<User | null> {
+    return this.userModel.findOne({ nationalId });
+  }
 }
