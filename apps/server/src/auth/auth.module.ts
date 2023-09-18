@@ -1,15 +1,10 @@
 import { Module } from '@nestjs/common';
-import { NonceService } from './nonce.service';
-import { EthereumStrategy } from './ethereum.strategy';
-import { AuthController } from './auth.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Nonce, NonceSchema } from './nonce.schema';
+import { NationalModule } from '../national/national.module';
+import { EthereumModule } from '../ethereum/ethereum.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Nonce.name, schema: NonceSchema }]),
-  ],
-  providers: [NonceService, EthereumStrategy],
-  controllers: [AuthController],
+  imports: [NationalModule, EthereumModule],
+  providers: [],
+  controllers: [],
 })
 export class AuthModule {}
