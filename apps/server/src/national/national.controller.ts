@@ -1,19 +1,39 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from '../user/user.service';
-import { VerifyUserNationIdDto } from '../user/verify-user.dto';
+import { NationalService } from './national.service';
+import { RegisterNationalDto } from './register-national.dto';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth/national')
 export class NationalController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private nationalService: NationalService
+  ) {}
 
-  @Post('verify')
-  async verify(
-    @Body() verifyNationId: VerifyUserNationIdDto
-  ): Promise<boolean> {
-    if (verifyNationId.createUserIfNotExist) {
-      await this.usersService.findOrCreate(verifyNationId.nationalId);
-    }
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  login(@Request() req) {
+    return this.nationalService.login(req.user);
+  }
 
-    return true;
+  @Post('register')
+  async register(@Body() registerNationalDto: RegisterNationalDto) {
+    const nationalId = registerNationalDto.username;
+    const user = await this.usersService.findOrCreate(nationalId);
+    return this.nationalService.login(user);
+  }
+
+  @Get('check')
+  check(@Request() req) {
+    const { user } = req;
+    return { user };
   }
 }

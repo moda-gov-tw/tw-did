@@ -7,6 +7,12 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop({ required: true })
   nationalId: string;
+
+  @Prop()
+  ethereumAccount: string;
+
+  @Prop()
+  semaphoreCommitment: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
