@@ -12,6 +12,7 @@ vi.mock('wagmi', () => ({
 
 vi.mock('../contexts', () => ({
   useCredentials: vi.fn().mockReturnValue({ credentialViews: [] }),
+  useAuth: vi.fn().mockReturnValue({ user: vi.fn() }),
 }));
 
 describe('UserPanel', () => {
