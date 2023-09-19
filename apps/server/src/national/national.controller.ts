@@ -1,6 +1,13 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from '../user/user.service';
-import { LocalUser, NationalService } from './national.service';
+import { NationalService } from './national.service';
 import { RegisterNationalDto } from './register-national.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 
@@ -20,9 +27,13 @@ export class NationalController {
   @Post('register')
   async register(@Body() registerNationalDto: RegisterNationalDto) {
     const nationalId = registerNationalDto.username;
-    await this.usersService.findOrCreate(nationalId);
-    const { username, password } = registerNationalDto;
-    const localUser: LocalUser = { username, password, userId: username };
-    return this.nationalService.login(localUser);
+    const user = await this.usersService.findOrCreate(nationalId);
+    return this.nationalService.login(user);
+  }
+
+  @Get('check')
+  check(@Request() req) {
+    const { user } = req;
+    return { user };
   }
 }

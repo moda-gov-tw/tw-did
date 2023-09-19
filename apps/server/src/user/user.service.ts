@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user.schema';
+import { User, UserDocument } from './user.schema';
 import { CreateUserDto } from './create-user.dto';
 import { Model } from 'mongoose';
 
@@ -13,11 +13,11 @@ export class UsersService {
     return createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserDocument[]> {
     return this.userModel.find().exec();
   }
 
-  findOrCreate(nationalId: string): Promise<User> {
+  findOrCreate(nationalId: string): Promise<UserDocument> {
     return this.userModel.findOneAndUpdate(
       { nationalId },
       { nationalId },
@@ -25,7 +25,11 @@ export class UsersService {
     );
   }
 
-  findOne(nationalId: string): Promise<User | null> {
+  findOne(nationalId: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ nationalId });
+  }
+
+  findOneById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
   }
 }
