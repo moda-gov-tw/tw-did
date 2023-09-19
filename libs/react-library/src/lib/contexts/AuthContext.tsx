@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     const data = await res.json();
-    if (res.status === 200) {
+    if (res.status === 201) {
       await setUserInfo(data.id, data.token);
     } else {
       throw new LoginError('Login failed');
