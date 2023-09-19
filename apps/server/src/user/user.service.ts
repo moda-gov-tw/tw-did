@@ -17,6 +17,16 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
+  async findAllCommitments(): Promise<string[]> {
+    const users = await this.userModel
+      .find({
+        semaphoreCommitment: { $exists: true, $ne: null },
+      })
+      .select('semaphoreCommitment')
+      .exec();
+    return users.map((user) => user.semaphoreCommitment);
+  }
+
   findOrCreate(nationalId: string): Promise<UserDocument> {
     return this.userModel.findOneAndUpdate(
       { nationalId },

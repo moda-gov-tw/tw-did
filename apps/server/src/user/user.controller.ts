@@ -19,6 +19,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('commitments')
+  findAllCommitments(): Promise<string[]> {
+    return this.usersService.findAllCommitments();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOneById(@Param('id') id: string): Promise<User | null> {
