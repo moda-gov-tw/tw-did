@@ -25,6 +25,12 @@ export class UsersService {
     );
   }
 
+  updateEthereumAccount(id: string, ethereumAccount: string) {
+    return this.userModel.findByIdAndUpdate(id, {
+      ethereumAccount,
+    });
+  }
+
   findOne(nationalId: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ nationalId });
   }

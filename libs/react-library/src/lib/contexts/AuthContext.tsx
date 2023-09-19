@@ -5,7 +5,14 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
+import { EIP1193Provider, getAddress } from 'viem';
+import { SiweMessage } from 'siwe';
 
+declare global {
+  interface Window {
+    ethereum?: EIP1193Provider;
+  }
+}
 class FetchUserDataError extends Error {
   constructor(message: string) {
     super(message);
@@ -38,6 +45,14 @@ class NoAuthProviderError extends Error {
   }
 }
 
+class EthereumLoginError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EthereumLoginError';
+    Object.setPrototypeOf(this, EthereumLoginError.prototype);
+  }
+}
+
 interface User {
   nationalId: string;
   ethereumAccount: string;
@@ -49,6 +64,7 @@ interface AuthContextProps {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
+  ethereumLogin: () => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -117,8 +133,69 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const ethereumLogin = async (): Promise<void> => {
+    if (!user) {
+      throw new NoAuthProviderError(
+        'User must be authenticated for Ethereum login'
+      );
+    }
+
+    const challengeRes = await fetch('/api/auth/ethereum/challenge', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+
+    const challengeData = await challengeRes.json();
+    if (challengeRes.status !== 201) {
+      throw new EthereumLoginError('Failed to get Ethereum challenge');
+    }
+
+    const nonce = challengeData.value;
+
+    if (window.ethereum) {
+      const [account] = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      const address = getAddress(account);
+      const rawMessage = new SiweMessage({
+        domain: window.location.host,
+        address: address,
+        statement: 'Sign in with Ethereum to the app.',
+        uri: window.location.origin,
+        version: '1',
+        chainId: 1,
+        nonce,
+      });
+
+      const message = rawMessage.prepareMessage() as `0x${string}`;
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [message, address],
+      });
+      console.log('signature', signature);
+      console.log('message', rawMessage);
+
+      const id = user.id;
+      const loginRes = await fetch('/api/auth/ethereum/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ message, signature, account, id }),
+      });
+
+      if (loginRes.status === 201) {
+        await setUserInfo(user.id, user.token);
+      } else {
+        throw new EthereumLoginError('Ethereum login failed');
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register }}>
+    <AuthContext.Provider value={{ user, login, register, ethereumLogin }}>
       {children}
     </AuthContext.Provider>
   );
