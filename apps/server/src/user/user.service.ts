@@ -31,6 +31,12 @@ export class UsersService {
     });
   }
 
+  updateSemaphoreIdentity(id: string, semaphoreCommitment: string) {
+    return this.userModel.findByIdAndUpdate(id, {
+      semaphoreCommitment,
+    });
+  }
+
   findOne(nationalId: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ nationalId });
   }

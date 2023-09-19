@@ -10,6 +10,9 @@ export class User {
 
   @Prop()
   ethereumAccount: string;
+
+  @Prop()
+  semaphoreCommitment: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

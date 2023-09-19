@@ -53,9 +53,18 @@ class EthereumLoginError extends Error {
   }
 }
 
+class UpdateSemaphoreCommitmentError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UpdateSemaphoreCommitmentError';
+    Object.setPrototypeOf(this, UpdateSemaphoreCommitmentError.prototype);
+  }
+}
+
 interface User {
   nationalId: string;
   ethereumAccount: string;
+  semaphoreCommitment: string;
   id: string;
   token: string;
 }
@@ -65,6 +74,7 @@ interface AuthContextProps {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
   ethereumLogin: () => Promise<void>;
+  updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -90,10 +100,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
     const data = await res.json();
     if (res.status === 200) {
-      const { nationalId, ethereumAccount } = data;
+      const { nationalId, ethereumAccount, semaphoreCommitment } = data;
       setUser({
         nationalId,
         ethereumAccount,
+        semaphoreCommitment,
         id,
         token,
       });
@@ -194,8 +205,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateSemaphoreCommitment = async (commitment: string) => {
+    if (!user || !user.id) {
+      throw new NoAuthProviderError(
+        'User must be authenticated to update Semaphore commitment'
+      );
+    }
+
+    const res = await fetch('/api/auth/semaphore', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({ id: user.id, commitment }),
+    });
+
+    if (res.status === 200) {
+      await setUserInfo(user.id, user.token);
+    } else {
+      throw new UpdateSemaphoreCommitmentError(
+        'Failed to update Semaphore commitment'
+      );
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, ethereumLogin }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        ethereumLogin,
+        updateSemaphoreCommitment,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
