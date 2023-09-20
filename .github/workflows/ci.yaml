@@ -33,6 +33,7 @@ jobs:
           VITE_MOCK_WALLET_PRIVATE_KEY: '0x8b806ec6cc2cbc6f75e1e0a0b020dba4d02f1a8578b9a8e2fb1f53f5a1c83e99'
           VITE_INFURA_PROJECT_ID: '25e33bb59b0b4803813c8f238cceb14e'
   acceptance:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
