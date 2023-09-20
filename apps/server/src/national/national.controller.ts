@@ -9,7 +9,7 @@ import {
 import { UsersService } from '../user/user.service';
 import { NationalService } from './national.service';
 import { RegisterNationalDto } from './register-national.dto';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth/national')
 export class NationalController {

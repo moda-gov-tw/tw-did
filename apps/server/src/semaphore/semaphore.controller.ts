@@ -1,6 +1,6 @@
 import { Body, Controller, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
-import { JwtAuthGuard } from '../national/jwt-auth.guard';
+import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
 import { UpdateSemaphoreDto } from './update-semaphore.dto';
 
 @Controller('auth/semaphore')

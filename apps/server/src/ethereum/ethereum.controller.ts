@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { EthereumStrategy } from './ethereum.strategy';
-import { JwtAuthGuard } from '../national/jwt-auth.guard';
+import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
 import { EthereumAuthGuard } from './ethereum-auth.guard';
 import { LoginEthereumDto } from './login-ethereum.dto';
 import { UsersService } from '../user/user.service';
