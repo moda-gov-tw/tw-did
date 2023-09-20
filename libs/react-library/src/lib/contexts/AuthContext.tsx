@@ -72,6 +72,7 @@ interface User {
 interface AuthContextProps {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
+  logout: () => void;
   register: (username: string, password: string) => Promise<void>;
   ethereumLogin: () => Promise<void>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
@@ -127,6 +128,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } else {
       throw new LoginError('Login failed');
     }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   const register = async (username: string, password: string) => {
@@ -235,6 +241,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         user,
         login,
+        logout,
         register,
         ethereumLogin,
         updateSemaphoreCommitment,
