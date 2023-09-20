@@ -4,10 +4,10 @@ import { NationalController } from './national.controller';
 import { UsersModule } from '../user/user.module';
 import { NationalService } from './national.service';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './jwt.constants';
-import { JwtStrategy } from './jwt.strategy';
+import { jwtConstants } from './constants';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
