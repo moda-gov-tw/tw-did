@@ -26,8 +26,13 @@ export class NonceService {
       .findOneAndDelete({ value: nonceValue })
       .exec();
 
+    // this callback hander is for compatible of passport-siwe
     if (!nonce) {
-      throw new NotFoundException('Nonce not found');
+      const error = new NotFoundException('Nonce not found');
+      if (cb) {
+        cb(error, false);
+      }
+      throw error;
     }
 
     if (cb) {
