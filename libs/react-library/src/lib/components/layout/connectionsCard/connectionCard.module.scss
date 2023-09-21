@@ -1,0 +1,51 @@
+.ConnectionCard {
+    --visible-border: 10px solid var(--bg-color2);
+    --hidden-border: 10px solid transparent;
+    border: var(--hidden-border);
+    border-radius: 2rem;
+    position: relative;
+    display: flex;
+
+    .service {
+        border-radius: 2rem;
+        position: relative;
+
+        img {
+            width: 80px;
+            height: 80px;
+            border: var(--visible-border);
+        }
+
+        &:not(:first-child) {
+            margin-left: 20px;
+        }
+
+        svg {
+            position: absolute;
+            top: 70px;
+            right: 0;
+        }
+
+    }
+
+    &.bind {
+        border: var(--visible-border);
+
+        svg {
+            position: absolute;
+            top: 70px;
+            right: calc(50% - 40px);
+        }
+
+        .service {
+            border: var(--hidden-border);
+
+            &:not(:first-child) {
+                margin-left: 40px;
+            }
+        }
+
+    }
+
+
+}

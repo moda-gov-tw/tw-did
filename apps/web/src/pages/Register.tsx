@@ -1,4 +1,4 @@
-import { useAuth } from '@tw-did/react-library';
+import { RegisterScreen, useAuth } from '@tw-did/react-library';
 import { ChangeEvent, useState } from 'react';
 
 export function Register() {
@@ -23,6 +23,7 @@ export function Register() {
         value={nationalId}
       />
       <button onClick={() => handleRegister()}>Register</button>
+      <RegisterScreen nationID={nationalId} />
     </div>
   );
 }

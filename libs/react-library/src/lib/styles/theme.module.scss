@@ -1,0 +1,37 @@
+.theme_light {
+    --prim-color: #6868AC;
+    --bg-color: #FFFFFF;
+    --bg-color2: #F3F5F6;
+    --text-color: #2B3032;
+    --text-color2: #6E777C;
+    --success-color: #8ADD98;
+    --error-color: #EF7B74;
+    --button-radius: 3rem;
+
+    font-size: 20px;
+    color: var(--prim-color);
+    background-color: var(--bg-color);
+}
+
+/* TYPOGRAPHY */
+.text_instruction {
+    font-size: 0.8rem;
+}
+
+.text_header {
+    font-size: 1.2rem;
+}
+
+.text_extraLarge {
+    font-size: 1.5rem;
+}
+
+.text_button {}
+
+/* ELEMENTS */
+.button {
+    color: var(--bg-color);
+    background-color: var(--prim-color);
+    padding: 1rem 2rem;
+    border-radius: var(--button-radius);
+}

@@ -1,4 +1,4 @@
-import { useAuth } from '@tw-did/react-library';
+import { LoginScreen, useAuth } from '@tw-did/react-library';
 import { ChangeEvent, useState } from 'react';
 
 export function Login() {
@@ -24,6 +24,7 @@ export function Login() {
       />
       <button onClick={() => handleLogin()}>Login</button>{' '}
       <button onClick={() => logout()}>Logout</button>
+      <LoginScreen nationID={nationalId} walletAddr='0xxxxxxxxxxxxxxxx'/>
     </div>
   );
 }
