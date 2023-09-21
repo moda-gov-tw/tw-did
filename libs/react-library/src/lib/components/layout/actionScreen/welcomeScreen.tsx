@@ -1,7 +1,7 @@
 import { BackgroundContainer } from '../../common/background'
 import { Container, FlexSpace } from '../../common/container'
 import { Logo } from '../../common/icons/logo'
-import styles from './welcome.module.scss'
+import styles from './layout.module.scss';
 import theme from '../../../styles/theme.module.scss'
 import { Input } from '../../common/input'
 import { GoIcon } from '../../common/icons/go'
@@ -25,27 +25,23 @@ export const WelcomeScreen = () => {
 
     }
 
-    return <div className={styles.Welcome}>
-        <BackgroundContainer>
-            <Container>
-
+    return <BackgroundContainer>
+        <Container>
+            <div className={styles.ActionScreen}>
                 <FlexSpace />
-                <Logo />
-                <FlexSpace />
+                <div className={styles.Center}>
+                    <Logo />
+                </div >
 
-                <div className={styles.Welcome__text}>
-                    <h1 className={theme.text_extraLarge}>Welcome!</h1>
-                    <p className={theme.text_instruction}>
+                <div>
+                    <h1 className={styles.textLarge}>Welcome!</h1>
+                    <p className={styles.Instructions}>
                         Please enter your nation ID to get started.
                     </p>
                     <Input placeholder='Nation ID' commitValue={setNationID} />
-                    <Button onClick={handleGo}>
-                        Go
-                        <GoIcon />
-                    </Button>
+                    <Button onClick={handleGo} icon={GoIcon} text='Go' />
                 </div>
-
-            </Container>
-            </BackgroundContainer>
-    </div>
+            </div >
+        </Container>
+    </BackgroundContainer>
 }

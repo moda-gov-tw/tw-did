@@ -22,7 +22,7 @@ export const Input = ({ initialValue, placeholder, commitValue, props }:
         value: value,
         onChange: handleChange,
         onBlur: commitChange,
-        placehoder: placeholder,
+        placeholder: placeholder,
         className: styles.Input,
     };
 

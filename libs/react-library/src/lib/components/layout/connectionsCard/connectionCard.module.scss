@@ -1,8 +1,8 @@
 .ConnectionCard {
     --visible-border: 10px solid var(--bg-color2);
     --hidden-border: 10px solid transparent;
-    border: var(--hidden-border);
-    border-radius: 2rem;
+    border:none;
+    border-radius: var(--border-radius);
     position: relative;
     display: flex;
 
@@ -11,37 +11,62 @@
         position: relative;
 
         img {
-            width: 80px;
-            height: 80px;
+            box-sizing: content-box;
+            display: block;
+            height: 100px;
+            width: 100px;
             border: var(--visible-border);
+            border-radius: var(--border-radius);
         }
 
         &:not(:first-child) {
-            margin-left: 20px;
+            margin-left: 16px;
         }
 
         svg {
+            width: 60px;
+            width: 60px;
             position: absolute;
             top: 70px;
-            right: 0;
+            right: -16px;
         }
 
     }
 
+    .info {
+        position: relative;
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+
+    .label {
+        color: var(--text-color2);
+        letter-spacing: 0.1em;
+        font-weight: bold;
+        font-size: 0.8em;
+    }
+
     &.bind {
         border: var(--visible-border);
+        position: relative;
 
         svg {
+            height: 48px;
+            width: 48px;
             position: absolute;
-            top: 70px;
-            right: calc(50% - 40px);
+            top: calc(50% - 24px);
+            left: calc(50% - 24px);
+            z-index: 1;
         }
 
         .service {
-            border: var(--hidden-border);
+            img {
+                border: none;
+                // border-bottom: var(--hidden-border) ;
+            }
 
             &:not(:first-child) {
-                margin-left: 40px;
+                margin-left: 36px;
             }
         }
 

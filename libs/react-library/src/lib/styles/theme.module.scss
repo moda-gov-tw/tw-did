@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap');
+
 .theme_light {
     --prim-color: #6868AC;
     --bg-color: #FFFFFF;
@@ -7,31 +9,16 @@
     --success-color: #8ADD98;
     --error-color: #EF7B74;
     --button-radius: 3rem;
+    --border-radius: 1.5rem;
+    --transition: all 0.25s ease-in-out;
 
-    font-size: 20px;
-    color: var(--prim-color);
-    background-color: var(--bg-color);
-}
+    color: var(--text-color);
 
-/* TYPOGRAPHY */
-.text_instruction {
-    font-size: 0.8rem;
-}
-
-.text_header {
-    font-size: 1.2rem;
-}
-
-.text_extraLarge {
-    font-size: 1.5rem;
-}
-
-.text_button {}
-
-/* ELEMENTS */
-.button {
-    color: var(--bg-color);
-    background-color: var(--prim-color);
-    padding: 1rem 2rem;
-    border-radius: var(--button-radius);
+    /* TYPOGRAPHY */
+    
+    &,
+    * {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        box-sizing: border-box;
+    }
 }

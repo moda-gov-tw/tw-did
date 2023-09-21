@@ -10,8 +10,8 @@ export const ConnectionCard = ({ fidoState, walletState, bindState, nationID, wa
     bindState?: number,
     nationID?: string,
     walletAddr?: string
-}) => <div className={styles.ConnectionCard}>
-        <div className={`${styles.service} ${(fidoState !== undefined && fidoState == 0) ? styles.serviceNA : ''} ${bindState !== undefined ? styles.bind : ''}`}>
+}) => <div className={`${styles.ConnectionCard}  ${bindState !== undefined ? styles.bind : ''}`}>
+        <div className={`${styles.service} ${(fidoState !== undefined && fidoState == 0) ? styles.serviceNA : ''}`}>
             <FidoLogo />
             {fidoState !== undefined && fidoState == 2 && <SuccessIcon />}
             {fidoState !== undefined && fidoState == 3 && <ErrorIcon />}
@@ -28,8 +28,8 @@ export const ConnectionCard = ({ fidoState, walletState, bindState, nationID, wa
             <EthLogo />
             {walletState !== undefined && walletState == 2 && <SuccessIcon />}
             {walletState !== undefined && walletState == 3 && <ErrorIcon />}
-            {walletAddr && <div>
-                <div className={styles.label}>Wallet Address</div>
+            {walletAddr && <div className={styles.info}>
+                <div className={styles.label}>Wallet Addr</div>
                 <div className={styles.value}>{walletAddr}</div>
             </div>}
         </div>

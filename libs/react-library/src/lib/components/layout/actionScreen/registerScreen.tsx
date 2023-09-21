@@ -1,12 +1,15 @@
 import { ConnectionCard } from '../connectionsCard'
 import { Logo } from '../../common/icons/logo'
+import { GoIcon } from '../../common/icons/go';
+import { FidoMin } from '../../common/icons/fidoMin';
 import { useState } from 'react'
 import { ReactNode } from 'react';
 import { StepIndicator } from '../../common/stepIndicator';
-import styles from './actionScreen.module.scss';
+import styles from './layout.module.scss';
 import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
 import { useNavigate } from '@tanstack/react-router';
+import { EthMin } from '../../common/icons/ethMin';
 
 export const RegisterScreen = ({ nationID }: {
     nationID: string;
@@ -30,7 +33,7 @@ export const RegisterScreen = ({ nationID }: {
         cta: {
             text: string;
             onClick: () => void;
-            icon?: string;
+            icon?: ()=>ReactNode;
         };
     }
 
@@ -46,7 +49,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Connect TW Fido',
                 onClick: connectFido,
-                icon: 'FidoIcon',
+                icon: FidoMin,
             }
         },
         displayQR: {
@@ -66,7 +69,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Connect TW Fido',
                 onClick: connectFido,
-                icon: 'FidoIcon',
+                icon: FidoMin,
             }
         },
         connectWallet: {
@@ -80,7 +83,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Connect Wallet',
                 onClick: connectWallet,
-                icon: 'EthIcon',
+                icon: EthMin,
             }
         },
         connectWalletFailed: {
@@ -94,7 +97,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Connect Wallet',
                 onClick: connectWallet,
-                icon: 'EthIcon',
+                icon: EthMin,
             }
         },
         binding: {
@@ -108,7 +111,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Bind',
                 onClick: bind,
-                icon: 'EthIcon',
+                icon: EthMin,
             }
         },
         bindingFailed: {
@@ -119,7 +122,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'Bind',
                 onClick: bind,
-                icon: 'EthIcon',
+                icon: EthMin,
             }
         },
         viewCredential: {
@@ -130,7 +133,7 @@ export const RegisterScreen = ({ nationID }: {
             cta: {
                 text: 'View Credential',
                 onClick: viewCredential,
-                icon: 'GoIcon',
+                icon: GoIcon,
             }
         },
     }
@@ -159,11 +162,11 @@ export const RegisterScreen = ({ nationID }: {
 
     const { center, qrCode, cta, currentStep, message, instructions, } = regState
 
-    const shortenAddr = (addr: string) => addr.slice(0, 6) + '...' + addr.slice(-4)
+    const shortenAddr = (addr?: string) => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : undefined
 
-    return <div className={styles.ActionScreen}>
-        <Container>
-            <StepIndicator stepCount={4} currentStep={currentStep} />
+    return <Container>
+        <div className={styles.ActionScreen}>
+            <div className={styles.Top}><StepIndicator stepCount={4} currentStep={currentStep} /></div>
 
             <FlexSpace />
             <div className={styles.Message}>{message}</div>
@@ -175,10 +178,7 @@ export const RegisterScreen = ({ nationID }: {
 
             <FlexSpace />
             {instructions && <div className={styles.Instructions}>{instructions}</div>}
-            {cta && <Button onClick={cta.onClick}>
-                {cta.text}
-                {cta.icon && <cta.icon />}
-            </Button>}
-        </Container>
-    </div>
+            {cta && <Button {...cta}/>}
+        </div>
+    </Container>
 }

@@ -4,7 +4,9 @@ export const StepIndicator = ({ stepCount, currentStep }: {
     currentStep: number
 }) => <div className={styles.StepIndicator}>
         {Array.from(Array(stepCount), (e, i) => {
-            const stepClass = i === currentStep ? styles.CurrentStep : styles.Step;
-            return <div className={stepClass} key={i} />;
+            const stepClass = (i <= currentStep) ? styles.CurrentStep : styles.Step;
+            return <div className={stepClass}>
+                <div className={styles.round} key={i} />
+            </div>
         })}
     </div>;

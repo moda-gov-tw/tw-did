@@ -1,10 +1,12 @@
-import styles from './actionScreen.module.scss';
+import styles from './layout.module.scss';
 import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
 import { ConnectionCard } from '../connectionsCard'
 import { Logo } from '../../common/icons/logo'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router';
+import { FidoMin } from '../../common/icons/fidoMin';
+import { GoIcon } from '../../common/icons/go';
 
 export const LoginScreen = ({ nationID, walletAddr }: {
     nationID: string;
@@ -25,7 +27,7 @@ export const LoginScreen = ({ nationID, walletAddr }: {
         cta?: {
             text: string;
             onClick: () => void;
-            icon?: string;
+            icon?: ()=>ReactNode;
         };
     }
 
@@ -39,7 +41,7 @@ export const LoginScreen = ({ nationID, walletAddr }: {
             cta: {
                 text: 'Connect TW Fido',
                 onClick: connectFido,
-                icon: 'FidoIcon',
+                icon: FidoMin,
             }
         },
         displayQR: {
@@ -57,7 +59,7 @@ export const LoginScreen = ({ nationID, walletAddr }: {
             cta: {
                 text: 'Connect TW Fido',
                 onClick: connectFido,
-                icon: 'FidoIcon',
+                icon: FidoMin,
             }
         },
         viewCredential: {
@@ -67,7 +69,7 @@ export const LoginScreen = ({ nationID, walletAddr }: {
             cta: {
                 text: 'View Credential',
                 onClick: viewCredential,
-                icon: 'GoIcon',
+                icon: GoIcon,
             }
         },
     }
@@ -87,23 +89,23 @@ export const LoginScreen = ({ nationID, walletAddr }: {
 
     const { center, qrCode, cta, message, instructions } = loginState
 
-    return <div className={styles.ActionScreen}>
-        <Container>
+    const shortenAddr = (addr?: string) => addr ? addr.slice(0, 4) + '...' + addr.slice(-4) : undefined
+
+
+    return <Container>
+        <div className={styles.ActionScreen}>
             <FlexSpace />
             <div className={styles.Message}>{message}</div>
             <div className={styles.Center}>{(center) ? <ConnectionCard
                 {...center}
                 nationID={nationID}
-                walletAddr={walletAddr}
+                walletAddr={shortenAddr(walletAddr)}
             /> : (qrCode) ? <img src={qrCode} /> : <Logo />}</div>
 
             <FlexSpace />
             {instructions && <div className={styles.Instructions}>{instructions}</div>}
-            {cta && <Button onClick={cta.onClick}>
-                {cta.text}
-                {cta.icon && <cta.icon />}
-            </Button>}
-        </Container>
+            {cta && <Button {...cta}/>}
 
-    </div>
+        </div>
+    </Container>
 }
