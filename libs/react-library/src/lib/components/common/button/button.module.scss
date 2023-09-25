@@ -1,7 +1,8 @@
 .Button {
     --button-color: var( --prim-color);
+    --button-width: var(--button-width);
     font-size: 1rem;
-    color: var(--bg-color);
+    color: var(--button-text-color, var(--bg-color));
     background-color: var(--button-color);
     border: 2px solid var(--button-color);
     padding: 0.75rem 2rem;
@@ -9,6 +10,7 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     position: relative;
+    cursor: pointer;
 
     svg{
         position: absolute;

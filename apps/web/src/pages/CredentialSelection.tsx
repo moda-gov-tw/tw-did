@@ -1,5 +1,5 @@
 import { MessageAction } from '@tw-did/core';
-import { CredentialCardList, useCredentials } from '@tw-did/react-library';
+import { CredentialCardList, CredentialScreen, useCredentials } from '@tw-did/react-library';
 import { useAccount } from 'wagmi';
 
 export function CredentialSelection() {
@@ -9,7 +9,8 @@ export function CredentialSelection() {
   if (isConnected)
     return (
       <div>
-        <CredentialCardList
+        <CredentialScreen onRevoke={()=>{}}/>
+        {/* <CredentialCardList
           credentials={credentials}
           actionLabels={['select']}
           onAction={(index, label) => {
@@ -23,7 +24,7 @@ export function CredentialSelection() {
           onClick={() => sendCredential(MessageAction.CANCEL_SELECT_CREDENTIAL)}
         >
           Cancel
-        </button>
+        </button> */}
       </div>
     );
 }
