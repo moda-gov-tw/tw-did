@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   Post,
@@ -11,6 +12,7 @@ import { NationalService } from './national.service';
 import { RegisterNationalDto } from './register-national.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CreateUserDto } from '../user/create-user.dto';
 
 @Controller('auth/national')
 export class NationalController {
@@ -28,7 +30,8 @@ export class NationalController {
   @Post('register')
   async register(@Body() registerNationalDto: RegisterNationalDto) {
     const nationalId = registerNationalDto.username;
-    const user = await this.usersService.findOrCreate(nationalId);
+    const createUserDto: CreateUserDto = { nationalId };
+    const user = await this.usersService.createUnique(createUserDto);
     return this.nationalService.login(user);
   }
 

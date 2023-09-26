@@ -60,4 +60,30 @@ describe('NationalModule', () => {
         expect(res.body).toHaveProperty('user');
       });
   });
+
+  it('should fail to login with incorrect username', async () => {
+    const server = app.getHttpServer();
+
+    await request(server)
+      .post('/api/auth/national/login')
+      .send({ username: 'non-exist', password: 'password' })
+      .expect(401);
+  });
+
+  it('should fail to register with existing username', async () => {
+    const server = app.getHttpServer();
+    await request(server)
+      .post('/api/auth/national/register')
+      .send({ username: 'username', password: 'password' });
+    return request(server)
+      .post('/api/auth/national/register')
+      .send({ username: 'username', password: 'password' })
+      .expect(409);
+  });
+
+  it('should fail to check without a JWT token', async () => {
+    return request(app.getHttpServer())
+      .get('/api/auth/national/check')
+      .expect(401);
+  });
 });
