@@ -5,7 +5,11 @@
   "scripts": {
     "start": "nx serve web",
     "acceptance": "nx acceptance acceptance",
-    "start:db": "node apps/server/scripts/start-db.js"
+    "setup:db": "node apps/server/scripts/setup-db.js",
+    "start:db": "node apps/server/scripts/start-db.js",
+    "predocker-compose:up": "nx build server && npm run setup:db",
+    "docker-compose:up": "docker-compose --env-file=./apps/server/.env.local up --build --detach",
+    "docker-compose:down": "docker-compose down"
   },
   "private": true,
   "devDependencies": {

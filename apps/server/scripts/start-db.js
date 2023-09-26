@@ -1,22 +1,7 @@
-const { join } = require('path');
+const { setupDb } = require('./setup-db');
 const shell = require('shelljs');
-require('dotenv').config({
-  path: join(__dirname, '..', '.env.local'),
-});
 
-let template = shell.cat(join(__dirname, 'init-mongo.js.template'));
-const replaceTerms = [
-  'MONGO_DATABASE',
-  'MONGO_DATABASE_USERNAME',
-  'MONGO_DATABASE_PASSWORD',
-];
-
-replaceTerms.forEach((term) => {
-  template = template.replaceAll(`<${term}>`, process.env[term]);
-});
-
-const outputFile = join(__dirname, 'init-mongo.js');
-shell.ShellString(template).to(outputFile);
+const outputFile = setupDb();
 
 const command = `docker run \
 --name ${process.env.MONGO_CONTAINER_NAME} \
