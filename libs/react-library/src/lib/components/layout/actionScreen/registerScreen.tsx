@@ -178,7 +178,7 @@ export const RegisterScreen = ({ nationID }: {
 
             <FlexSpace />
             {instructions && <div className={styles.Instructions}>{instructions}</div>}
-            {cta && <Button {...cta}/>}
+            {cta && <Button {...cta } type= 'primary'/>}
         </div>
     </Container>
 }

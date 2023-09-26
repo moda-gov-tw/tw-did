@@ -3,6 +3,7 @@ import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
 import { Button } from '../../common/button';
 import styles from './credentialScreen.module.scss';
+import { Dialog, useDialog, DialogProps } from '../../common/dialog';
 
 const testProps = {
   credentials: [
@@ -33,6 +34,48 @@ export const CredentialScreen = ({
   onRevoke?: () => void;
   onAction?: () => void;
 }) => {
+  const dialogController = useDialog();
+  const revokeDialog: DialogProps = {
+    title: 'Are you sure to revoke?',
+    children: `Wallet address will not be bind to your national ID anymore.`,
+    actions: [
+      {
+        text: 'Cancel',
+        onClick: () => {
+          dialogController.close();
+        },
+        type: 'secondary',
+      },
+      {
+        text: 'Revoke',
+        onClick: () => {
+          onRevoke && onRevoke();
+          handleDone();
+        },
+        type: 'danger'
+      },
+    ],
+  };
+  const doneDialog: DialogProps = {
+    title: 'Revoked Successfully',
+    children: 'The app will be closed.',
+    actions: [
+      {
+        text: 'OK',
+        onClick: () => {
+          dialogController.close();
+        },
+        type: 'primary',
+      },
+    ],
+  };
+  function handleRevoke() {
+    dialogController.open(revokeDialog);
+  }
+  function handleDone() {
+    dialogController.open(doneDialog);
+  }
+
   return (
     <>
       <Container>
@@ -42,8 +85,11 @@ export const CredentialScreen = ({
           {onRevoke && (
             <>
               <div className={styles.Instructions}>Lost your wallet?</div>
-              <Button onClick={() => {}} text="Revoke Binding" />
+              <Button onClick={handleRevoke} text="Revoke Binding" />
             </>
+          )}
+          {onRevoke && dialogController.props && (
+            <Dialog {...dialogController.props} />
           )}
         </div>
       </Container>

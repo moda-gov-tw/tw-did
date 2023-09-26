@@ -39,7 +39,7 @@ export const WelcomeScreen = () => {
                         Please enter your nation ID to get started.
                     </p>
                     <Input placeholder='Nation ID' commitValue={setNationID} />
-                    <Button onClick={handleGo} icon={GoIcon} text='Go' />
+                    <Button type='primary' onClick={handleGo} icon={GoIcon} text='Go' />
                 </div>
             </div >
         </Container>
