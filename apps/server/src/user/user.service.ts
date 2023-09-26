@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.schema';
 import { CreateUserDto } from './create-user.dto';
@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
@@ -33,6 +33,16 @@ export class UsersService {
       { nationalId },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
+  }
+
+  async createUnique(createUserDto: CreateUserDto): Promise<UserDocument> {
+    const existingUser = await this.findOne(createUserDto.nationalId);
+
+    if (existingUser) {
+      throw new ConflictException('National ID already exists');
+    }
+
+    return this.create(createUserDto);
   }
 
   updateEthereumAccount(id: string, ethereumAccount: string) {
