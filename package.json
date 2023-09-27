@@ -76,6 +76,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
+    "@nestjs/serve-static": "^4.0.0",
     "@semaphore-protocol/group": "^3.11.0",
     "@semaphore-protocol/identity": "^3.11.0",
     "@semaphore-protocol/proof": "^3.11.0",
