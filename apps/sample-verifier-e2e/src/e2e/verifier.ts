@@ -16,7 +16,12 @@ Given('I am on the sample-verifier website', () => {
 });
 
 Given('I am logged into sample-verifier website', () => {
-  cy.get('[data-testid=connect-button]').click();
+  const dataAttr = '[data-testid=disconnect-button]';
+  cy.get(dataAttr).then((res) => {
+    if (res.length === 0) {
+      cy.get('[data-testid=connect-button]').click();
+    }
+  });
 });
 
 Given(
