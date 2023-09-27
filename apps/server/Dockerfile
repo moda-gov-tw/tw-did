@@ -18,6 +18,7 @@ COPY package.json package-lock.json .
 RUN npm  --omit=dev -f install
 
 COPY dist/apps/server server
+COPY dist/apps/web web
 # TODO: this is only for developement, we should remove it for production
 COPY apps/server/.env.local .
 

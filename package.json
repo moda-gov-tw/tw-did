@@ -4,12 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve web",
-    "acceptance": "nx acceptance acceptance",
-    "setup:db": "node apps/server/scripts/setup-db.js",
-    "start:db": "node apps/server/scripts/start-db.js",
-    "predocker-compose:up": "nx build server && npm run setup:db",
-    "docker-compose:up": "docker-compose --env-file=./apps/server/.env.local up --build --detach",
-    "docker-compose:down": "docker-compose down"
+    "acceptance": "nx acceptance acceptance"
   },
   "private": true,
   "devDependencies": {
@@ -76,6 +71,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
+    "@nestjs/serve-static": "^4.0.0",
     "@semaphore-protocol/group": "^3.11.0",
     "@semaphore-protocol/identity": "^3.11.0",
     "@semaphore-protocol/proof": "^3.11.0",

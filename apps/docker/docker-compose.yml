@@ -2,7 +2,7 @@ version: '3'
 services:
   server:
     build:
-      context: .
+      context: ../..
       dockerfile: apps/server/Dockerfile
     ports:
       - '3000:3000'
@@ -19,4 +19,4 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - './apps/server/scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro'
+      - '../server/scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro'
