@@ -73,9 +73,15 @@
         }
       }
     },
-    "docker-build": {
-      "dependsOn": ["build"],
-      "command": "docker build -f apps/server/Dockerfile . -t server"
+    "setup-db": {
+      "command": "node apps/server/scripts/setup-db.js"
+    },
+    "start-db": {
+      "command": "node apps/server/scripts/start-db.js"
+    },
+    "copy-env-file": {
+      "dependsOn": ["setup-db"],
+      "command": "node apps/server/scripts/copy-env-file.js"
     }
   },
   "tags": []
