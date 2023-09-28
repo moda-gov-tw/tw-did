@@ -15,10 +15,10 @@
     },
     "up": {
       "dependsOn": ["build"],
-      "command": "docker-compose -f apps/docker/docker-compose.yml --env-file=./apps/server/.env.local up --detach"
+      "command": "docker compose -f apps/docker/docker-compose.yml --env-file=./apps/server/.env.local up --detach"
     },
     "down": {
-      "command": "docker-compose -f apps/docker/docker-compose.yml down"
+      "command": "docker compose -f apps/docker/docker-compose.yml down"
     }
   },
   "tags": []
