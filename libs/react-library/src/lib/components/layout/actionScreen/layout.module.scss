@@ -56,6 +56,7 @@
 .Center {
     margin: 0 auto;
     height: 150px;
+    position: relative;
 
     @media screen and (min-width: 768px) {
         height: 100%;
@@ -63,6 +64,19 @@
         align-items: center;
         justify-content: center;
         margin-right: 5rem;
+    }
+
+    .fixedIcon {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        @media screen and (min-width: 768px) {
+            top: calc(50% - 70px);
+        }
+
+
     }
 }
 
