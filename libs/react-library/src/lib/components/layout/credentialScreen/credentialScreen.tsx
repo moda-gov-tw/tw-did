@@ -1,38 +1,26 @@
-import { CredentialType } from '../../../contexts';
+import { CredentialData, CredentialType } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
 import { Button } from '../../common/button';
 import styles from './credentialScreen.module.scss';
 import { Dialog, useDialog, DialogProps } from '../../common/dialog';
-
-const testProps = {
-  credentials: [
-    {
-      type: CredentialType.ETHEREUM,
-      fields: [
-        { key: 'national-id', value: 'A123456789' },
-        { key: 'ethereum-account-address', value: '0x1234567890abcdef' },
-      ],
-    },
-    {
-      type: CredentialType.SEMAPHORE,
-      fields: [
-        { key: 'national-id', value: 'A123456789' },
-        { key: 'ethereum-account-address', value: '0x1234567890abcdef' },
-      ],
-      description: 'You are in Taiwan DID sempahore group',
-    },
-  ],
-  actionLabels: ['Download'],
-  onAction: (index: number, actionLabel: string) => {},
-};
-
+import { useEffect } from 'react';
 export const CredentialScreen = ({
   onRevoke,
   onAction,
+  onLogout,
+  onClose,
+  actionLabels,
+  credentials,
+  checkLogin,
 }: {
   onRevoke?: () => void;
-  onAction?: () => void;
+  actionLabels?: string[];
+  onAction: (index: number, label: string) => void;
+  credentials: CredentialData[];
+  onLogout?: () => void;
+  onClose?: () => void;
+  checkLogin: () => boolean;
 }) => {
   const dialogController = useDialog();
   const revokeDialog: DialogProps = {
@@ -48,47 +36,139 @@ export const CredentialScreen = ({
       },
       {
         text: 'Revoke',
-        onClick: () => {
-          onRevoke && onRevoke();
-          handleDone();
+        onClick: async () => {
+          try {
+            onRevoke && (await onRevoke());
+          } catch (e) {
+            notifyError();
+          }
+          notifyDone();
         },
-        type: 'danger'
+        type: 'danger',
+      },
+    ],
+  };
+  const logoutDialog: DialogProps = {
+    title: 'Are you sure to logout?',
+    children: `You will not be able to access your wallet anymore.`,
+    actions: [
+      {
+        text: 'Cancel',
+        onClick: () => {
+          dialogController.close();
+        },
+        type: 'secondary',
+      },
+      {
+        text: 'Logout',
+        onClick: async () => {
+          try {
+            onLogout && (await onLogout());
+          } catch (e) {
+            notifyError();
+          }
+          notifyDone();
+        },
+        type: 'danger',
       },
     ],
   };
   const doneDialog: DialogProps = {
-    title: 'Revoked Successfully',
+    title: 'Done Successfully',
     children: 'The app will be closed.',
     actions: [
       {
         text: 'OK',
         onClick: () => {
           dialogController.close();
+          onClose && onClose();
         },
         type: 'primary',
       },
     ],
   };
-  function handleRevoke() {
+  const errorDialog: DialogProps = {
+    title: 'Some error happened',
+    children: 'Please try again later.',
+    actions: [
+      {
+        text: 'Cancel',
+        onClick: () => {
+          dialogController.close();
+        },
+        type: 'secondary',
+      },
+      {
+        text: 'Revoke',
+        onClick: async () => {
+          try {
+            onRevoke && (await onRevoke());
+          } catch (e) {
+            notifyError();
+          }
+          notifyDone();
+        },
+        type: 'danger',
+      },
+    ],
+  };
+  const goHomeDialog: DialogProps = {
+    title: 'You are not logged in',
+    children: 'Please login to continue.',
+    actions: [
+      {
+        text: 'OK',
+        onClick: () => {
+          dialogController.close();
+          onClose && onClose();
+        },
+        type: 'primary',
+      },
+    ],
+  }
+  function confirmRevoke() {
     dialogController.open(revokeDialog);
   }
-  function handleDone() {
+  function confirmLogout() {
+    dialogController.open(logoutDialog);
+  }
+  function notifyDone() {
     dialogController.open(doneDialog);
   }
+  function notifyError() {
+    dialogController.open(errorDialog);
+  }
+
+  useEffect(() => {
+    if (!checkLogin()) {
+      dialogController.open(goHomeDialog);
+    }
+  }, []);
 
   return (
     <>
       <Container>
         <div className={styles.CredentialScreen}>
-          <CredentialCardList {...testProps} />
+          {credentials && (
+            <CredentialCardList
+              credentials={credentials}
+              actionLabels={actionLabels || []}
+              onAction={onAction}
+            />
+          )}
           <FlexSpace />
           {onRevoke && (
             <>
               <div className={styles.Instructions}>Lost your wallet?</div>
-              <Button onClick={handleRevoke} text="Revoke Binding" />
+              <Button onClick={confirmRevoke} text="Revoke Binding" />
             </>
           )}
-          {onRevoke && dialogController.props && (
+          {onLogout && (
+            <>
+              <Button onClick={confirmLogout} text="Logout" />
+            </>
+          )}
+          {dialogController.props && (
             <Dialog {...dialogController.props} />
           )}
         </div>

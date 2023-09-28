@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from './input.module.scss';
 
 export const Input = ({ initialValue, placeholder, commitValue, props }:
@@ -9,6 +9,8 @@ export const Input = ({ initialValue, placeholder, commitValue, props }:
         props?: any
     }) => {
     const [value, setValue] = useState(initialValue);
+
+    useEffect(()=>setValue(initialValue), [initialValue])
 
     function handleChange(e: any) {
         setValue(e.target.value);

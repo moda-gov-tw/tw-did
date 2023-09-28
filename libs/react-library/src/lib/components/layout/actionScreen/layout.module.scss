@@ -89,3 +89,18 @@
     font-size: 2rem;
     color: var(--text-color2);
 }
+
+.warning {
+    color: var(--error-color);
+    position: fixed;
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: -0.5rem;
+    width: 300px;
+
+    @media screen and (min-width:768px) {
+        text-align: left;
+    }
+
+    display: block;
+}

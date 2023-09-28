@@ -2,6 +2,7 @@ import React from 'react';
 import { CredentialData } from '../../../contexts/CredentialData';
 import styles from './CredentialCard.module.scss';
 import { Button } from '../../common/button';
+import { ShortenAddr, ShortenID } from '../../common/shortenAddr';
 // import { EthLogo } from '../../common/icons/ethLogo';
 
 type Action = { label: string; handler: (actionLabel: string) => void };
@@ -18,8 +19,6 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
   // value mapping
   const typeDisplay = type[0].toUpperCase() + type.slice(1).toLowerCase();
   // const logo = type === 'ethereum' ? <EthLogo /> : null;
-  const shortenAddr = (addr?: string) =>
-    addr ? addr.slice(0, 4) + '...' + addr.slice(-4) : undefined;
 
   return (
     <div data-testid={`credential-type-${type}`} className={styles.card}>
@@ -27,7 +26,12 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         <h3 className={styles.type}>{typeDisplay}</h3>
         {/* {logo && <div className={styles.logo}>{logo}</div>} */}
         {description && (
-          <p className={styles.description} data-testid="credential-description">{description}</p>
+          <p
+            className={styles.description}
+            data-testid="credential-description"
+          >
+            {description}
+          </p>
         )}
         <div className={styles.idendity}>
           {type == 'ethereum' &&
@@ -44,7 +48,9 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
                   className={styles.value}
                 >
                   {field.key == 'ethereum-account-address'
-                    ? shortenAddr(field.value)
+                    ? <ShortenAddr addr={field.value} />
+                    : field.key == 'id'
+                    ? <ShortenID id={field.value} />
                     : field.value}
                 </div>
               </div>

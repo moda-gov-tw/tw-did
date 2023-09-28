@@ -9,7 +9,8 @@ interface StringByString {
 const pathToTitle: StringByString = {
   '/register': 'Register',
   '/login': 'Login',
-  '/select-credential': 'My Credentials',
+  '/select-credential': 'Select Credentials',
+  '/view-credential': 'My Credentials',
   '/ethereum-login': 'Ethereum Login',
   '/semaphore': 'Semaphore',
 };

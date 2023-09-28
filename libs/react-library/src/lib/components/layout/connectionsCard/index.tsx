@@ -3,6 +3,7 @@ import { FidoLogo } from '../../common/icons/fidoLogo';
 import { EthLogo } from '../../common/icons/ethLogo';
 import { SuccessIcon } from '../../common/icons/success';
 import { ErrorIcon } from '../../common/icons/error';
+import { ShortenAddr } from '../../common/shortenAddr';
 
 export const ConnectionCard = ({ fidoState, walletState, bindState, nationID, walletAddr }: {
     fidoState?: number,
@@ -15,7 +16,7 @@ export const ConnectionCard = ({ fidoState, walletState, bindState, nationID, wa
             <FidoLogo />
             {fidoState !== undefined && fidoState == 2 && <SuccessIcon />}
             {fidoState !== undefined && fidoState == 3 && <ErrorIcon />}
-            {nationID && <div>
+            {nationID && <div className={styles.info}>
                 <div className={styles.label}>Nation ID</div>
                 <div className={styles.value}>{nationID}</div>
             </div>}
@@ -30,7 +31,7 @@ export const ConnectionCard = ({ fidoState, walletState, bindState, nationID, wa
             {walletState !== undefined && walletState == 3 && <ErrorIcon />}
             {walletAddr && <div className={styles.info}>
                 <div className={styles.label}>Wallet Addr</div>
-                <div className={styles.value}>{walletAddr}</div>
+                <div className={styles.value}><ShortenAddr addr={walletAddr}/></div>
             </div>}
         </div>
     </div>
