@@ -33,6 +33,7 @@ export function Register() {
   return user ? (
     <RegisterScreen
       user={user}
+      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
       handleFidoLogin={handleFidoLogin}
       handleEthLogin={handleEthLogin}
       handleBind={handleBind}

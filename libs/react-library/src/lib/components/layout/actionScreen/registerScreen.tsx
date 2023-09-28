@@ -19,6 +19,7 @@ interface User {
 }
 interface Props {
   user: User;
+  fidoQR: string;
   handleFidoLogin: () => void;
   handleEthLogin: () => void;
   handleBind: () => void;
@@ -43,6 +44,7 @@ interface Step {
 
 export const RegisterScreen = ({
   user,
+  fidoQR,
   handleFidoLogin,
   handleEthLogin,
   handleBind,
@@ -66,8 +68,7 @@ export const RegisterScreen = ({
     displayQR: {
       currentStep: 0,
       message: 'Scan this QR code on TW FidO mobile app.',
-      /* TODO: use fido QR code */
-      qrCode: '/sampleQR.jpg',
+      qrCode: fidoQR,
       instructions: 'or click the push notification on your mobile phone',
     },
     connectFidoFailed: {

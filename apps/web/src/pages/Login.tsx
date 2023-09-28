@@ -17,6 +17,7 @@ export function Login() {
     <LoginScreen
       nationID={user.nationalId}
       walletAddr="0x***********"
+      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
       handleFidoLogin={handleLogin}
       viewCredential={viewCredential}
     />

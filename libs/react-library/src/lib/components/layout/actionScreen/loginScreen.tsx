@@ -7,33 +7,37 @@ import { ReactNode, useState } from 'react';
 import { FidoMin } from '../../common/icons/fidoMin';
 import { GoIcon } from '../../common/icons/go';
 
+interface Props {
+  nationID: string;
+  walletAddr: string;
+  fidoQR: string;
+  handleFidoLogin: () => void;
+  viewCredential: () => void;
+}
+
+interface Step {
+  message: string;
+  instructions: string;
+  center?: {
+    fidoState?: number;
+    walletState?: number;
+    bindState?: number;
+  };
+  qrCode?: string;
+  cta?: {
+    text: string;
+    onClick: () => void;
+    icon?: () => ReactNode;
+  };
+}
+
 export const LoginScreen = ({
   nationID,
   walletAddr,
+  fidoQR,
   handleFidoLogin,
   viewCredential,
-}: {
-  nationID: string;
-  walletAddr: string;
-  handleFidoLogin: () => void;
-  viewCredential: () => void;
-}) => {
-  interface Step {
-    message: string;
-    instructions: string;
-    center?: {
-      fidoState?: number;
-      walletState?: number;
-      bindState?: number;
-    };
-    qrCode?: string;
-    cta?: {
-      text: string;
-      onClick: () => void;
-      icon?: () => ReactNode;
-    };
-  }
-
+}: Props) => {
   const steps = {
     connectFido: {
       message: 'You have bind your wallet to your nation identity.',
@@ -49,8 +53,7 @@ export const LoginScreen = ({
     },
     displayQR: {
       message: 'Scan this QR code on TW FidO mobile app.',
-      /* TODO: use fido QR code */
-      qrCode: '/sampleQR.jpg',
+      qrCode: fidoQR,
       instructions: 'or click the push notification on your mobile phone',
     },
     connectFidoFailed: {
