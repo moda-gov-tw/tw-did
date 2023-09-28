@@ -7,10 +7,6 @@
     "build": {
       "dependsOn": [
         {
-          "target": "copy-env-file",
-          "projects": ["server"]
-        },
-        {
           "target": "build",
           "projects": ["web", "server"]
         }
