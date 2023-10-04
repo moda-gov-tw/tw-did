@@ -79,6 +79,7 @@ export interface GetAthOrSignResult {
   hashed_id_num: string;
   idp_checksum: string;
   signed_response?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signed_response_set?: any[];
   cert?: string;
 }

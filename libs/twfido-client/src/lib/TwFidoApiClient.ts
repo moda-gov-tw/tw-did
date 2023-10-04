@@ -87,6 +87,7 @@ export class TwFidoApiClient {
   private async prepareParams<T>(
     userInputParams: T,
     checksumPayload: string[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<Record<string, any>> {
     const transactionId = userInputParams['transaction_id'] || uuidv4();
     const payload = generatePayload(
@@ -135,6 +136,7 @@ export class TwFidoApiClient {
 
   private async execute<T>(
     methodName: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: Record<string, any>
   ): Promise<CommonResponse<T>> {
     const response = await fetch(`${this.apiUrl}/${methodName}`, {

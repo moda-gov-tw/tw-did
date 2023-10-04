@@ -1,4 +1,9 @@
 {
   "name": "@tw-did/twfido-client",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "@nestjs/common": "10.2.5",
+    "tslib": "2.6.2",
+    "uuid": "9.0.1"
+  }
 }
