@@ -1,10 +1,19 @@
 export interface Config {
-  mongo: {
-    username: string;
-    password: string;
-    host: string;
-    database: string;
-  };
+  mongo: MongoConfig;
+  twfido: TwFidoConfig;
+}
+
+export interface MongoConfig {
+  username: string;
+  password: string;
+  host: string;
+  database: string;
+}
+
+export interface TwFidoConfig {
+  apiKey: string;
+  serviceId: string;
+  apiUrl: string;
 }
 
 class PropertyNotFoundError extends Error {
@@ -23,6 +32,11 @@ export function getConfig(): Config {
       password: process.env.MONGO_DATABASE_PASSWORD,
       host: process.env.MONGO_HOST,
       database: process.env.MONGO_DATABASE,
+    },
+    twfido: {
+      serviceId: process.env.TWFIDO_SERVICE_ID,
+      apiKey: process.env.TWFIDO_API_KEY,
+      apiUrl: process.env.TWFIDO_API_URL,
     },
   };
 

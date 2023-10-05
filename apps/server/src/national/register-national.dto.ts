@@ -1,4 +1,3 @@
 export class RegisterNationalDto {
-  username: string;
-  password: string;
+  nationalId: string;
 }

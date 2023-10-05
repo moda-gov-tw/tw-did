@@ -72,7 +72,9 @@ export class TwFidoApiClient {
     return res;
   }
 
-  async getAthOrSignResult(userParams: GetResultUserInputParams) {
+  async getAthOrSignResult(
+    userParams: GetResultUserInputParams
+  ): Promise<CommonResponse<GetAthOrSignResult>> {
     const checksumPayload = [userParams.sp_ticket_id];
     const params = await this.prepareParams(userParams, checksumPayload);
     const res = await this.execute<GetAthOrSignResult>(

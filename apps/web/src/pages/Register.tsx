@@ -10,7 +10,7 @@ export function Register() {
   };
 
   const handleRegister = async () => {
-    await register(nationalId, 'password');
+    await register(nationalId);
   };
 
   return (
