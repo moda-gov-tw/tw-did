@@ -7,11 +7,8 @@
   },
   "include": [
     "jest.config.ts",
-    "src/test.end.d.ts",
-    "tests/**.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
-    "src/**/*.e2e-spec.ts",
     "src/**/*.d.ts"
   ]
 }

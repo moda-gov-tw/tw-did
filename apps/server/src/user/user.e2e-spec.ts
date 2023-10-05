@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { Identity } from '@semaphore-protocol/identity';
 import request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
@@ -8,9 +9,8 @@ import {
   setupMongoDb,
   setupTestApplication,
 } from '../../tests/helper';
-import { getRandomHexString } from '../utils';
 
-describe('EthereumModule', () => {
+describe('UsersModule', () => {
   let app: INestApplication;
   let mongod: MongoMemoryServer;
 
@@ -24,7 +24,7 @@ describe('EthereumModule', () => {
     await app.close();
   });
 
-  it('should login with an ethereum account', async () => {
+  it('should get an array of semaphore commitments', async () => {
     const server = app.getHttpServer();
     const domain = getDomain(server);
 
@@ -48,44 +48,23 @@ describe('EthereumModule', () => {
       challengeRes.body.value
     );
 
+    const identity = new Identity();
+    const commitment = identity.commitment.toString();
+
     await request(server)
       .post('/api/auth/ethereum/login')
       .send(payload)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(201)
+      .set('Authorization', `Bearer ${token}`);
+
+    await request(server)
+      .put('/api/auth/semaphore')
+      .send({ id, commitment })
+      .set('Authorization', `Bearer ${token}`);
+
+    await request(server)
+      .get('/api/users/commitments')
       .expect((res) => {
-        expect(res.body).toEqual({ address: account.address });
+        expect(res.body).toEqual([commitment]);
       });
-  });
-
-  it('should login failed with incorrect nonce', async () => {
-    const server = app.getHttpServer();
-    const domain = getDomain(server);
-
-    const res = await request(server)
-      .post('/api/auth/national/register')
-      .send({ username: 'username', password: 'password' });
-
-    const { id, token } = res.body;
-
-    const privateKey = generatePrivateKey();
-    const account = privateKeyToAccount(privateKey);
-    const payload = await generatePayload(
-      id,
-      domain,
-      account,
-      getRandomHexString()
-    );
-
-    request(server)
-      .post('/api/auth/ethereum/login')
-      .send(payload)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(401);
-  });
-
-  it('should fail to challenge without a JWT token', async () => {
-    const server = app.getHttpServer();
-    return request(server).post('/api/auth/ethereum/challenge').expect(401);
   });
 });

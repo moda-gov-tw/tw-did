@@ -21,7 +21,8 @@
       "configurations": {
         "development": {},
         "production": {}
-      }
+      },
+      "dependsOn": ["setup-db"]
     },
     "serve": {
       "executor": "@nx/js:node",
@@ -72,6 +73,16 @@
           "codeCoverage": true
         }
       }
+    },
+    "setup-db": {
+      "command": "node apps/server/scripts/setup-db.js",
+      "dependsOn": ["copy-env-file"]
+    },
+    "start-db": {
+      "command": "node apps/server/scripts/start-db.js"
+    },
+    "copy-env-file": {
+      "command": "node apps/server/scripts/copy-env-file.js"
     }
   },
   "tags": []

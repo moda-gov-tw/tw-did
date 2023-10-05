@@ -1,0 +1,25 @@
+{
+  "name": "docker",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/docker",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": ["web", "server"]
+        }
+      ],
+      "command": "docker compose -f apps/docker/docker-compose.yml --env-file=apps/server/.env.local build"
+    },
+    "up": {
+      "dependsOn": ["build"],
+      "command": "docker compose -f apps/docker/docker-compose.yml --env-file=./apps/server/.env.local up --detach"
+    },
+    "down": {
+      "command": "docker compose -f apps/docker/docker-compose.yml down"
+    }
+  },
+  "tags": []
+}

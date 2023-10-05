@@ -47,6 +47,26 @@ Once the servers are running, navigate to `http://localhost:4300/` in your brows
 
 We use the `preview` subcommand for the `sample-verifier` server due to an issue with the `ethr-did-resolver` package, which causes errors on the Vite development server. An issue has already been filed to address this. Note that the service may operate more slowly than usual because the `preview` subcommand triggers a rebuild of `sample-verifier` whenever you save changes. This is a temporary workaround.
 
+## Docker Commands
+
+We have a few Docker-related commands that enable the system to run within a Docker environment. If you want to run the environment using `docker-compose`, you can use the following command:
+
+```bash
+nx up docker
+```
+
+This command leverages Nx's dependency management to build the necessary projects and then initiates `docker-compose up` to start MongoDB, the server, and the front-end website together. When you are done and wish to shut down the services, you can use the following command:
+
+```bash
+nx down docker
+```
+
+If you simply want to build a Docker image, you can use this command:
+
+```bash
+nx build docker
+```
+
 ## E2E Tests Locally
 
 If you are planning to run e2e tests locally, you'll also need to set a `VITE_MOCK_WALLET_PRIVATE_KEY` in your `.env.local` file. Due to security reasons, please reach out to @yurenju to obtain this key.
