@@ -1,29 +1,27 @@
-import { useAuth } from '@tw-did/react-library';
-import { ChangeEvent, useState } from 'react';
+import { LoginScreen, useAuth } from '@tw-did/react-library';
+import { useNavigate } from '@tanstack/react-router';
 
 export function Login() {
-  const [nationalId, setNationalId] = useState<string>('');
-  const { login, logout } = useAuth();
-
-  const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
-    setNationalId(e.target.value);
-  };
+  const { user} = useAuth();
 
   const handleLogin = async () => {
-    await login(nationalId, 'password');
+    /* TODO: handleFidoLogin */
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        name="national-id"
-        id="national-id"
-        onChange={handleTyping}
-        value={nationalId}
-      />
-      <button onClick={() => handleLogin()}>Login</button>{' '}
-      <button onClick={() => logout()}>Logout</button>
-    </div>
+  const navigate = useNavigate();
+  function viewCredential() {
+    navigate({ to: '/view-credential' });
+  }
+
+  return user ? (
+    <LoginScreen
+      nationID={user.nationalId}
+      walletAddr="0x***********"
+      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
+      handleFidoLogin={handleLogin}
+      viewCredential={viewCredential}
+    />
+  ) : (
+    <></>
   );
 }

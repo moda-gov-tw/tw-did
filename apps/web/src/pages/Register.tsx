@@ -1,28 +1,45 @@
-import { useAuth } from '@tw-did/react-library';
-import { ChangeEvent, useState } from 'react';
+import { RegisterScreen, useAuth } from '@tw-did/react-library';
+import { signMessage } from '@wagmi/core';
+import { Identity } from '@semaphore-protocol/identity';
+import { useNavigate } from '@tanstack/react-router';
 
 export function Register() {
-  const [nationalId, setNationalId] = useState<string>('');
-  const { register } = useAuth();
+  const { user, ethereumLogin, updateSemaphoreCommitment } = useAuth();
 
-  const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
-    setNationalId(e.target.value);
+    const handleFidoLogin = async () => {
+    /* TODO: handleFidoLogin */
   };
 
-  const handleRegister = async () => {
-    await register(nationalId, 'password');
+  const handleEthLogin = async () => {
+    await ethereumLogin();
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        name="national-id"
-        id="national-id"
-        onChange={handleTyping}
-        value={nationalId}
-      />
-      <button onClick={() => handleRegister()}>Register</button>
-    </div>
+  const generateIdentity = async () => {
+    const message = `Sign this message to generate your Semaphore identity.`;
+    const result = await signMessage({ message });
+    const identity = new Identity(result);
+    updateSemaphoreCommitment(identity.commitment.toString());
+  };
+
+  const handleBind = async () => {
+    await generateIdentity();
+  };
+
+  const navigate = useNavigate();
+  function viewCredential() {
+    navigate({ to: '/view-credential' });
+  }
+
+  return user ? (
+    <RegisterScreen
+      user={user}
+      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
+      handleFidoLogin={handleFidoLogin}
+      handleEthLogin={handleEthLogin}
+      handleBind={handleBind}
+      viewCredential={viewCredential}
+    />
+  ) : (
+    <></>
   );
 }

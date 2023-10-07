@@ -1,0 +1,41 @@
+.header {
+    background: var(--bg-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+
+    button {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--header-height);
+        --button-color: transparent;
+        margin: 0;
+        height: var(--header-height);
+        padding: 0.5rem 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            transform: rotate(180deg);
+
+            path {
+                fill: var(--text-color2);
+            }
+        }
+    }
+
+
+    h1 {
+        color: var(--text-color2);
+        font-size: 1.75rem;
+        margin: auto;
+        text-align: center;
+    }
+}
