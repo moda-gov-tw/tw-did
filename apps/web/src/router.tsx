@@ -1,6 +1,6 @@
 import { RootRoute, Route, Router } from '@tanstack/react-router';
 import App from './App';
-import { CredentialSelection, EthereumLogin, Login, Register } from './pages';
+import { CredentialSelection, EthereumLogin, Login } from './pages';
 import { Semaphore } from './pages/Semaphore';
 
 const rootRoute = new RootRoute({
