@@ -71,9 +71,9 @@ interface User {
 
 interface AuthContextProps {
   user: User | null;
-  login: (username: string, password: string) => Promise<void>;
+  login: (nationalId: string) => Promise<void>;
   logout: () => void;
-  register: (username: string, password: string) => Promise<void>;
+  register: (nationalId: string) => Promise<void>;
   ethereumLogin: () => Promise<void>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
 }
@@ -115,11 +115,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (username: string, password: string) => {
+  const login = async (nationalId: string) => {
     const res = await fetch('/api/auth/national/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ nationalId }),
     });
 
     const data = await res.json();
@@ -135,11 +135,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('user');
   };
 
-  const register = async (username: string, password: string) => {
+  const register = async (nationalId: string) => {
     const res = await fetch('/api/auth/national/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ nationalId }),
     });
 
     const data = await res.json();

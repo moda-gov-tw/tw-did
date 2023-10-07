@@ -6,7 +6,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from '../user/user.module';
-import { Config, getConfig } from '../config/configuration';
+import { MongoConfig, getConfig } from '../config/configuration';
 import { AuthModule } from '../auth/auth.module';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -21,10 +21,8 @@ import { existsSync } from 'fs';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const host = configService.get<Config>('mongo.host');
-        const database = configService.get<Config>('mongo.database');
-        const username = configService.get<Config>('mongo.username');
-        const password = configService.get<Config>('mongo.password');
+        const { host, database, username, password } =
+          configService.get<MongoConfig>('mongo');
         return {
           uri: `mongodb://${username}:${password}@${host}/${database}`,
         };

@@ -10,7 +10,7 @@ export function Login() {
   };
 
   const handleLogin = async () => {
-    await login(nationalId, 'password');
+    await login(nationalId);
   };
 
   return (

@@ -10,9 +10,8 @@ import {
 import { UsersService } from '../user/user.service';
 import { NationalService } from './national.service';
 import { RegisterNationalDto } from './register-national.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CreateUserDto } from '../user/create-user.dto';
+import { TwFidoAuthGuard } from './guards/twfido-auth.guard';
 
 @Controller('auth/national')
 export class NationalController {
@@ -21,18 +20,20 @@ export class NationalController {
     private nationalService: NationalService
   ) {}
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(TwFidoAuthGuard)
   @Post('login')
-  login(@Request() req) {
-    return this.nationalService.login(req.user);
+  async login(@Request() req) {
+    const { nationalId } = req.user;
+    const user = await this.usersService.findOrCreate(nationalId);
+    return this.nationalService.generateJwtPayload(user);
   }
 
+  @UseGuards(TwFidoAuthGuard)
   @Post('register')
   async register(@Body() registerNationalDto: RegisterNationalDto) {
-    const nationalId = registerNationalDto.username;
-    const createUserDto: CreateUserDto = { nationalId };
-    const user = await this.usersService.createUnique(createUserDto);
-    return this.nationalService.login(user);
+    const { nationalId } = registerNationalDto;
+    const user = await this.usersService.findOrCreate(nationalId);
+    return this.nationalService.generateJwtPayload(user);
   }
 
   @UseGuards(JwtAuthGuard)

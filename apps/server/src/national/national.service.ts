@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
-import { User, UserDocument } from '../user/user.schema';
+import { UserDocument } from '../user/user.schema';
 import { JwtService } from '@nestjs/jwt';
-
-export interface LocalUser {
-  username: string;
-  password: string;
-  userId: string;
-}
 
 interface LoginResponse {
   token: string;
@@ -21,11 +15,7 @@ export class NationalService {
     private jwtService: JwtService
   ) {}
 
-  validateUser(nationalId: string): Promise<User | null> {
-    return this.usersService.findOne(nationalId);
-  }
-
-  login(user: UserDocument): LoginResponse {
+  generateJwtPayload(user: UserDocument): LoginResponse {
     const payload = { username: user.nationalId, sub: user._id };
     return {
       id: user._id.toHexString(),
