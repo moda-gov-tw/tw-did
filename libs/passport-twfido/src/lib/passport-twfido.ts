@@ -1,4 +1,9 @@
-import { TwFidoApiClient, parseSpTicket } from '@tw-did/twfido-client';
+import {
+  CommonAuthResponse,
+  SPTicket,
+  TwFidoApiClient,
+  parseSpTicket,
+} from '@tw-did/twfido-client';
 import { Strategy as PassportStrategy } from 'passport-strategy';
 import { inherits } from 'util';
 import { delay } from './utils';
@@ -7,6 +12,12 @@ interface TwFidoStrategyOptions {
   apiUrl: string;
   apiKey: string;
   serviceId: string;
+}
+
+export interface RequestLoginResponse {
+  transactionId: string;
+  spTicketId: string;
+  spTicketPayload: string;
 }
 
 class TimeoutError extends Error {
@@ -25,7 +36,6 @@ export function Strategy(
   }
 
   this.twFidoClient = new TwFidoApiClient(apiUrl, apiKey, serviceId);
-  this._nationalIdField = 'nationalId';
 
   PassportStrategy.call(this);
 
@@ -35,11 +45,55 @@ export function Strategy(
 
 inherits(Strategy, PassportStrategy);
 
+Strategy.prototype.requestLogin = async function (
+  nationalId: string,
+  method: 'QRCODE' | 'NOTIFY'
+): Promise<RequestLoginResponse> {
+  if (!nationalId) {
+    return this.fail({ message: 'Missing nationalId' }, 400);
+  }
+
+  let res: CommonAuthResponse;
+  if (method == 'NOTIFY') {
+    const params = {
+      id_num: nationalId,
+      op_code: 'ATH',
+      hint: '',
+    };
+    res = await this.twFidoClient.requestAthOrSignPush(params);
+  } else if (method === 'QRCODE') {
+    const params = {
+      op_mode: 'I-SCAN',
+      id_num: nationalId,
+      op_code: 'ATH',
+      hint: '',
+    };
+    res = await this.twFidoClient.getSpTicket(params);
+  } else {
+    throw new TypeError(`unsupported method "${method}"`);
+  }
+
+  const spTicket = parseSpTicket(res.result.sp_ticket);
+  return {
+    transactionId: res.transaction_id,
+    spTicketId: spTicket.sp_ticket_id,
+    spTicketPayload: res.result.sp_ticket,
+  };
+};
+
 Strategy.prototype.authenticate = async function (req) {
-  const nationalId = req.body[this._nationalIdField];
+  const { nationalId, transactionId, spTicketId } = req.body;
 
   if (!nationalId) {
     return this.fail({ message: 'Missing nationalId' }, 400);
+  }
+
+  if (!transactionId) {
+    return this.fail({ message: 'Missing transactionId' }, 400);
+  }
+
+  if (!spTicketId) {
+    return this.fail({ message: 'Missing spTicketId' }, 400);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -54,15 +108,6 @@ Strategy.prototype.authenticate = async function (req) {
     }
     self.success(user, info);
   }
-
-  const notifyParams = {
-    id_num: nationalId,
-    op_code: 'ATH',
-    hint: '',
-  };
-
-  const initAuth = await this.twFidoClient.requestAthOrSignPush(notifyParams);
-  const spTicket = parseSpTicket(initAuth.result.sp_ticket);
 
   try {
     let result;
@@ -79,8 +124,8 @@ Strategy.prototype.authenticate = async function (req) {
 
       try {
         result = await this.twFidoClient.getAthOrSignResult({
-          transaction_id: initAuth.transaction_id,
-          sp_ticket_id: spTicket.sp_ticket_id,
+          transaction_id: transactionId,
+          sp_ticket_id: spTicketId,
         });
 
         if (result.error_code === '0') {

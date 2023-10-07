@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from '@tw-did/passport-twfido';
+import { RequestLoginResponse, Strategy } from '@tw-did/passport-twfido';
 import { NationalService } from '../national.service';
 
 interface TwFidoStrategyOptions {
@@ -16,6 +16,13 @@ export class TwFidoStrategy extends PassportStrategy(Strategy as any) {
     private options: TwFidoStrategyOptions
   ) {
     super(options);
+  }
+
+  requestLogin(
+    nationalId: string,
+    method: 'QRCODE' | 'NOTIFY'
+  ): Promise<RequestLoginResponse> {
+    return super.requestLogin(nationalId, method);
   }
 
   async validate(nationalId: string) {
