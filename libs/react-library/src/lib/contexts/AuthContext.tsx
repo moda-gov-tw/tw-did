@@ -29,14 +29,6 @@ class LoginError extends Error {
   }
 }
 
-class RegisterError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'RegisterError';
-    Object.setPrototypeOf(this, RegisterError.prototype);
-  }
-}
-
 class NoAuthProviderError extends Error {
   constructor(message: string) {
     super(message);
@@ -69,11 +61,24 @@ interface User {
   token: string;
 }
 
+interface RequestLoginResponse {
+  transactionId: string;
+  spTicketId: string;
+  spTicketPayload: string;
+}
+
 interface AuthContextProps {
   user: User | null;
-  login: (nationalId: string) => Promise<void>;
+  requestLogin: (
+    nationalId: string,
+    method: 'QRCODE' | 'NOTIFY'
+  ) => Promise<RequestLoginResponse>;
+  login: (
+    nationalId: string,
+    transactionId: string,
+    spTicketId: string
+  ) => Promise<void>;
   logout: () => void;
-  register: (nationalId: string) => Promise<void>;
   ethereumLogin: () => Promise<void>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
 }
@@ -115,15 +120,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (nationalId: string) => {
-    const res = await fetch('/api/auth/national/login', {
+  const requestLogin = async (
+    nationalId: string,
+    method: 'QRCODE' | 'NOTIFY'
+  ):Promise<RequestLoginResponse> => {
+    const requestRes = await fetch('/api/auth/national/request-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nationalId }),
+      body: JSON.stringify({ nationalId, method }),
     });
 
-    const data = await res.json();
-    if (res.status === 201) {
+    const res: RequestLoginResponse = await requestRes.json();
+    return res;
+  };
+
+  const login = async (
+    nationalId: string,
+    transactionId: string,
+    spTicketId: string
+  ) => {
+    const loginDto = {
+      nationalId,
+      transactionId,
+      spTicketId,
+    };
+
+    const loginRes = await fetch('/api/auth/national/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginDto),
+    });
+
+    const data = await loginRes.json();
+
+    if (loginRes.status === 201) {
       await setUserInfo(data.id, data.token);
     } else {
       throw new LoginError('Login failed');
@@ -133,21 +163,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-  };
-
-  const register = async (nationalId: string) => {
-    const res = await fetch('/api/auth/national/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nationalId }),
-    });
-
-    const data = await res.json();
-    if (res.status === 201) {
-      await setUserInfo(data.id, data.token);
-    } else {
-      throw new RegisterError('Registration failed');
-    }
   };
 
   const ethereumLogin = async (): Promise<void> => {
@@ -240,9 +255,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        requestLogin,
         login,
         logout,
-        register,
         ethereumLogin,
         updateSemaphoreCommitment,
       }}

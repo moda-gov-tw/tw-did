@@ -31,12 +31,6 @@ export const semaphoreRoute = new Route({
   component: () => <Semaphore />,
 });
 
-export const registerRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: '/register',
-  component: () => <Register />,
-});
-
 export const loginRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/login',
@@ -45,7 +39,6 @@ export const loginRoute = new Route({
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
-  registerRoute,
   loginRoute,
   selectCredentialRoute,
   ethereumLoginRoute,
