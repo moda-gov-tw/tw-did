@@ -9,14 +9,22 @@ import {
   setupMongoDb,
   setupTestApplication,
 } from '../../tests/helper';
+import { UsersService } from './user.service';
+import { NationalService } from '../national/national.service';
 
 describe('UsersModule', () => {
   let app: INestApplication;
   let mongod: MongoMemoryServer;
+  let usersService: UsersService;
+  let nationalService: NationalService;
 
   beforeEach(async () => {
     mongod = await setupMongoDb();
-    app = await setupTestApplication(mongod.getUri());
+    const result = await setupTestApplication(mongod.getUri());
+    usersService = result.testingModule.get<UsersService>(UsersService);
+    nationalService =
+      result.testingModule.get<NationalService>(NationalService);
+    app = result.app;
   });
 
   afterEach(async () => {
@@ -28,11 +36,8 @@ describe('UsersModule', () => {
     const server = app.getHttpServer();
     const domain = getDomain(server);
 
-    const res = await request(server)
-      .post('/api/auth/national/register')
-      .send({ username: 'username', password: 'password' });
-
-    const { id, token } = res.body;
+    const user = await usersService.create({ nationalId: 'A123456789' });
+    const { id, token } = await nationalService.generateJwtPayload(user);
 
     const challengeRes = await request(server)
       .post('/api/auth/ethereum/challenge')

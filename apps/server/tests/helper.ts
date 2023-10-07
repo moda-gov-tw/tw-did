@@ -6,6 +6,7 @@ import { UsersModule } from '../src/user/user.module';
 import { AuthModule } from '../src/auth/auth.module';
 import { SiweMessage } from 'siwe';
 import { PrivateKeyAccount } from 'viem/accounts';
+import { ConfigModule } from '@nestjs/config';
 
 export function setupMongoDb(): Promise<MongoMemoryServer> {
   return MongoMemoryServer.create();
@@ -13,15 +14,30 @@ export function setupMongoDb(): Promise<MongoMemoryServer> {
 
 export async function setupTestApplication(
   mongoUri: string
-): Promise<INestApplication> {
-  const testModule: TestingModule = await Test.createTestingModule({
-    imports: [MongooseModule.forRoot(mongoUri), UsersModule, AuthModule],
+): Promise<{ app: INestApplication; testingModule: TestingModule }> {
+  const config = {
+    twfido: {
+      apiUrl: '',
+      apiKey: '',
+      serviceId: '',
+    },
+  };
+
+  const testingModule: TestingModule = await Test.createTestingModule({
+    imports: [
+      ConfigModule.forRoot({
+        load: [() => config],
+      }),
+      MongooseModule.forRoot(mongoUri),
+      UsersModule,
+      AuthModule,
+    ],
   }).compile();
 
-  const app = testModule.createNestApplication();
+  const app = testingModule.createNestApplication();
   app.setGlobalPrefix('api');
   await app.init();
-  return app;
+  return { app, testingModule };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
