@@ -10,7 +10,7 @@ import { GoIcon } from '../../common/icons/go';
 interface Props {
   nationID: string;
   walletAddr: string;
-  fidoQR: string;
+  spTicketPayload: string;
   handleFidoLogin: () => void;
   viewCredential: () => void;
 }
@@ -34,7 +34,7 @@ interface Step {
 export const LoginScreen = ({
   nationID,
   walletAddr,
-  fidoQR,
+  spTicketPayload,
   handleFidoLogin,
   viewCredential,
 }: Props) => {
@@ -53,7 +53,7 @@ export const LoginScreen = ({
     },
     displayQR: {
       message: 'Scan this QR code on TW FidO mobile app.',
-      qrCode: fidoQR,
+      qrCode: spTicketPayload,
       instructions: 'or click the push notification on your mobile phone',
     },
     connectFidoFailed: {
@@ -99,7 +99,7 @@ export const LoginScreen = ({
     setloginState(steps.viewCredential);
   }
 
-  const [loginState, setloginState] = useState<Step>(steps.connectFido);
+  const [loginState, setloginState] = useState<Step>(steps.displayQR);
 
   const { center, qrCode, cta, message, instructions } = loginState;
 

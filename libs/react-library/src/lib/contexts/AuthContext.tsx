@@ -104,9 +104,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const res = await fetch(`/api/users/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const data = await res.json();
+    const user = await res.json();
     if (res.status === 200) {
-      const { nationalId, ethereumAccount, semaphoreCommitment } = data;
+      const { nationalId, ethereumAccount, semaphoreCommitment } = user;
       setUser({
         nationalId,
         ethereumAccount,
@@ -115,6 +115,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         token,
       });
       localStorage.setItem('user', JSON.stringify({ id, token }));
+
+      return user;
     } else {
       throw new FetchUserDataError('Fetch user data failed');
     }
@@ -123,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const requestLogin = async (
     nationalId: string,
     method: 'QRCODE' | 'NOTIFY'
-  ):Promise<RequestLoginResponse> => {
+  ): Promise<RequestLoginResponse> => {
     const requestRes = await fetch('/api/auth/national/request-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

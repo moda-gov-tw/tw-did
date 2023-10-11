@@ -1,13 +1,31 @@
 import { RegisterScreen, useAuth } from '@tw-did/react-library';
 import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { registerRoute } from '../router';
 
 export function Register() {
-  const { user, ethereumLogin, updateSemaphoreCommitment } = useAuth();
+  const { user, login, ethereumLogin, updateSemaphoreCommitment } = useAuth();
+  const { nationalId, notification, qrcode } = useSearch({
+    from: registerRoute.id,
+  });
 
-    const handleFidoLogin = async () => {
-    /* TODO: handleFidoLogin */
+  const handleFidoLogin = () => {
+    // qrcode login
+    const loginPromise = login(
+      nationalId,
+      qrcode.transactionId,
+      qrcode.spTicketId
+    );
+
+    // notification login
+    const notifyPromise = login(
+      nationalId,
+      notification.transactionId,
+      notification.spTicketId
+    );
+
+    return Promise.race([loginPromise, notifyPromise]);
   };
 
   const handleEthLogin = async () => {
@@ -33,7 +51,7 @@ export function Register() {
   return user ? (
     <RegisterScreen
       user={user}
-      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
+      spTicketPayload={qrcode.spTicketPayload}
       handleFidoLogin={handleFidoLogin}
       handleEthLogin={handleEthLogin}
       handleBind={handleBind}

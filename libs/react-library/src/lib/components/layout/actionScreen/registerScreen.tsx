@@ -1,8 +1,9 @@
+import { QRCodeCanvas } from 'qrcode.react';
 import { ConnectionCard } from '../connectionsCard';
 import { Logo } from '../../common/icons/logo';
 import { GoIcon } from '../../common/icons/go';
 import { FidoMin } from '../../common/icons/fidoMin';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ReactNode } from 'react';
 import { StepIndicator } from '../../common/stepIndicator';
 import styles from './layout.module.scss';
@@ -19,7 +20,7 @@ interface User {
 }
 interface Props {
   user: User;
-  fidoQR: string;
+  spTicketPayload: string;
   handleFidoLogin: () => void;
   handleEthLogin: () => void;
   handleBind: () => void;
@@ -44,11 +45,11 @@ interface Step {
 
 export const RegisterScreen = ({
   user,
-  fidoQR,
+  spTicketPayload,
   handleFidoLogin,
   handleEthLogin,
   handleBind,
-  viewCredential
+  viewCredential,
 }: Props) => {
   const steps = {
     connectFido: {
@@ -68,7 +69,7 @@ export const RegisterScreen = ({
     displayQR: {
       currentStep: 0,
       message: 'Scan this QR code on TW FidO mobile app.',
-      qrCode: fidoQR,
+      qrCode: spTicketPayload,
       instructions: 'or click the push notification on your mobile phone',
     },
     connectFidoFailed: {
@@ -159,9 +160,9 @@ export const RegisterScreen = ({
   }
 
   async function connectFido() {
-    if (!isMobile()) {
-      setRegState(steps.displayQR);
-    }
+    // if (!isMobile()) {
+    //   setRegState(steps.displayQR);
+    // }
     try {
       await handleFidoLogin();
     } catch (e) {
@@ -191,9 +192,13 @@ export const RegisterScreen = ({
     setRegState(steps.viewCredential);
   }
 
-  const [regState, setRegState] = useState<Step>(steps.connectFido);
+  const [regState, setRegState] = useState<Step>(steps.displayQR);
 
   const { center, qrCode, cta, currentStep, message, instructions } = regState;
+
+  useEffect(() => {
+    connectFido();
+  }, []);
 
   return (
     <Container>
@@ -212,7 +217,7 @@ export const RegisterScreen = ({
               walletAddr={user.ethereumAccount}
             />
           ) : qrCode ? (
-            <img src={qrCode} />
+            <QRCodeCanvas value={qrCode} />
           ) : (
             <Logo />
           )}

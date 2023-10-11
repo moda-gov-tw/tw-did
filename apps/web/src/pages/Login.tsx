@@ -1,25 +1,14 @@
 import { LoginScreen, useAuth } from '@tw-did/react-library';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { loginRoute } from '../router';
 
 export function Login() {
   const { user } = useAuth();
+  const { notification, qrcode } = useSearch({ from: loginRoute.id });
 
   const handleLogin = async () => {
     /* TODO: handleFidoLogin */
   };
-
-  // const handleLogin = async () => {
-  //   const notifyRes = await requestLogin(nationalId, 'NOTIFY');
-  //   const qrcodeRes = await requestLogin(nationalId, 'QRCODE');
-
-  //   // qrcode login
-  //   console.log('qrcode', spTicketPayload);
-  //   setSpTicketPayload(qrcodeRes.spTicketPayload);
-  //   login(nationalId, qrcodeRes.transactionId, qrcodeRes.spTicketId);
-
-  //   // notification login
-  //   login(nationalId, notifyRes.transactionId, notifyRes.spTicketId);
-  // };
 
   const navigate = useNavigate();
   function viewCredential() {
@@ -30,7 +19,7 @@ export function Login() {
     <LoginScreen
       nationID={user.nationalId}
       walletAddr="0x***********"
-      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
+      spTicketPayload={qrcode.spTicketPayload}
       handleFidoLogin={handleLogin}
       viewCredential={viewCredential}
     />

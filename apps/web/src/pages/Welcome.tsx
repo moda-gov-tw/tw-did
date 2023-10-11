@@ -1,30 +1,45 @@
 import { useAuth } from '@tw-did/react-library';
 import { WelcomeScreen } from '@tw-did/react-library';
 import { useNavigate } from '@tanstack/react-router';
+import { LoginSearch, loginRoute, registerRoute } from '../router';
 
 export function Welcome() {
-  const { user, register } = useAuth();
+  const { user, requestLogin } = useAuth();
   const navigate = useNavigate();
 
-  const handleRegister = async (nationalId: string) => {
+  const handleLogin = async (nationalId: string) => {
     try {
-      await register(nationalId, 'password');
+      const notifyRes = await requestLogin(nationalId, 'NOTIFY');
+      const qrcodeRes = await requestLogin(nationalId, 'QRCODE');
+      const loginSearch: LoginSearch = {
+        nationalId,
+        notification: {
+          transactionId: notifyRes.transactionId,
+          spTicketId: notifyRes.spTicketId,
+        },
+        qrcode: {
+          transactionId: qrcodeRes.transactionId,
+          spTicketId: qrcodeRes.spTicketId,
+          spTicketPayload: qrcodeRes.spTicketPayload,
+        },
+      };
+
+      if (!user?.ethereumAccount || !user?.semaphoreCommitment) {
+        navigate({ to: registerRoute.id, search: loginSearch });
+      } else {
+        navigate({ to: loginRoute.id, search: loginSearch });
+      }
     } catch (e) {
       console.log(e);
       throw e;
     }
-    /* TODO: redirect to login if already registered */
-    let registered = false;
-    if (user?.ethereumAccount) navigate({ to: '/login' });
-    else navigate({ to: '/register' });
-    return;
   };
 
   return (
     <>
       <WelcomeScreen
         nationalId={user?.nationalId || ''} // use user nationalId if logined before
-        handleRegister={handleRegister}
+        handleRegister={handleLogin}
       />
     </>
   );
