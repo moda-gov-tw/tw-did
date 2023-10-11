@@ -1,0 +1,37 @@
+.StepIndicator {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    --step-size: 20px;
+    --step-color: var(--prim-color);
+    --step-line: var(--prim-color) 2px solid;
+    padding-left: calc(var(--step-size));
+}
+
+.CurrentStep,
+.Step {
+    flex-grow: 1;
+
+    &:first-child {
+        flex-grow: 0;
+
+    }
+
+    position: relative;
+    border-bottom: var(--step-line);
+    height: calc(var(--step-size) / 2 + 1px);
+}
+
+.Step {
+    opacity: 0.2;
+}
+
+.round {
+    position: absolute;
+    right: 0;
+    border-radius: 100%;
+    width: var(--step-size);
+    height: var(--step-size);
+    background-color: var(--step-color);
+    border: var(--bg-color) 4px solid;;
+}

@@ -1,6 +1,12 @@
 import { RootRoute, Route, Router } from '@tanstack/react-router';
 import App from './App';
-import { CredentialSelection, EthereumLogin, Login } from './pages';
+import {
+  CredentialSelection,
+  CredentialView,
+  EthereumLogin,
+  Login,
+  Welcome,
+} from './pages';
 import { Semaphore } from './pages/Semaphore';
 
 const rootRoute = new RootRoute({
@@ -10,7 +16,13 @@ const rootRoute = new RootRoute({
 export const homeRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => <div>Home</div>,
+  component: () => <Welcome />,
+});
+
+export const viewCredentialRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/view-credential',
+  component: () => <CredentialView />,
 });
 
 export const selectCredentialRoute = new Route({
@@ -40,6 +52,7 @@ export const loginRoute = new Route({
 const routeTree = rootRoute.addChildren([
   homeRoute,
   loginRoute,
+  viewCredentialRoute,
   selectCredentialRoute,
   ethereumLoginRoute,
   semaphoreRoute,

@@ -1,41 +1,40 @@
-import { useAuth } from '@tw-did/react-library';
-import { ChangeEvent, useState } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
+import { LoginScreen, useAuth } from '@tw-did/react-library';
+import { useNavigate } from '@tanstack/react-router';
 
 export function Login() {
-  const [nationalId, setNationalId] = useState<string>('');
-  const [spTicketPayload, setSpTicketPayload] = useState<string>('');
-  const { requestLogin, login, logout } = useAuth();
-
-  const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
-    setNationalId(e.target.value);
-  };
+  const { user } = useAuth();
 
   const handleLogin = async () => {
-    const notifyRes = await requestLogin(nationalId, 'NOTIFY');
-    const qrcodeRes = await requestLogin(nationalId, 'QRCODE');
-
-    // qrcode login
-    console.log('qrcode', spTicketPayload);
-    setSpTicketPayload(qrcodeRes.spTicketPayload);
-    login(nationalId, qrcodeRes.transactionId, qrcodeRes.spTicketId);
-
-    // notification login
-    login(nationalId, notifyRes.transactionId, notifyRes.spTicketId);
+    /* TODO: handleFidoLogin */
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        name="national-id"
-        id="national-id"
-        onChange={handleTyping}
-        value={nationalId}
-      />
-      <button onClick={() => handleLogin()}>Login</button>{' '}
-      <button onClick={() => logout()}>Logout</button> <br />
-      {spTicketPayload !== '' ? <QRCodeCanvas value={spTicketPayload} /> : ''}
-    </div>
+  // const handleLogin = async () => {
+  //   const notifyRes = await requestLogin(nationalId, 'NOTIFY');
+  //   const qrcodeRes = await requestLogin(nationalId, 'QRCODE');
+
+  //   // qrcode login
+  //   console.log('qrcode', spTicketPayload);
+  //   setSpTicketPayload(qrcodeRes.spTicketPayload);
+  //   login(nationalId, qrcodeRes.transactionId, qrcodeRes.spTicketId);
+
+  //   // notification login
+  //   login(nationalId, notifyRes.transactionId, notifyRes.spTicketId);
+  // };
+
+  const navigate = useNavigate();
+  function viewCredential() {
+    navigate({ to: '/view-credential' });
+  }
+
+  return user ? (
+    <LoginScreen
+      nationID={user.nationalId}
+      walletAddr="0x***********"
+      fidoQR="/sampleQR.jpg" /* TODO: use fido QR code */
+      handleFidoLogin={handleLogin}
+      viewCredential={viewCredential}
+    />
+  ) : (
+    <></>
   );
 }
