@@ -2,7 +2,6 @@ import { BackgroundContainer } from '../../common/background';
 import { Container, FlexSpace } from '../../common/container';
 import { Logo } from '../../common/icons/logo';
 import styles from './layout.module.scss';
-import theme from '../../../styles/theme.module.scss';
 import { Input } from '../../common/input';
 import { GoIcon } from '../../common/icons/go';
 import { useState } from 'react';
@@ -18,19 +17,8 @@ export const WelcomeScreen = ({
   const [IDinput, setIDinput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
-  const errorDialog = {
-    title: 'Error',
-    children: 'Please enter a valid nation ID.',
-    actions: [
-      {
-        text: 'OK',
-        onClick: () => {},
-      },
-    ],
-  };
-
   function validateNationID(nationID: string) {
-    let regex = /^[A-Z]{1}[1-2]{1}[0-9]{8}$/;
+    const regex = /^[A-Z]{1}[1-2]{1}[0-9]{8}$/;
     return regex.test(nationID);
   }
 

@@ -1,10 +1,11 @@
-import { CredentialData, CredentialType } from '../../../contexts';
+import { CredentialData } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
 import { Button } from '../../common/button';
 import styles from './credentialScreen.module.scss';
 import { Dialog, useDialog, DialogProps } from '../../common/dialog';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+
 export const CredentialScreen = ({
   onRevoke,
   onAction,
@@ -112,20 +113,23 @@ export const CredentialScreen = ({
       },
     ],
   };
-  const goHomeDialog: DialogProps = {
-    title: 'You are not logged in',
-    children: 'Please login to continue.',
-    actions: [
-      {
-        text: 'OK',
-        onClick: () => {
-          dialogController.close();
-          onClose && onClose();
+  const goHomeDialog: DialogProps = useMemo(
+    () => ({
+      title: 'You are not logged in',
+      children: 'Please login to continue.',
+      actions: [
+        {
+          text: 'OK',
+          onClick: () => {
+            dialogController.close();
+            onClose && onClose();
+          },
+          type: 'primary',
         },
-        type: 'primary',
-      },
-    ],
-  }
+      ],
+    }),
+    [dialogController, onClose]
+  );
   function confirmRevoke() {
     dialogController.open(revokeDialog);
   }
@@ -143,36 +147,28 @@ export const CredentialScreen = ({
     if (!checkLogin()) {
       dialogController.open(goHomeDialog);
     }
-  }, []);
+  }, [dialogController, checkLogin]);
 
   return (
-    <>
-      <Container>
-        <div className={styles.CredentialScreen}>
-          {credentials && (
-            <CredentialCardList
-              credentials={credentials}
-              actionLabels={actionLabels || []}
-              onAction={onAction}
-            />
-          )}
-          <FlexSpace />
-          {onRevoke && (
-            <>
-              <div className={styles.Instructions}>Lost your wallet?</div>
-              <Button onClick={confirmRevoke} text="Revoke Binding" />
-            </>
-          )}
-          {onLogout && (
-            <>
-              <Button onClick={confirmLogout} text="Logout" />
-            </>
-          )}
-          {dialogController.props && (
-            <Dialog {...dialogController.props} />
-          )}
-        </div>
-      </Container>
-    </>
+    <Container>
+      <div className={styles.CredentialScreen}>
+        {credentials && (
+          <CredentialCardList
+            credentials={credentials}
+            actionLabels={actionLabels || []}
+            onAction={onAction}
+          />
+        )}
+        <FlexSpace />
+        {onRevoke && (
+          <>
+            <div className={styles.Instructions}>Lost your wallet?</div>
+            <Button onClick={confirmRevoke} text="Revoke Binding" />
+          </>
+        )}
+        {onLogout && <Button onClick={confirmLogout} text="Logout" />}
+        {dialogController.props && <Dialog {...dialogController.props} />}
+      </div>
+    </Container>
   );
 };

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import styles from './dialog.module.scss';
 import { Button, buttonProps } from '../button';
 
@@ -10,12 +10,18 @@ export interface DialogProps {
 }
 
 export const useDialog = () => {
-  const [props, setProps] = useState<DialogProps | undefined>(); 
-  const open = (openProps: DialogProps) => {
+  const [props, setProps] = useState<DialogProps | undefined>();
+  const open = useCallback((openProps: DialogProps) => {
     openProps && setProps(openProps);
-  };
-  const close = () => setProps(undefined);
-  return { open, close, props };
+  }, []);
+  const close = useCallback(() => setProps(undefined), []);
+
+  const dialogController = useMemo(
+    () => ({ open, close, props }),
+    [open, close, props]
+  );
+
+  return dialogController;
 };
 
 export const Dialog = ({ children, title, actions }: DialogProps) => {
@@ -26,7 +32,7 @@ export const Dialog = ({ children, title, actions }: DialogProps) => {
         <div className={styles.DialogBody}>{children}</div>
         <div className={styles.DialogFooter}>
           {actions?.map((props, index) => (
-            <Button key={index} {...props}/>
+            <Button key={index} {...props} />
           ))}
         </div>
       </div>

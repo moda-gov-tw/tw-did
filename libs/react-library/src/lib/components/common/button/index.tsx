@@ -3,9 +3,11 @@ import styles from './button.module.scss';
 import { Link } from '@tanstack/react-router';
 
 export interface buttonProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: any;
   icon?: () => ReactNode;
   text?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;
   type?: 'danger' | 'primary' | 'secondary';
 }
@@ -21,21 +23,4 @@ export const Button = ({ onClick, icon, text, type, props }: buttonProps) => {
       {icon && icon()}
     </button>
   );
-};
-
-export const LinkButton = ({
-  children,
-  link,
-  props,
-}: {
-  children: any;
-  link: string;
-  props?: any;
-}) => {
-  const buttonProps = {
-    to: link,
-    className: styles.Button,
-  };
-
-  return <Link {...buttonProps}>{children}</Link>;
 };

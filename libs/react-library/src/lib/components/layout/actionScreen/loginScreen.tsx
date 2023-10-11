@@ -1,3 +1,4 @@
+import { QRCodeCanvas } from 'qrcode.react';
 import styles from './layout.module.scss';
 import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
@@ -116,7 +117,7 @@ export const LoginScreen = ({
               walletAddr={walletAddr}
             />
           ) : qrCode ? (
-            <img src={qrCode} />
+            <QRCodeCanvas value={qrCode} />
           ) : (
             <Logo />
           )}

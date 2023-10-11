@@ -34,7 +34,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           </p>
         )}
         <div className={styles.idendity}>
-          {type == 'ethereum' &&
+          {type === 'ethereum' &&
             fields.map((field, index) => (
               <div key={index}>
                 <div
@@ -47,11 +47,13 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
                   data-testid={`field-value-${field.key}`}
                   className={styles.value}
                 >
-                  {field.key == 'ethereum-account-address'
-                    ? <ShortenAddr addr={field.value} />
-                    : field.key == 'id'
-                    ? <ShortenID id={field.value} />
-                    : field.value}
+                  {field.key === 'ethereum-account-address' ? (
+                    <ShortenAddr addr={field.value} />
+                  ) : field.key === 'id' ? (
+                    <ShortenID id={field.value} />
+                  ) : (
+                    field.value
+                  )}
                 </div>
               </div>
             ))}

@@ -1,7 +1,6 @@
 import { CredentialType } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
-import { Button } from '../../common/button';
 import styles from './credentialScreen.module.scss';
 
 const testProps = {
@@ -23,18 +22,18 @@ const testProps = {
     },
   ],
   actionLabels: ['Select'],
-  onAction: (index: number, actionLabel: string) => {},
+  onAction: (index: number, actionLabel: string) => {
+    // do nothing
+  },
 };
 
 export const WalletScreen = () => {
   return (
-    <>
-      <Container>
-        <div className={styles.CredentialScreen}>
-          <CredentialCardList {...testProps} />
-          <FlexSpace />
-        </div>
-      </Container>
-    </>
+    <Container>
+      <div className={styles.CredentialScreen}>
+        <CredentialCardList {...testProps} />
+        <FlexSpace />
+      </div>
+    </Container>
   );
 };

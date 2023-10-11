@@ -153,11 +153,11 @@ export const RegisterScreen = ({
     },
   };
 
-  function isMobile() {
-    const regex =
-      /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-    return regex.test(navigator.userAgent);
-  }
+  // function isMobile() {
+  //   const regex =
+  //     /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  //   return regex.test(navigator.userAgent);
+  // }
 
   async function connectFido() {
     // if (!isMobile()) {
@@ -197,7 +197,15 @@ export const RegisterScreen = ({
   const { center, qrCode, cta, currentStep, message, instructions } = regState;
 
   useEffect(() => {
-    connectFido();
+    (async function () {
+      try {
+        await handleFidoLogin();
+      } catch (e) {
+        setRegState(steps.connectFidoFailed);
+        return;
+      }
+      setRegState(steps.connectWallet);
+    })();
   }, []);
 
   return (

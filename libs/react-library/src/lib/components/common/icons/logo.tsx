@@ -1,3 +1,4 @@
 import img from './img/logo.svg';
 
-export const Logo = (props:any) => <img {...props} src={img} alt="logo" />;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const Logo = (props: any) => <img {...props} src={img} alt="logo" />;
