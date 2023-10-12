@@ -3,7 +3,6 @@ import { ConnectionCard } from '../connectionsCard';
 import { Logo } from '../../common/icons/logo';
 import { GoIcon } from '../../common/icons/go';
 import { FidoMin } from '../../common/icons/fidoMin';
-import { useEffect, useState } from 'react';
 import { ReactNode } from 'react';
 import { StepIndicator } from '../../common/stepIndicator';
 import styles from './layout.module.scss';
@@ -11,23 +10,15 @@ import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
 import { EthMin } from '../../common/icons/ethMin';
 
-interface User {
+interface Props {
+  currentStepId: StepId;
   nationalId: string;
   ethereumAccount: string;
-  semaphoreCommitment: string;
-  id: string;
-  token: string;
-}
-interface Props {
-  user: User;
   spTicketPayload: string;
-  handleFidoLogin: () => void;
-  handleEthLogin: () => void;
-  handleBind: () => void;
-  viewCredential: () => void;
+  onAction: (stepId: StepId) => void;
 }
 interface Step {
-  currentStep: number;
+  stepIndex: number;
   message: string;
   instructions: string;
   center?: {
@@ -35,45 +26,39 @@ interface Step {
     walletState?: number;
     bindState?: number;
   };
-  qrCode?: string;
+  qrcode?: string;
   cta?: {
     text: string;
-    onClick: () => void;
     icon?: () => ReactNode;
   };
 }
 
+export enum StepId {
+  Qrcode = 'Qrcode',
+  BindEthereumAccount = 'BindEthereumAccount',
+  BindSemaphoreIdentity = 'BindSemaphoreIdentity',
+  ConnectFidoFailed = 'ConnectFidoFailed',
+  BindSemaphoreIdentityFailed = 'BindSemaphoreIdentityFailed',
+  ViewCredentials = 'ViewCredentials',
+  BindEthereumAccountFailed = 'BindEthereumAccountFailed',
+}
+
 export const RegisterScreen = ({
-  user,
+  currentStepId,
+  nationalId,
+  ethereumAccount,
   spTicketPayload,
-  handleFidoLogin,
-  handleEthLogin,
-  handleBind,
-  viewCredential,
+  onAction,
 }: Props) => {
-  const steps = {
-    connectFido: {
-      currentStep: 0,
-      message: 'There are no wallet bound with your nation ID.',
-      instructions: 'Please login with TW-Fido to bind them.',
-      center: {
-        fidoState: 1,
-        walletState: 0,
-      },
-      cta: {
-        text: 'Connect TW Fido',
-        onClick: connectFido,
-        icon: FidoMin,
-      },
-    },
-    displayQR: {
-      currentStep: 0,
+  const steps: Record<StepId, Step> = {
+    [StepId.Qrcode]: {
+      stepIndex: 0,
       message: 'Scan this QR code on TW FidO mobile app.',
-      qrCode: spTicketPayload,
+      qrcode: spTicketPayload,
       instructions: 'or click the push notification on your mobile phone',
     },
-    connectFidoFailed: {
-      currentStep: 0,
+    [StepId.ConnectFidoFailed]: {
+      stepIndex: 0,
       message: 'Authenticate failed!',
       instructions: 'Please try again.',
       center: {
@@ -82,12 +67,11 @@ export const RegisterScreen = ({
       },
       cta: {
         text: 'Connect TW Fido',
-        onClick: connectFido,
         icon: FidoMin,
       },
     },
-    connectWallet: {
-      currentStep: 1,
+    [StepId.BindEthereumAccount]: {
+      stepIndex: 1,
       message: 'Successfully connected to your TW-Fido.',
       instructions:
         'Please sign in with ethereum and bind it to your nation identity.',
@@ -97,12 +81,11 @@ export const RegisterScreen = ({
       },
       cta: {
         text: 'Connect Wallet',
-        onClick: connectWallet,
         icon: EthMin,
       },
     },
-    connectWalletFailed: {
-      currentStep: 1,
+    [StepId.BindEthereumAccountFailed]: {
+      stepIndex: 1,
       message: 'User injected!',
       instructions: 'Please try again.',
       center: {
@@ -111,12 +94,11 @@ export const RegisterScreen = ({
       },
       cta: {
         text: 'Connect Wallet',
-        onClick: connectWallet,
         icon: EthMin,
       },
     },
-    binding: {
-      currentStep: 2,
+    [StepId.BindSemaphoreIdentity]: {
+      stepIndex: 2,
       message: 'All the information you need has been prepared.',
       instructions: 'Please confirm the information and bind your wallet.',
       center: {
@@ -125,88 +107,39 @@ export const RegisterScreen = ({
       },
       cta: {
         text: 'Bind',
-        onClick: bind,
         icon: EthMin,
       },
     },
-    bindingFailed: {
-      currentStep: 2,
+    [StepId.BindSemaphoreIdentityFailed]: {
+      stepIndex: 2,
       message: 'Binding failed!',
       instructions: 'Please try again.',
       center: { bindState: 2 },
       cta: {
         text: 'Bind',
-        onClick: bind,
         icon: EthMin,
       },
     },
-    viewCredential: {
-      currentStep: 3,
+    [StepId.ViewCredentials]: {
+      stepIndex: 3,
       message: 'Successfully bound to your nation identity.',
       instructions: 'Your credentials are generated. View it now!',
       center: { bindState: 1 },
       cta: {
         text: 'View Credential',
-        onClick: viewCredential,
         icon: GoIcon,
       },
     },
   };
 
-  // function isMobile() {
-  //   const regex =
-  //     /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-  //   return regex.test(navigator.userAgent);
-  // }
-
-  async function connectFido() {
-    // if (!isMobile()) {
-    //   setRegState(steps.displayQR);
-    // }
-    try {
-      await handleFidoLogin();
-    } catch (e) {
-      setRegState(steps.connectFidoFailed);
-      return;
-    }
-    setRegState(steps.connectWallet);
-  }
-
-  async function connectWallet() {
-    try {
-      await handleEthLogin();
-    } catch (e) {
-      setRegState(steps.connectWalletFailed);
-      return;
-    }
-    setRegState(steps.binding);
-  }
-
-  async function bind() {
-    try {
-      await handleBind();
-    } catch (e) {
-      setRegState(steps.bindingFailed);
-      return;
-    }
-    setRegState(steps.viewCredential);
-  }
-
-  const [regState, setRegState] = useState<Step>(steps.displayQR);
-
-  const { center, qrCode, cta, currentStep, message, instructions } = regState;
-
-  useEffect(() => {
-    (async function () {
-      try {
-        await handleFidoLogin();
-      } catch (e) {
-        setRegState(steps.connectFidoFailed);
-        return;
-      }
-      setRegState(steps.connectWallet);
-    })();
-  }, []);
+  const {
+    center,
+    qrcode: qrCode,
+    cta,
+    stepIndex: currentStep,
+    message,
+    instructions,
+  } = steps[currentStepId];
 
   return (
     <Container>
@@ -221,8 +154,8 @@ export const RegisterScreen = ({
           {center ? (
             <ConnectionCard
               {...center}
-              nationID={user.nationalId}
-              walletAddr={user.ethereumAccount}
+              nationID={nationalId}
+              walletAddr={ethereumAccount}
             />
           ) : qrCode ? (
             <QRCodeCanvas value={qrCode} />
@@ -235,7 +168,13 @@ export const RegisterScreen = ({
         {instructions && (
           <div className={styles.Instructions}>{instructions}</div>
         )}
-        {cta && <Button {...cta} type="primary" />}
+        {cta && (
+          <Button
+            {...cta}
+            onClick={() => onAction(currentStepId)}
+            type="primary"
+          />
+        )}
       </div>
     </Container>
   );

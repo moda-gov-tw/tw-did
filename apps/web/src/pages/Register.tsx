@@ -1,63 +1,74 @@
-import { RegisterScreen, useAuth } from '@tw-did/react-library';
+import { StepId, RegisterScreen, useAuth } from '@tw-did/react-library';
 import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
-import { useNavigate, useSearch } from '@tanstack/react-router';
-import { registerRoute } from '../router';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { useConfig, useConnect } from 'wagmi';
+
+class StepIdNotFoundError extends Error {
+  constructor(stepId: StepId) {
+    super(`Step ID ${stepId} not found`);
+    this.name = 'StepIdNotFoundError';
+
+    Object.setPrototypeOf(this, StepIdNotFoundError.prototype);
+  }
+}
 
 export function Register() {
-  const { user, login, ethereumLogin, updateSemaphoreCommitment } = useAuth();
-  const { nationalId, notification, qrcode } = useSearch({
-    from: registerRoute.id,
+  const { connectors } = useConfig();
+  const { connect } = useConnect({
+    connector: connectors[0],
   });
+  const navigate = useNavigate();
+  const { user, loginInfo, ethereumLogin, updateSemaphoreCommitment } =
+    useAuth();
+  const [currentStep, setCurrentStep] = useState(StepId.Qrcode);
 
-  const handleFidoLogin = () => {
-    // qrcode login
-    const loginPromise = login(
-      nationalId,
-      qrcode.transactionId,
-      qrcode.spTicketId
-    );
+  const ethereumAccount = user?.ethereumAccount || '';
 
-    // notification login
-    const notifyPromise = login(
-      nationalId,
-      notification.transactionId,
-      notification.spTicketId
-    );
-
-    return Promise.race([loginPromise, notifyPromise]);
-  };
+  useEffect(() => {
+    if (user?.token && currentStep === StepId.Qrcode) {
+      setCurrentStep(StepId.BindEthereumAccount);
+    }
+  }, [user, currentStep]);
 
   const handleEthLogin = async () => {
+    connect();
     await ethereumLogin();
-  };
-
-  const generateIdentity = async () => {
-    const message = `Sign this message to generate your Semaphore identity.`;
-    const result = await signMessage({ message });
-    const identity = new Identity(result);
-    updateSemaphoreCommitment(identity.commitment.toString());
+    setCurrentStep(StepId.BindSemaphoreIdentity);
   };
 
   const handleBind = async () => {
-    await generateIdentity();
+    const message = `Sign this message to generate your Semaphore identity.`;
+    const result = await signMessage({ message });
+    const identity = new Identity(result);
+    await updateSemaphoreCommitment(identity.commitment.toString());
+    setCurrentStep(StepId.ViewCredentials);
   };
 
-  const navigate = useNavigate();
-  function viewCredential() {
+  const viewCredential = () => {
     navigate({ to: '/view-credential' });
-  }
+  };
 
-  return user ? (
+  const onAction = async (stepId: StepId) => {
+    if (stepId === StepId.BindEthereumAccount) {
+      await handleEthLogin();
+    } else if (stepId === StepId.BindSemaphoreIdentity) {
+      await handleBind();
+    } else if (stepId === StepId.ViewCredentials) {
+      await viewCredential();
+    } else {
+      throw new StepIdNotFoundError(stepId);
+    }
+  };
+
+  return (
     <RegisterScreen
-      user={user}
-      spTicketPayload={qrcode.spTicketPayload}
-      handleFidoLogin={handleFidoLogin}
-      handleEthLogin={handleEthLogin}
-      handleBind={handleBind}
-      viewCredential={viewCredential}
+      currentStepId={currentStep}
+      nationalId={user?.nationalId || ''}
+      ethereumAccount={ethereumAccount}
+      spTicketPayload={loginInfo?.qrcode?.spTicketPayload || ''}
+      onAction={onAction}
     />
-  ) : (
-    <></>
   );
 }

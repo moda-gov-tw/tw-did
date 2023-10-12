@@ -67,17 +67,25 @@ interface RequestLoginResponse {
   spTicketPayload: string;
 }
 
+interface LoginMetadata {
+  transactionId: string;
+  spTicketId: string;
+}
+
+interface QrcodeLoginMetadata extends LoginMetadata {
+  spTicketPayload: string;
+}
+
+export interface LoginInfo {
+  nationalId: string;
+  notification: LoginMetadata;
+  qrcode: QrcodeLoginMetadata;
+}
+
 interface AuthContextProps {
   user: User | null;
-  requestLogin: (
-    nationalId: string,
-    method: 'QRCODE' | 'NOTIFY'
-  ) => Promise<RequestLoginResponse>;
-  login: (
-    nationalId: string,
-    transactionId: string,
-    spTicketId: string
-  ) => Promise<void>;
+  loginInfo: LoginInfo | null;
+  requestLogin: (nationalId: string) => Promise<void>;
   logout: () => void;
   ethereumLogin: () => Promise<void>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
@@ -91,6 +99,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loginInfo, setLoginInfo] = useState<LoginInfo | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -122,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const requestLogin = async (
+  const _requestLogin = async (
     nationalId: string,
     method: 'QRCODE' | 'NOTIFY'
   ): Promise<RequestLoginResponse> => {
@@ -136,7 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return res;
   };
 
-  const login = async (
+  const _login = async (
     nationalId: string,
     transactionId: string,
     spTicketId: string
@@ -159,6 +168,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setUserInfo(data.id, data.token);
     } else {
       throw new LoginError('Login failed');
+    }
+  };
+
+  const requestLogin = async (nationalId: string) => {
+    const notifyRes = await _requestLogin(nationalId, 'NOTIFY');
+    const qrcodeRes = await _requestLogin(nationalId, 'QRCODE');
+
+    const info: LoginInfo = {
+      nationalId,
+      notification: {
+        transactionId: notifyRes.transactionId,
+        spTicketId: notifyRes.spTicketId,
+      },
+      qrcode: {
+        transactionId: qrcodeRes.transactionId,
+        spTicketId: qrcodeRes.spTicketId,
+        spTicketPayload: qrcodeRes.spTicketPayload,
+      },
+    };
+
+    setLoginInfo(info);
+    login();
+  };
+
+  const login = () => {
+    if (loginInfo) {
+      const { nationalId, qrcode, notification } = loginInfo;
+      _login(nationalId, qrcode.transactionId, qrcode.spTicketId);
+      // notification login
+      _login(nationalId, notification.transactionId, notification.spTicketId);
     }
   };
 
@@ -257,8 +296,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        loginInfo,
         requestLogin,
-        login,
         logout,
         ethereumLogin,
         updateSemaphoreCommitment,

@@ -14,7 +14,7 @@ export const WelcomeScreen = ({
   nationalId: string;
   handleRegister: (nationalId: string) => void;
 }) => {
-  const [IDinput, setIDinput] = useState<string>(nationalId);
+  const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
   function validateNationID(nationID: string) {
@@ -24,12 +24,12 @@ export const WelcomeScreen = ({
 
   function handleGo() {
     // query the nation ID
-    if (!validateNationID(IDinput)) {
+    if (!validateNationID(idInput)) {
       setWarning('Please enter a valid nation ID.');
       return;
     }
     try {
-      handleRegister(IDinput);
+      handleRegister(idInput);
     } catch (e) {
       console.log(e);
     }
@@ -51,7 +51,7 @@ export const WelcomeScreen = ({
             </p>
             <Input
               placeholder="Nation ID"
-              commitValue={setIDinput}
+              commitValue={setIdInput}
               initialValue={nationalId}
             />
             <Button type="primary" onClick={handleGo} icon={GoIcon} text="Go" />
