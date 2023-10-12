@@ -7,16 +7,12 @@ export function Welcome() {
   const navigate = useNavigate();
 
   const handleRegister = async (nationalId: string) => {
-    try {
-      await register(nationalId, 'password');
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-    /* TODO: redirect to login if already registered */
-    let registered = false;
-    if (user?.ethereumAccount) navigate({ to: '/login' });
-    else navigate({ to: '/register' });
+    navigate({ to: '/register' });
+    return;
+  };
+
+  const handleLogin = async (nationalId: string) => {
+    navigate({ to: '/login' });
     return;
   };
 
@@ -25,6 +21,7 @@ export function Welcome() {
       <WelcomeScreen
         nationalId={user?.nationalId || ''} // use user nationalId if logined before
         handleRegister={handleRegister}
+        handleLogin={handleLogin}
       />
     </>
   );

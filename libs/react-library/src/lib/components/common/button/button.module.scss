@@ -37,4 +37,13 @@
         opacity: 0.5;
         cursor: not-allowed;
     }
+    
+    &.link{
+        background-color: transparent;
+        padding: 0 0 0 0;
+        border: none;
+        border-radius: 0;
+        letter-spacing: 0;
+        border-bottom: 1px solid var(--text-color2);
+    }
 }

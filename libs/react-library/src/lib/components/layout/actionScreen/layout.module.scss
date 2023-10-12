@@ -76,12 +76,21 @@
     font-size: 0.8rem;
     color: var(--text-color2);
 
+    button {
+        font-size: 0.8rem;
+        width: auto;
+    }
+
     @media screen and (min-width: 768px) {
         font-size: 1rem;
         align-items: start;
         justify-content: start;
         order: 2;
         max-width: 300px;
+
+        button {
+            font-size: 1rem;
+        }
     }
 }
 

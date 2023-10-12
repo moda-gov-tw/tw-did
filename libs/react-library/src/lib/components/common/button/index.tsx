@@ -7,7 +7,7 @@ export interface buttonProps {
   icon?: () => ReactNode;
   text?: string;
   props?: any;
-  type?: 'danger' | 'primary' | 'secondary';
+  type?: 'danger' | 'primary' | 'secondary' | 'link';
 }
 
 export const Button = ({ onClick, icon, text, type, props }: buttonProps) => {
@@ -26,16 +26,14 @@ export const Button = ({ onClick, icon, text, type, props }: buttonProps) => {
 export const LinkButton = ({
   children,
   link,
-  props,
 }: {
   children: any;
   link: string;
-  props?: any;
 }) => {
   const buttonProps = {
-    to: link,
+    href: link,
     className: styles.Button,
   };
 
-  return <Link {...buttonProps}>{children}</Link>;
+  return <a {...buttonProps}>{children}</a>;
 };

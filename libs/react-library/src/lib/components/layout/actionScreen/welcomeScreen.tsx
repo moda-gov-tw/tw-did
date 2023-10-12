@@ -11,12 +11,15 @@ import { Button } from '../../common/button';
 export const WelcomeScreen = ({
   nationalId,
   handleRegister,
+  handleLogin,
 }: {
   nationalId: string;
   handleRegister: (nationalId: string) => void;
+  handleLogin: (nationalId: string) => void;
 }) => {
   const [IDinput, setIDinput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
+  const [action, setAction] = useState<'Register' | 'Login'>('Register');
 
   const errorDialog = {
     title: 'Error',
@@ -24,7 +27,7 @@ export const WelcomeScreen = ({
     actions: [
       {
         text: 'OK',
-        onClick: () => {},
+        onClick: () => { },
       },
     ],
   };
@@ -41,7 +44,10 @@ export const WelcomeScreen = ({
       return;
     }
     try {
-      handleRegister(IDinput);
+      if (action === 'Login')
+        handleLogin(IDinput);
+      else
+        handleRegister(IDinput);
     } catch (e) {
       console.log(e);
     }
@@ -59,14 +65,16 @@ export const WelcomeScreen = ({
           <div>
             <h1 className={styles.textLarge}>Welcome!</h1>
             <p className={styles.Instructions}>
-              Please enter your nation ID to get started.
+              {action == 'Register'
+                ? <span>Have an account? <Button type='link' onClick={() => setAction('Login')} text='Login here.' /></span>
+                : <span>Do not have an account?<Button type='link' onClick={() => setAction('Register')} text='Register here' /></span>}
             </p>
             <Input
               placeholder="Nation ID"
               commitValue={setIDinput}
               initialValue={nationalId}
             />
-            <Button type="primary" onClick={handleGo} icon={GoIcon} text="Go" />
+            <Button type="primary" onClick={handleGo} icon={GoIcon} text={action} />
             {<p className={styles.warning}>{warning}</p>}
           </div>
         </div>
