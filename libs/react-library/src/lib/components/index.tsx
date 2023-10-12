@@ -1,5 +1,5 @@
-export { WelcomeScreen } from './layout/actionScreen/welcomeScreen';
-export { RegisterScreen } from './layout/actionScreen/registerScreen';
-export { LoginScreen } from './layout/actionScreen/loginScreen';
+export { WelcomeScreen } from './layout/action-screen/WelcomeScreen';
+export { RegisterScreen } from './layout/action-screen/RegisterScreen';
+export { LoginScreen } from './layout/action-screen/LoginScreen';
 export { CredentialScreen } from './layout/credentialScreen/credentialScreen';
 export { Header } from './layout/header/header';
