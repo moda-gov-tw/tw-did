@@ -10,6 +10,8 @@ export function Register() {
     from: registerRoute.id,
   });
 
+  const ethereumAccount = user?.ethereumAccount || '';
+
   const handleFidoLogin = () => {
     // qrcode login
     const loginPromise = login(
@@ -48,16 +50,15 @@ export function Register() {
     navigate({ to: '/view-credential' });
   }
 
-  return user ? (
+  return (
     <RegisterScreen
-      user={user}
+      nationalId={nationalId}
+      ethereumAccount={ethereumAccount}
       spTicketPayload={qrcode.spTicketPayload}
       handleFidoLogin={handleFidoLogin}
       handleEthLogin={handleEthLogin}
       handleBind={handleBind}
       viewCredential={viewCredential}
     />
-  ) : (
-    <></>
   );
 }

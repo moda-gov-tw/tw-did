@@ -36,11 +36,9 @@ export function Welcome() {
   };
 
   return (
-    <>
-      <WelcomeScreen
-        nationalId={user?.nationalId || ''} // use user nationalId if logined before
-        handleRegister={handleLogin}
-      />
-    </>
+    <WelcomeScreen
+      nationalId={user?.nationalId || ''} // use user nationalId if logined before
+      handleRegister={handleLogin}
+    />
   );
 }

@@ -11,15 +11,9 @@ import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
 import { EthMin } from '../../common/icons/ethMin';
 
-interface User {
+interface Props {
   nationalId: string;
   ethereumAccount: string;
-  semaphoreCommitment: string;
-  id: string;
-  token: string;
-}
-interface Props {
-  user: User;
   spTicketPayload: string;
   handleFidoLogin: () => void;
   handleEthLogin: () => void;
@@ -44,7 +38,8 @@ interface Step {
 }
 
 export const RegisterScreen = ({
-  user,
+  nationalId,
+  ethereumAccount,
   spTicketPayload,
   handleFidoLogin,
   handleEthLogin,
@@ -52,20 +47,6 @@ export const RegisterScreen = ({
   viewCredential,
 }: Props) => {
   const steps = {
-    connectFido: {
-      currentStep: 0,
-      message: 'There are no wallet bound with your nation ID.',
-      instructions: 'Please login with TW-Fido to bind them.',
-      center: {
-        fidoState: 1,
-        walletState: 0,
-      },
-      cta: {
-        text: 'Connect TW Fido',
-        onClick: connectFido,
-        icon: FidoMin,
-      },
-    },
     displayQR: {
       currentStep: 0,
       message: 'Scan this QR code on TW FidO mobile app.',
@@ -221,8 +202,8 @@ export const RegisterScreen = ({
           {center ? (
             <ConnectionCard
               {...center}
-              nationID={user.nationalId}
-              walletAddr={user.ethereumAccount}
+              nationID={nationalId}
+              walletAddr={ethereumAccount}
             />
           ) : qrCode ? (
             <QRCodeCanvas value={qrCode} />
