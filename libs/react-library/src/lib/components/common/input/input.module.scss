@@ -1,0 +1,13 @@
+.Input {
+    color: var(--text-color2);
+    background-color: var(--bg-color2);
+    border: 2px solid var(--bg-color2);
+    padding: 0.75rem 2rem;
+    border-radius: var(--button-radius);
+
+    &:focus {
+        color: var(--text-color);
+        outline: none;
+        border: 2px solid var(--bg-color2);
+    }
+}

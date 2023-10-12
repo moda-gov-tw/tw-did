@@ -1,29 +1,25 @@
 import { MessageAction } from '@tw-did/core';
-import { CredentialCardList, useCredentials } from '@tw-did/react-library';
+import { CredentialScreen, useCredentials } from '@tw-did/react-library';
+import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
 
 export function CredentialSelection() {
   const { isConnected } = useAccount();
   const { credentials, sendCredential } = useCredentials();
+  const checkLogin = useCallback(() => true, []);
 
   if (isConnected)
     return (
       <div>
-        <CredentialCardList
+        <CredentialScreen
           credentials={credentials}
           actionLabels={['select']}
           onAction={(index, label) => {
             if (label !== 'select') return;
-
             sendCredential(MessageAction.SELECT_CREDENTIAL, credentials[index]);
           }}
+          checkLogin={checkLogin}
         />
-        <button
-          data-testid="cancel-button"
-          onClick={() => sendCredential(MessageAction.CANCEL_SELECT_CREDENTIAL)}
-        >
-          Cancel
-        </button>
       </div>
     );
 }
