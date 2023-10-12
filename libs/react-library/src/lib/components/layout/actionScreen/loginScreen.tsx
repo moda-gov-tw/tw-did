@@ -68,17 +68,7 @@ export const LoginScreen = ({
         onClick: connectFido,
         icon: FidoMin,
       },
-    },
-    viewCredential: {
-      message: 'Successfully bound to your nation identity.',
-      instructions: 'Your credentials are generated. View it now!',
-      center: { bindState: 1 },
-      cta: {
-        text: 'View Credential',
-        onClick: viewCredential,
-        icon: GoIcon,
-      },
-    },
+    }
   };
 
   function isMobile() {
@@ -96,7 +86,7 @@ export const LoginScreen = ({
     } catch (e) {
       setloginState(steps.connectFidoFailed);
     }
-    setloginState(steps.viewCredential);
+    viewCredential();
   }
 
   const [loginState, setloginState] = useState<Step>(steps.connectFido);
