@@ -2,7 +2,7 @@ import { StepId, RegisterScreen, useAuth } from '@tw-did/react-library';
 import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAccount, useConfig, useConnect } from 'wagmi';
 
 class StepIdNotFoundError extends Error {
@@ -28,13 +28,6 @@ export function Register() {
 
   const ethereumAccount = user?.ethereumAccount || '';
 
-  useEffect(() => {
-    if (user?.token && currentStep === StepId.Qrcode && !loggedIn) {
-      setLoggedIn(true);
-      setCurrentStep(StepId.BindEthereumAccount);
-    }
-  }, [user, currentStep, loggedIn, setLoggedIn]);
-
   const handleEthLogin = async () => {
     if (!isConnected) {
       await connectAsync();
@@ -51,9 +44,9 @@ export function Register() {
     setCurrentStep(StepId.ViewCredentials);
   };
 
-  const viewCredential = () => {
+  const viewCredential = useCallback(() => {
     navigate({ to: '/view-credential' });
-  };
+  }, [navigate]);
 
   const onAction = async (stepId: StepId) => {
     if (stepId === StepId.BindEthereumAccount) {
@@ -66,6 +59,17 @@ export function Register() {
       throw new StepIdNotFoundError(stepId);
     }
   };
+
+  useEffect(() => {
+    if (user?.token && currentStep === StepId.Qrcode && !loggedIn) {
+      if (!user?.ethereumAccount || !user?.semaphoreCommitment) {
+        setLoggedIn(true);
+        setCurrentStep(StepId.BindEthereumAccount);
+      } else {
+        viewCredential();
+      }
+    }
+  }, [user, currentStep, loggedIn, setLoggedIn, viewCredential]);
 
   return (
     <RegisterScreen

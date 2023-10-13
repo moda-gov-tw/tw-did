@@ -7,7 +7,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 export function CredentialView() {
   const { logout } = useAuth();
-  const { credentials, sendCredential } = useCredentials();
+  const { credentials } = useCredentials();
 
   const handleDownload = async (data: any) => {
     /* TODO: send to wallet instead of download */
@@ -36,7 +36,7 @@ export function CredentialView() {
   /* TODO: get from AuthContext */
   const checkLogin = () => {
     return localStorage.getItem('user') ? true : false;
-  }
+  };
 
   return (
     <div>

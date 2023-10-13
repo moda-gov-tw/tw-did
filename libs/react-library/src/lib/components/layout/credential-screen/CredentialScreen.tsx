@@ -2,7 +2,7 @@ import { CredentialData } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
 import { Button } from '../../common/button';
-import styles from './credentialScreen.module.scss';
+import styles from './CredentialScreen.module.scss';
 import { Dialog, useDialog, DialogProps } from '../../common/dialog';
 import { useEffect, useMemo } from 'react';
 

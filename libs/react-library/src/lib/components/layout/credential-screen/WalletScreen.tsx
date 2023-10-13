@@ -1,7 +1,7 @@
 import { CredentialType } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
-import styles from './credentialScreen.module.scss';
+import styles from './CredentialScreen.module.scss';
 
 const testProps = {
   credentials: [
