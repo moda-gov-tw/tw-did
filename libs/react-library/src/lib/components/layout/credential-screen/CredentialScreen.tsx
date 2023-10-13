@@ -143,12 +143,6 @@ export const CredentialScreen = ({
     dialogController.open(errorDialog);
   }
 
-  useEffect(() => {
-    if (!checkLogin()) {
-      dialogController.open(goHomeDialog);
-    }
-  }, [dialogController, checkLogin]);
-
   return (
     <Container>
       <div className={styles.CredentialScreen}>

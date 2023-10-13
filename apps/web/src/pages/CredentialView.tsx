@@ -4,9 +4,10 @@ import {
   useCredentials,
 } from '@tw-did/react-library';
 import { useNavigate } from '@tanstack/react-router';
+import { useCallback } from 'react';
 
 export function CredentialView() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { credentials } = useCredentials();
 
   const handleDownload = async (data: any) => {
@@ -34,9 +35,9 @@ export function CredentialView() {
   };
 
   /* TODO: get from AuthContext */
-  const checkLogin = () => {
-    return localStorage.getItem('user') ? true : false;
-  };
+  const checkLogin = useCallback(() => {
+    return !!user;
+  }, [user]);
 
   return (
     <div>
@@ -44,7 +45,7 @@ export function CredentialView() {
         credentials={credentials}
         actionLabels={['download']}
         onAction={(index, label) => {
-          if (label == 'download')
+          if (label === 'download')
             handleDownload(credentials[index].verifiableCredential);
           else return;
         }}
