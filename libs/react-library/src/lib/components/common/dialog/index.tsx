@@ -11,10 +11,13 @@ export interface DialogProps {
 
 export const useDialog = () => {
   const [props, setProps] = useState<DialogProps | undefined>();
-  const open = useCallback((openProps: DialogProps) => {
-    openProps && setProps(openProps);
-  }, []);
-  const close = useCallback(() => setProps(undefined), []);
+  const open = useCallback(
+    (openProps: DialogProps) => {
+      openProps && setProps(openProps);
+    },
+    [setProps]
+  );
+  const close = useCallback(() => setProps(undefined), [setProps]);
 
   const dialogController = useMemo(
     () => ({ open, close, props }),
