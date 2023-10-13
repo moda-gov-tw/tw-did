@@ -4,6 +4,7 @@ import { EthLogo } from '../../common/icons/ethLogo';
 import { SuccessIcon } from '../../common/icons/success';
 import { ErrorIcon } from '../../common/icons/error';
 import { ShortenAddr } from '../../common/shortenAddr';
+import { maskString } from '../../../utils/utils';
 
 export const ConnectionCard = ({
   fidoState,
@@ -34,7 +35,7 @@ export const ConnectionCard = ({
       {nationID && (
         <div className={styles.info}>
           <div className={styles.label}>Nation ID</div>
-          <div className={styles.value}>{nationID}</div>
+          <div className={styles.value}>{maskString(nationID)}</div>
         </div>
       )}
     </div>

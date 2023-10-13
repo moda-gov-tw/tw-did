@@ -38,5 +38,5 @@ export const Input = ({
     className: styles.Input,
   };
 
-  return <input {...inputProps} />;
+  return <input type="password" {...inputProps} />;
 };
