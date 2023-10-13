@@ -2,10 +2,11 @@ import { BackgroundContainer } from '../../common/background';
 import { Container, FlexSpace } from '../../common/container';
 import { Logo } from '../../common/icons/logo';
 import styles from './layout.module.scss';
-import { Input } from '../../common/input';
+import { Input } from '../../common/input/Input';
 import { GoIcon } from '../../common/icons/go';
 import { useState } from 'react';
 import { Button } from '../../common/button';
+import { validateNationId } from '../../../utils/utils';
 
 export const WelcomeScreen = ({
   nationalId,
@@ -17,14 +18,8 @@ export const WelcomeScreen = ({
   const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
-  function validateNationID(nationID: string) {
-    const regex = /^[A-Z]{1}[1-2]{1}[0-9]{8}$/;
-    return regex.test(nationID);
-  }
-
   function handleGo() {
-    // query the nation ID
-    if (!validateNationID(idInput)) {
+    if (!validateNationId(idInput)) {
       setWarning('Please enter a valid nation ID.');
       return;
     }

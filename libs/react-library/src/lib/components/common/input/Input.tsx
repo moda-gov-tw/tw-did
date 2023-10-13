@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './input.module.scss';
+import styles from './Input.module.scss';
 
 export const Input = ({
   initialValue,
@@ -15,7 +15,10 @@ export const Input = ({
 }) => {
   const [value, setValue] = useState(initialValue);
 
-  useEffect(() => setValue(initialValue), [initialValue]);
+  useEffect(() => {
+    setValue(initialValue);
+    commitValue(initialValue || '');
+  }, [initialValue, commitValue]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleChange(e: any) {
