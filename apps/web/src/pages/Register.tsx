@@ -3,7 +3,7 @@ import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { useConfig, useConnect } from 'wagmi';
+import { useAccount, useConfig, useConnect } from 'wagmi';
 
 class StepIdNotFoundError extends Error {
   constructor(stepId: StepId) {
@@ -16,24 +16,29 @@ class StepIdNotFoundError extends Error {
 
 export function Register() {
   const { connectors } = useConfig();
-  const { connect } = useConnect({
+  const { isConnected } = useAccount();
+  const { connectAsync } = useConnect({
     connector: connectors[0],
   });
   const navigate = useNavigate();
   const { user, loginInfo, ethereumLogin, updateSemaphoreCommitment } =
     useAuth();
   const [currentStep, setCurrentStep] = useState(StepId.Qrcode);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const ethereumAccount = user?.ethereumAccount || '';
 
   useEffect(() => {
-    if (user?.token && currentStep === StepId.Qrcode) {
+    if (user?.token && currentStep === StepId.Qrcode && !loggedIn) {
+      setLoggedIn(true);
       setCurrentStep(StepId.BindEthereumAccount);
     }
-  }, [user, currentStep]);
+  }, [user, currentStep, loggedIn, setLoggedIn]);
 
   const handleEthLogin = async () => {
-    connect();
+    if (!isConnected) {
+      await connectAsync();
+    }
     await ethereumLogin();
     setCurrentStep(StepId.BindSemaphoreIdentity);
   };

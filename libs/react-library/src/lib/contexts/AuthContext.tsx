@@ -175,30 +175,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const notifyRes = await _requestLogin(nationalId, 'NOTIFY');
     const qrcodeRes = await _requestLogin(nationalId, 'QRCODE');
 
+    const notification = {
+      transactionId: notifyRes.transactionId,
+      spTicketId: notifyRes.spTicketId,
+    };
+    const qrcode = {
+      transactionId: qrcodeRes.transactionId,
+      spTicketId: qrcodeRes.spTicketId,
+      spTicketPayload: qrcodeRes.spTicketPayload,
+    };
+
     const info: LoginInfo = {
       nationalId,
-      notification: {
-        transactionId: notifyRes.transactionId,
-        spTicketId: notifyRes.spTicketId,
-      },
-      qrcode: {
-        transactionId: qrcodeRes.transactionId,
-        spTicketId: qrcodeRes.spTicketId,
-        spTicketPayload: qrcodeRes.spTicketPayload,
-      },
+      notification,
+      qrcode,
     };
 
     setLoginInfo(info);
-    login();
-  };
 
-  const login = () => {
-    if (loginInfo) {
-      const { nationalId, qrcode, notification } = loginInfo;
-      _login(nationalId, qrcode.transactionId, qrcode.spTicketId);
-      // notification login
-      _login(nationalId, notification.transactionId, notification.spTicketId);
-    }
+    // qrcode login
+    _login(nationalId, qrcode.transactionId, qrcode.spTicketId);
+    // notification login
+    _login(nationalId, notification.transactionId, notification.spTicketId);
   };
 
   const logout = () => {
