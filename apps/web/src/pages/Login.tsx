@@ -1,10 +1,8 @@
 import { LoginScreen, useAuth } from '@tw-did/react-library';
-import { useNavigate, useSearch } from '@tanstack/react-router';
-import { loginRoute } from '../router';
+import { useNavigate } from '@tanstack/react-router';
 
 export function Login() {
-  const { user } = useAuth();
-  const { notification, qrcode } = useSearch({ from: loginRoute.id });
+  const { user, loginInfo } = useAuth();
 
   const handleLogin = async () => {
     /* TODO: handleFidoLogin */
@@ -15,15 +13,13 @@ export function Login() {
     navigate({ to: '/view-credential' });
   }
 
-  return user ? (
+  return (
     <LoginScreen
-      nationID={user.nationalId}
+      nationID={user?.nationalId || ''}
       walletAddr="0x***********"
-      spTicketPayload={qrcode.spTicketPayload}
+      spTicketPayload={loginInfo?.qrcode?.spTicketPayload || ''}
       handleFidoLogin={handleLogin}
       viewCredential={viewCredential}
     />
-  ) : (
-    <></>
   );
 }
