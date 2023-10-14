@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { UsersModule } from '../src/user/user.module';
@@ -7,6 +6,7 @@ import { AuthModule } from '../src/auth/auth.module';
 import { SiweMessage } from 'siwe';
 import { PrivateKeyAccount } from 'viem/accounts';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 export function setupMongoDb(): Promise<MongoMemoryServer> {
   return MongoMemoryServer.create();
@@ -28,7 +28,11 @@ export async function setupTestApplication(
       ConfigModule.forRoot({
         load: [() => config],
       }),
-      MongooseModule.forRoot(mongoUri),
+      TypeOrmModule.forRoot({
+        type: 'mongodb',
+        url: mongoUri,
+        autoLoadEntities: true,
+      }),
       UsersModule,
       AuthModule,
     ],

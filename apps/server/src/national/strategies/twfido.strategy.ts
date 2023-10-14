@@ -10,6 +10,7 @@ interface TwFidoStrategyOptions {
 }
 
 @Injectable()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TwFidoStrategy extends PassportStrategy(Strategy as any) {
   constructor(
     private nationalService: NationalService,

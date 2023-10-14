@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
@@ -17,17 +17,7 @@ import { existsSync } from 'fs';
       envFilePath: ['.env', '.env.local'],
       load: [getConfig],
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const { host, database, username, password } =
-          configService.get<MongoConfig>('mongo');
-        return {
-          uri: `mongodb://${username}:${password}@${host}/${database}`,
-        };
-      },
-    }),
+
     ServeStaticModule.forRootAsync({
       useFactory: () => {
         const clientPath = join(__dirname, '..', 'web');
@@ -41,6 +31,26 @@ import { existsSync } from 'fs';
         } else {
           return [];
         }
+      },
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const { host, database, username, password } =
+          configService.get<MongoConfig>('mongo');
+        const type = 'mongodb';
+        const synchronize = true;
+
+        return {
+          type,
+          host,
+          username,
+          password,
+          database,
+          synchronize,
+          autoLoadEntities: true,
+        };
       },
     }),
     UsersModule,

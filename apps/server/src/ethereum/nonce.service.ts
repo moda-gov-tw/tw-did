@@ -1,9 +1,9 @@
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Nonce } from './nonce.schema';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { getRandomHexString } from '../utils';
 import { Request } from 'express';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Nonce } from './nonce.entity';
+import { Repository } from 'typeorm';
 
 type Callback<T> = (
   error: Error | null,
@@ -13,27 +13,33 @@ type Callback<T> = (
 
 @Injectable()
 export class NonceService {
-  constructor(@InjectModel(Nonce.name) private nonceModel: Model<Nonce>) {}
+  constructor(
+    @InjectRepository(Nonce) private nonceRepository: Repository<Nonce>
+  ) {}
 
   challenge(): Promise<Nonce> {
-    const nonce = new this.nonceModel();
+    const nonce = this.nonceRepository.create();
     nonce.value = getRandomHexString();
-    return nonce.save();
+    return this.nonceRepository.save(nonce);
   }
 
   async verify(_req: Request, nonceValue: string, cb?: Callback<boolean>) {
-    const nonce = await this.nonceModel
-      .findOneAndDelete({ value: nonceValue })
-      .exec();
+    const nonce = await this.nonceRepository.findOne({
+      where: { value: nonceValue },
+    });
 
     // this callback is for compatible of passport-siwe
     if (!nonce) {
-      const error = new NotFoundException('Nonce not found');
+      const error = new NotFoundException(
+        `Nonce with value ${nonceValue} not found`
+      );
       if (cb) {
         cb(error, false);
       }
       throw error;
     }
+
+    await this.nonceRepository.remove(nonce);
 
     if (cb) {
       cb(null, true);

@@ -36,7 +36,7 @@ describe('UsersModule', () => {
     const server = app.getHttpServer();
     const domain = getDomain(server);
 
-    const user = await usersService.create({ nationalId: 'A123456789' });
+    const user = await usersService.create('A123456789');
     const { id, token } = await nationalService.generateJwtPayload(user);
 
     const challengeRes = await request(server)

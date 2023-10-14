@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
-import { UserDocument } from '../user/user.schema';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '../user/user.entity';
 
 interface LoginResponse {
   token: string;
@@ -15,10 +15,10 @@ export class NationalService {
     private jwtService: JwtService
   ) {}
 
-  generateJwtPayload(user: UserDocument): LoginResponse {
-    const payload = { username: user.nationalId, sub: user._id };
+  generateJwtPayload(user: User): LoginResponse {
+    const payload = { username: user.nationalId, sub: user.id };
     return {
-      id: user._id.toHexString(),
+      id: user.id,
       token: this.jwtService.sign(payload),
     };
   }
