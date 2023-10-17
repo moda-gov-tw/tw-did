@@ -1,26 +1,28 @@
-import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-
 import { NonceService } from './nonce.service';
-import { Nonce } from './nonce.schema';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Nonce } from './nonce.entity';
+import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 describe('NonceService', () => {
   let service: NonceService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockNonceModel: any;
+  let mockNonceRepo: Partial<Repository<Nonce>>;
 
   beforeEach(async () => {
-    mockNonceModel = function () {
-      this.value = 'randomHexString';
-      this.save = jest.fn().mockResolvedValue(this);
+    mockNonceRepo = {
+      create: jest.fn().mockReturnValue({}),
+      save: jest.fn().mockImplementation((nonce) => Promise.resolve(nonce)),
+      findOne: jest.fn().mockResolvedValue(new Nonce()),
+      remove: jest.fn().mockResolvedValue(new Nonce()),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NonceService,
         {
-          provide: getModelToken(Nonce.name),
-          useValue: mockNonceModel,
+          provide: getRepositoryToken(Nonce),
+          useValue: mockNonceRepo,
         },
       ],
     }).compile();
@@ -41,21 +43,28 @@ describe('NonceService', () => {
   });
 
   it('should verify a nonce and return true', async () => {
-    const verifingNonce = { value: 'getRandomHex' };
-    mockNonceModel.findOneAndDelete = jest.fn().mockReturnValue({
-      exec: jest.fn().mockResolvedValue(verifingNonce),
-    });
-    const result = await service.verify(null, verifingNonce.value);
+    const verifyingNonce = { value: 'getRandomHex' };
+    mockNonceRepo.findOne = jest.fn().mockResolvedValue(verifyingNonce);
+    mockNonceRepo.remove = jest.fn().mockResolvedValue({});
+
+    const result = await service.verify(null, verifyingNonce.value);
+
     expect(result).toBe(true);
+    expect(mockNonceRepo.findOne).toHaveBeenCalledWith({
+      where: { value: verifyingNonce.value },
+    });
+    expect(mockNonceRepo.remove).toHaveBeenCalledWith(verifyingNonce);
   });
 
   it('should throw NotFoundException if nonce is not found', async () => {
-    mockNonceModel.findOneAndDelete = jest.fn().mockReturnValue({
-      exec: jest.fn().mockResolvedValue(null),
-    });
+    mockNonceRepo.findOne = jest.fn().mockResolvedValue(null);
 
     await expect(service.verify(null, 'randomString')).rejects.toThrowError(
-      'Nonce not found'
+      NotFoundException
     );
+
+    expect(mockNonceRepo.findOne).toHaveBeenCalledWith({
+      where: { value: 'randomString' },
+    });
   });
 });

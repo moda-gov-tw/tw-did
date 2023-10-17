@@ -2,7 +2,6 @@ import * as crypto from 'crypto';
 import { SPTicket } from '.';
 
 export function parseSpTicket(payload: string): SPTicket {
-  console.log(payload);
   const [body] = payload
     .split('.')
     .map((part) => Buffer.from(part, 'base64').toString('utf8'));

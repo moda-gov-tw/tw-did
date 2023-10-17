@@ -23,13 +23,11 @@ export const Header = ({
   onBack?: () => void;
 }) => {
   return (
-    <>
-      {pathToTitle[path] && (
-        <div className={styles.header + ' ' + theme.theme_light}>
-            {onBack && <Button icon={GoIcon} onClick={onBack}/>}
-          <h1>{pathToTitle[path]}</h1>
-        </div>
-      )}
-    </>
+    pathToTitle[path] && (
+      <div className={styles.header + ' ' + theme.theme_light}>
+        {onBack && <Button icon={GoIcon} onClick={onBack} />}
+        <h1>{pathToTitle[path]}</h1>
+      </div>
+    )
   );
 };

@@ -20,6 +20,7 @@
       "@tw-did/cypress-cucumber-preset": [
         "libs/cypress-cucumber-preset/src/index.ts"
       ],
+      "@tw-did/passport-twfido": ["libs/passport-twfido/src/index.ts"],
       "@tw-did/react-library": ["libs/react-library/src/index.ts"],
       "@tw-did/twfido-client": ["libs/twfido-client/src/index.ts"]
     }

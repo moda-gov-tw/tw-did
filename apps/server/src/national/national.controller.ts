@@ -1,6 +1,5 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Get,
   Post,
@@ -9,30 +8,31 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
 import { NationalService } from './national.service';
-import { RegisterNationalDto } from './register-national.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RequestLoginDto } from './request-login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CreateUserDto } from '../user/create-user.dto';
+import { TwFidoAuthGuard } from './guards/twfido-auth.guard';
+import { TwFidoStrategy } from './strategies/twfido.strategy';
 
 @Controller('auth/national')
 export class NationalController {
   constructor(
+    private twfidoStrategy: TwFidoStrategy,
     private usersService: UsersService,
     private nationalService: NationalService
   ) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  login(@Request() req) {
-    return this.nationalService.login(req.user);
+  @Post('request-login')
+  requestLogin(@Body() requestLoginDto: RequestLoginDto) {
+    const { nationalId, method } = requestLoginDto;
+    return this.twfidoStrategy.requestLogin(nationalId, method);
   }
 
-  @Post('register')
-  async register(@Body() registerNationalDto: RegisterNationalDto) {
-    const nationalId = registerNationalDto.username;
-    const createUserDto: CreateUserDto = { nationalId };
-    const user = await this.usersService.createUnique(createUserDto);
-    return this.nationalService.login(user);
+  @UseGuards(TwFidoAuthGuard)
+  @Post('login')
+  async login(@Request() req) {
+    const { nationalId } = req.user;
+    const user = await this.usersService.findOrCreate(nationalId);
+    return this.nationalService.generateJwtPayload(user);
   }
 
   @UseGuards(JwtAuthGuard)

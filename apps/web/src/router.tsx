@@ -1,7 +1,14 @@
 import { RootRoute, Route, Router } from '@tanstack/react-router';
 import App from './App';
-import { CredentialSelection, CredentialView, EthereumLogin, Login, Register, Welcome } from './pages';
+import {
+  CredentialSelection,
+  CredentialView,
+  EthereumLogin,
+  Login,
+  Welcome,
+} from './pages';
 import { Semaphore } from './pages/Semaphore';
+import { Register } from './pages/Register';
 
 const rootRoute = new RootRoute({
   component: App,
@@ -37,22 +44,22 @@ export const semaphoreRoute = new Route({
   component: () => <Semaphore />,
 });
 
-export const registerRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: '/register',
-  component: () => <Register />,
-});
-
 export const loginRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: () => <Login />,
 });
 
+export const registerRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/register',
+  component: () => <Register />,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
-  registerRoute,
   loginRoute,
+  registerRoute,
   viewCredentialRoute,
   selectCredentialRoute,
   ethereumLoginRoute,
