@@ -1,6 +1,7 @@
 export interface Config {
   mongo: MongoConfig;
   twfido: TwFidoConfig;
+  veramo: VeramoConfig;
 }
 
 export interface MongoConfig {
@@ -16,6 +17,11 @@ export interface TwFidoConfig {
   apiUrl: string;
 }
 
+export interface VeramoConfig {
+  infuraProjectId: string;
+  ethrNetwork: string;
+}
+
 class PropertyNotFoundError extends Error {
   constructor(missingProperties: string[]) {
     const missings = missingProperties.join(', ');
@@ -26,7 +32,7 @@ class PropertyNotFoundError extends Error {
 }
 
 export function getConfig(): Config {
-  const config = {
+  const config: Config = {
     mongo: {
       username: process.env.MONGO_DATABASE_USERNAME,
       password: process.env.MONGO_DATABASE_PASSWORD,
@@ -37,6 +43,10 @@ export function getConfig(): Config {
       serviceId: process.env.TWFIDO_SERVICE_ID,
       apiKey: process.env.TWFIDO_API_KEY,
       apiUrl: process.env.TWFIDO_API_URL,
+    },
+    veramo: {
+      infuraProjectId: process.env.VERAMO_INFURA_PROJECT_ID,
+      ethrNetwork: process.env.VERAMO_ETHR_NETWORK,
     },
   };
 
