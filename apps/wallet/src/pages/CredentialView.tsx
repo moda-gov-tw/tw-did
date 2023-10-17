@@ -7,7 +7,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 export function CredentialView() {
   const { logout } = useAuth();
-  const { credentials, sendCredential } = useCredentials();
+  const { credentials } = useCredentials();
 
   const handleDownload = async (data: any) => {
     /* TODO: send to wallet instead of download */
@@ -44,7 +44,7 @@ export function CredentialView() {
         credentials={credentials}
         actionLabels={['download']}
         onAction={(index, label) => {
-          if (label == 'download')
+          if (label === 'download')
             handleDownload(credentials[index].verifiableCredential);
           else return;
         }}

@@ -1,4 +1,4 @@
-import { WalletHomeScreen, useAuth } from '@tw-did/react-library';
+import { WalletHomeScreen } from '@tw-did/react-library';
 import { useNavigate } from '@tanstack/react-router';
 import { useCredentials } from '@tw-did/react-library';
 
@@ -7,22 +7,12 @@ export function Welcome() {
   const navigate = useNavigate();
 
   const gotoRegister = async () => {
-    try {
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
     /* TODO: relace with tw-did website */
     window.open('http://127.0.0.1:4201/', '_blank');
     return;
   };
 
   const gotoSelect = async () => {
-    try {
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
     navigate({ to: '/select-credential' });
     return;
   };
