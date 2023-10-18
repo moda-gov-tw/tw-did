@@ -1,0 +1,50 @@
+diff --git a/node_modules/multiformats/dist/index.min.js b/node_modules/multiformats/dist/index.min.cjs
+similarity index 100%
+rename from node_modules/multiformats/dist/index.min.js
+rename to node_modules/multiformats/dist/index.min.cjs
+diff --git a/node_modules/multiformats/package.json b/node_modules/multiformats/package.json
+index 037194c..f2fcefd 100644
+--- a/node_modules/multiformats/package.json
++++ b/node_modules/multiformats/package.json
+@@ -58,11 +58,13 @@
+     },
+     "./bases/base10": {
+       "types": "./dist/types/src/bases/base10.d.ts",
+-      "import": "./src/bases/base10.js"
++      "import": "./src/bases/base10.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./bases/base16": {
+       "types": "./dist/types/src/bases/base16.d.ts",
+-      "import": "./src/bases/base16.js"
++      "import": "./src/bases/base16.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./bases/base2": {
+       "types": "./dist/types/src/bases/base2.d.ts",
+@@ -82,11 +84,13 @@
+     },
+     "./bases/base58": {
+       "types": "./dist/types/src/bases/base58.d.ts",
+-      "import": "./src/bases/base58.js"
++      "import": "./src/bases/base58.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./bases/base64": {
+       "types": "./dist/types/src/bases/base64.d.ts",
+-      "import": "./src/bases/base64.js"
++      "import": "./src/bases/base64.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./bases/base8": {
+       "types": "./dist/types/src/bases/base8.d.ts",
+@@ -102,7 +106,8 @@
+     },
+     "./basics": {
+       "types": "./dist/types/src/basics.d.ts",
+-      "import": "./src/basics.js"
++      "import": "./src/basics.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./block": {
+       "types": "./dist/types/src/block.d.ts",

@@ -1,11 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "preserveConstEnums": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "ESNext",
     "types": ["node"],
     "emitDecoratorMetadata": true,
-    "target": "es2021"
+    "target": "ESNext"
   },
   "exclude": [
     "jest.config.ts",
