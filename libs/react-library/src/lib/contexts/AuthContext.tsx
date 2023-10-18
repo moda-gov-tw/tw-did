@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { EIP1193Provider, getAddress } from 'viem';
 import { SiweMessage } from 'siwe';
+import { VerifiableCredential } from '@veramo/core-types';
 
 declare global {
   interface Window {
@@ -88,6 +89,7 @@ interface AuthContextProps {
   requestLogin: (nationalId: string) => Promise<void>;
   logout: () => void;
   ethereumLogin: () => Promise<void>;
+  getEthereumVerifiableCredential: () => Promise<VerifiableCredential>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
 }
 
@@ -290,6 +292,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const getEthereumVerifiableCredential = async () => {
+    const res: VerifiableCredential = await fetch('/api/users/credential', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${user?.token}` },
+    }).then((res) => res.json());
+
+    return res;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -299,6 +310,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         logout,
         ethereumLogin,
         updateSemaphoreCommitment,
+        getEthereumVerifiableCredential,
       }}
     >
       {children}

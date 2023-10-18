@@ -7,17 +7,17 @@ import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
 export function CredentialView() {
-  const { logout, user } = useAuth();
+  const { logout, user, getEthereumVerifiableCredential } = useAuth();
   const { credentials } = useCredentials();
 
-  const handleDownload = async (data: any) => {
-    /* TODO: send to wallet instead of download */
+  const handleDownload = async () => {
+    const vc = await getEthereumVerifiableCredential();
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(data)
+      JSON.stringify(vc)
     )}`;
     const link = document.createElement('a');
     link.href = jsonString;
-    link.download = 'data.json';
+    link.download = `vc-${vc.credentialSubject.id}.json`;
     link.click();
   };
 
