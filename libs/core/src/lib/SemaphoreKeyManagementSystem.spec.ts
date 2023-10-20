@@ -5,7 +5,11 @@ import {
   UnsupportedKeyType,
   normalizePublicKey,
 } from './SemaphoreKeyManagementSystem';
-import { SEMAPHORE_TYPE } from './SemaphoreConstants';
+import {
+  SEMAPHORE_GROUP_DEPTH,
+  SEMAPHORE_GROUP_ID,
+  SEMAPHORE_TYPE,
+} from './SemaphoreConstants';
 import { Identity } from '@semaphore-protocol/identity';
 import { fromString } from 'uint8arrays';
 
@@ -74,8 +78,8 @@ describe('SemaphoreKeyManagementSystem', () => {
 
     const data = {
       group: {
-        id: '1',
-        depth: 20,
+        groupId: SEMAPHORE_GROUP_ID,
+        depth: SEMAPHORE_GROUP_DEPTH,
         members: [identity.commitment.toString()],
       },
       challenge: timestamp,

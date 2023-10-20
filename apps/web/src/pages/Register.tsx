@@ -1,4 +1,4 @@
-import { StepId, RegisterScreen, useAuth } from '@tw-did/react-library';
+import { StepId, RegisterScreen, useTwDid } from '@tw-did/react-library';
 import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
 import { useNavigate } from '@tanstack/react-router';
@@ -21,8 +21,13 @@ export function Register() {
     connector: connectors[0],
   });
   const navigate = useNavigate();
-  const { user, loginInfo, ethereumLogin, updateSemaphoreCommitment } =
-    useAuth();
+  const {
+    user,
+    loginInfo,
+    ethereumLogin,
+    updateSemaphoreCommitment,
+    generateSemaphoreIdentity,
+  } = useTwDid();
   const [currentStep, setCurrentStep] = useState(StepId.Qrcode);
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -37,9 +42,7 @@ export function Register() {
   };
 
   const handleBind = async () => {
-    const message = `Sign this message to generate your Semaphore identity.`;
-    const result = await signMessage({ message });
-    const identity = new Identity(result);
+    const identity = await generateSemaphoreIdentity();
     await updateSemaphoreCommitment(identity.commitment.toString());
     setCurrentStep(StepId.ViewCredentials);
   };

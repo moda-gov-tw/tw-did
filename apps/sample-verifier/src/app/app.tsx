@@ -1,6 +1,8 @@
 import { Identity } from '@semaphore-protocol/identity';
 import {
   SEMAPHORE_CONTEXT_URI,
+  SEMAPHORE_GROUP_DEPTH,
+  SEMAPHORE_GROUP_ID,
   SEMAPHORE_HIDDEN_PUBLIC_KEY,
   SEMAPHORE_TYPE,
   TwDidService,
@@ -15,6 +17,7 @@ import {
 } from '../veramo/setup';
 import { UserPanel } from '@tw-did/react-library';
 import { useAccount } from 'wagmi';
+import { signMessage } from '@wagmi/core';
 import {
   CredentialPayload,
   MinimalImportableKey,
@@ -49,7 +52,7 @@ export function App() {
 
   const handleSelectOnDid = async () => {
     // tw did service host
-    const serviceHost = 'http://localhost:4201';
+    const serviceHost = 'http://localhost:3000';
     const service = new TwDidService(serviceHost);
     const msg = await service.selectCredential();
     if (msg.payload) {
@@ -77,8 +80,14 @@ export function App() {
     reader.readAsText(file);
   };
 
+  const generateSemaphoreIdentity = async () => {
+    const message = `Sign this message to generate your Semaphore identity.`;
+    const result = await signMessage({ message });
+    return new Identity(result);
+  };
+
   const handleSemaphore = async () => {
-    const identity = new Identity('TOP-SECRET-KEY');
+    const identity = await generateSemaphoreIdentity();
 
     const agent = await getAgent();
     const holder = await agent.didManagerImport({
@@ -95,11 +104,17 @@ export function App() {
       ],
     });
 
+    const commitments: string[] = await fetch(
+      `http://localhost:3000/api/users/commitments`
+    ).then((res) => res.json());
+
     const credential: CredentialPayload = {
       '@context': [SEMAPHORE_CONTEXT_URI],
       issuer: holder.did,
       credentialSubject: {
-        group: '1',
+        groupId: SEMAPHORE_GROUP_ID,
+        depth: SEMAPHORE_GROUP_DEPTH,
+        members: commitments,
       },
     };
 
@@ -165,7 +180,8 @@ export function App() {
 
     const result = await agent.verifyPresentation({ presentation: vp });
     setVerified(
-      result.verified && cred.credentialSubject.id === vp.holder
+      result.verified &&
+        cred.credentialSubject.id?.toLowerCase() === vp.holder.toLowerCase()
         ? VerificationResult.Verified
         : VerificationResult.NotVerified
     );

@@ -1,8 +1,8 @@
 import React from 'react';
-import { CredentialCard, CredentialData } from '..';
+import { CredentialCard, CredentialViewData } from '..';
 
 interface CredentialCardListProps {
-  credentials: CredentialData[];
+  credentials: CredentialViewData[];
   actionLabels: string[];
   onAction: (index: number, actionLabel: string) => void;
 }

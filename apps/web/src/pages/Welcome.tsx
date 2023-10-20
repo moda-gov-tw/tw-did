@@ -1,10 +1,10 @@
-import { useAuth } from '@tw-did/react-library';
+import { useTwDid } from '@tw-did/react-library';
 import { WelcomeScreen } from '@tw-did/react-library';
 import { useNavigate } from '@tanstack/react-router';
 import { registerRoute } from '../router';
 
 export function Welcome() {
-  const { user, requestLogin } = useAuth();
+  const { user, requestLogin } = useTwDid();
   const navigate = useNavigate();
 
   const handleLogin = async (nationalId: string) => {

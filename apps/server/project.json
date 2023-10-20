@@ -30,6 +30,12 @@
       "options": {
         "buildTarget": "server:build"
       },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": ["web"]
+        }
+      ],
       "configurations": {
         "development": {
           "buildTarget": "server:build:development"

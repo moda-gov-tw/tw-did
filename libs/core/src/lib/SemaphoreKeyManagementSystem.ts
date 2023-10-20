@@ -131,10 +131,10 @@ export class SemaphoreKeyManagementSystem extends AbstractKeyManagementSystem {
 
     const identity = new Identity(managedKey.privateKeyHex);
     const payload: SignPayload = JSON.parse(toString(data));
-    const { id, depth, members } = payload.group;
+    const { groupId, depth, members } = payload.group;
     const { challenge } = payload;
 
-    const group = new Group(id, depth, members);
+    const group = new Group(groupId, depth, members);
 
     const proof = await generateProof(
       identity,

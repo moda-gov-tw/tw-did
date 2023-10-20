@@ -4,7 +4,7 @@ import './global';
 import App from './app/app';
 import { WagmiConfig } from 'wagmi';
 import { getConfig } from './config';
-import { AuthProvider } from '@tw-did/react-library';
+import { TwDidProvider } from '@tw-did/react-library';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,9 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <WagmiConfig config={getConfig()}>
-      <AuthProvider>
+      <TwDidProvider>
         <App />
-      </AuthProvider>
+      </TwDidProvider>
     </WagmiConfig>
   </StrictMode>
 );

@@ -1,20 +1,16 @@
-import { Identity } from '@semaphore-protocol/identity';
-import { useAuth } from '@tw-did/react-library';
-import { signMessage } from '@wagmi/core';
+import { useTwDid } from '@tw-did/react-library';
 
 export function Semaphore() {
-  const { updateSemaphoreCommitment } = useAuth();
+  const { updateSemaphoreCommitment, generateSemaphoreIdentity } = useTwDid();
 
-  const generateIdentity = async () => {
-    const message = `Sign this message to generate your Semaphore identity.`;
-    const result = await signMessage({ message });
-    const identity = new Identity(result);
+  const handleClick = async () => {
+    const identity = await generateSemaphoreIdentity();
     updateSemaphoreCommitment(identity.commitment.toString());
   };
 
   return (
     <div>
-      <button onClick={() => generateIdentity()}>
+      <button onClick={() => handleClick()}>
         Generate Semaphore identity and bind
       </button>
     </div>

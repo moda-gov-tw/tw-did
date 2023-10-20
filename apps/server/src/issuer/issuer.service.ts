@@ -118,7 +118,7 @@ export class IssuerService implements OnModuleInit {
     const credential: CredentialPayload = {
       issuer: { id: this.issuer.did },
       credentialSubject: {
-        id: account,
+        id: `${this.ethrProvider}:${account}`,
         value: id,
       },
     };
