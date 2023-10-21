@@ -1,30 +1,37 @@
 import React from 'react';
-import { CredentialData } from '../../../contexts/CredentialData';
+import {
+  ActionId,
+  CredentialFieldKey,
+  CredentialType,
+  CredentialViewData,
+} from '../../../hooks';
 import styles from './CredentialCard.module.scss';
 import { Button } from '../../common/button';
-import { ShortenAddr, ShortenID } from '../../common/shortenAddr';
-// import { EthLogo } from '../../common/icons/ethLogo';
-
-type Action = { label: string; handler: (actionLabel: string) => void };
+import { ShortenAddr, ShortenId } from '../../common/shortenAddr';
 
 interface CredentialCardProps {
-  credentialView: CredentialData;
-  actions: Action[];
+  credentialView: CredentialViewData;
+  onAction: (type: CredentialType, actionId: ActionId) => void;
 }
 
 export const CredentialCard: React.FC<CredentialCardProps> = ({
-  credentialView: { type, description, fields },
-  actions,
+  credentialView: { type, description, fields, actions },
+  onAction,
 }) => {
-  // value mapping
-  const typeDisplay = type[0].toUpperCase() + type.slice(1).toLowerCase();
-  // const logo = type === 'ethereum' ? <EthLogo /> : null;
+  function renderFieldValue(key: CredentialFieldKey, value: string) {
+    if (key === CredentialFieldKey.ETHEREUM_ADDRESS) {
+      return <ShortenAddr addr={value} />;
+    } else if (key === CredentialFieldKey.NATION_ID) {
+      return <ShortenId id={value} />;
+    } else {
+      return value;
+    }
+  }
 
   return (
     <div data-testid={`credential-type-${type}`} className={styles.card}>
       <div className={styles.info}>
-        <h3 className={styles.type}>{typeDisplay}</h3>
-        {/* {logo && <div className={styles.logo}>{logo}</div>} */}
+        <h3 className={styles.type}>{type}</h3>
         {description && (
           <p
             className={styles.description}
@@ -34,26 +41,20 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           </p>
         )}
         <div className={styles.idendity}>
-          {type === 'ethereum' &&
+          {type === CredentialType.ETHEREUM &&
             fields.map((field, index) => (
               <div key={index}>
                 <div
                   data-testid={`field-key-${field.key}`}
                   className={styles.label}
                 >
-                  {field.key && field.key.split('-').slice(-1)}
+                  {field.label || field.label}
                 </div>
                 <div
                   data-testid={`field-value-${field.key}`}
                   className={styles.value}
                 >
-                  {field.key === 'ethereum-account-address' ? (
-                    <ShortenAddr addr={field.value} />
-                  ) : field.key === 'id' ? (
-                    <ShortenID id={field.value} />
-                  ) : (
-                    field.value
-                  )}
+                  {renderFieldValue(field.key, field.value)}
                 </div>
               </div>
             ))}
@@ -62,7 +63,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
       {actions.map((action, index) => (
         <Button
           key={index}
-          onClick={() => action.handler(action.label)}
+          onClick={() => onAction(type, action.key)}
           data-testid={`credential-action-${action.label}`}
           text={action.label}
         />

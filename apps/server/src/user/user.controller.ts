@@ -1,11 +1,24 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
 import { User } from './user.entity';
+import { IssuerService } from '../issuer/issuer.service';
+import { VerifiableCredential } from '@veramo/core-types';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private issuerService: IssuerService
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -22,5 +35,20 @@ export class UsersController {
   @Get(':id')
   findOneById(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOneById(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('credential')
+  async createCredential(@Request() req): Promise<VerifiableCredential> {
+    const { userId } = req.user;
+    const user = await this.usersService.findOneById(userId);
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return this.issuerService.signEthereumVerifiableCredential(
+      user.id,
+      user.ethereumAccount
+    );
   }
 }

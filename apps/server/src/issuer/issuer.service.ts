@@ -9,6 +9,8 @@ import {
   ICredentialPlugin,
   MinimalImportableIdentifier,
   IIdentifier,
+  VerifiableCredential,
+  CredentialPayload,
 } from '@veramo/core';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { IDataStoreORM } from '@veramo/data-store';
@@ -107,5 +109,27 @@ export class IssuerService implements OnModuleInit {
 
   getIssuerInfo(): IssuerInfo {
     return { did: this.issuer.did };
+  }
+
+  async signEthereumVerifiableCredential(
+    id: string,
+    account: string
+  ): Promise<VerifiableCredential> {
+    const credential: CredentialPayload = {
+      issuer: { id: this.issuer.did },
+      credentialSubject: {
+        id: `${this.ethrProvider}:${account}`,
+        value: id,
+      },
+    };
+    const vc = await this.agent.createVerifiableCredential(
+      {
+        credential,
+        proofFormat: 'jwt',
+      },
+      null
+    );
+
+    return vc;
   }
 }

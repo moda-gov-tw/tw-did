@@ -1,8 +1,6 @@
-import { CredentialProvider, AuthProvider } from '@tw-did/react-library';
+import { TwDidProvider, getConfig } from '@tw-did/react-library';
 import React, { ReactNode, createContext } from 'react';
-import { createPublicClient, http } from 'viem';
-import { WagmiConfig, createConfig, mainnet } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WagmiConfig } from 'wagmi';
 
 const ApplicationConfig = createContext(null);
 
@@ -13,21 +11,10 @@ interface ApplicationContextProps {
 export const ApplicationContext: React.FC<ApplicationContextProps> = ({
   children,
 }) => {
-  const config = createConfig({
-    autoConnect: true,
-    publicClient: createPublicClient({
-      chain: mainnet,
-      transport: http(),
-    }),
-    connectors: [new InjectedConnector()],
-  });
-
   return (
     <ApplicationConfig.Provider value={null}>
-      <WagmiConfig config={config}>
-        <CredentialProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </CredentialProvider>
+      <WagmiConfig config={getConfig()}>
+        <TwDidProvider>{children}</TwDidProvider>
       </WagmiConfig>
     </ApplicationConfig.Provider>
   );

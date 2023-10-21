@@ -1,5 +1,5 @@
 export type GroupInfo = {
-  id: string;
+  groupId: string;
   depth: number;
   members: string[];
 };

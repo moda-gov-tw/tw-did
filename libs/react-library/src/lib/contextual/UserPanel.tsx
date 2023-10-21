@@ -1,5 +1,4 @@
 import { useAccount, useConfig, useConnect, useDisconnect } from 'wagmi';
-import { useAuth } from '../contexts';
 
 export function UserPanel() {
   const { connectors } = useConfig();
@@ -8,7 +7,6 @@ export function UserPanel() {
     connector: connectors[0],
   });
   const { disconnect } = useDisconnect();
-  const { user } = useAuth();
 
   const renderConnection = () => {
     if (isConnected)
@@ -29,8 +27,6 @@ export function UserPanel() {
 
   return (
     <div>
-      user info:
-      <pre>{JSON.stringify(user, null, 2)}</pre>
       connection status:
       <span>{renderConnection()}</span>
     </div>

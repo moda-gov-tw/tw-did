@@ -14,15 +14,16 @@ WORKDIR /app
 RUN addgroup --system server && \
           adduser --system -G server server
 
-COPY package.json package-lock.json .
-RUN npm  --omit=dev -f install
-
-COPY dist/apps/server server
-COPY dist/apps/web web
-# TODO: this is only for developement, we should remove it for production
-COPY apps/server/.env.local .
-
 RUN chown -R server:server .
+COPY --chown=server:server package.json package-lock.json .
+COPY --chown=server:server patches patches
+USER server
+RUN npm --omit=dev -f install
 
+COPY --chown=server:server dist/apps/server server
+COPY --chown=server:server dist/apps/web web
+
+# TODO: this is only for developement, we should remove it for production
+COPY --chown=server:server apps/server/.env.local .
 
 CMD [ "node", "server/main.js" ]

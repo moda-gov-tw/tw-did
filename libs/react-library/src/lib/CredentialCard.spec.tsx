@@ -2,16 +2,16 @@ import React from 'react';
 import { expect, it, describe, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import { CredentialCardProps, CredentialCard, CredentialType } from '.';
-import { CredentialData } from './contexts/CredentialData';
+import { CredentialFieldKey, CredentialViewData } from './hooks/CredentialData';
 
 describe('<Credential />', () => {
-  const credential = new CredentialData(
+  const credential = new CredentialViewData(
     CredentialType.ETHEREUM,
-    undefined,
     [
-      { key: 'national-id', value: 'A123456789' },
-      { key: 'ethereum-account-address', value: '0x1234567890abcdef' },
+      { key: CredentialFieldKey.NATION_ID, value: 'A123456789' },
+      { key: CredentialFieldKey.ETHEREUM_ADDRESS, value: '0x1234567890abcdef' },
     ],
+    [],
     'Test description'
   );
 

@@ -1,27 +1,22 @@
-import { CredentialData } from '../../../contexts';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../credentialCard/CredentialCardList';
 import { Button } from '../../common/button';
 import styles from './CredentialScreen.module.scss';
 import { Dialog, useDialog, DialogProps } from '../../common/dialog';
-import { useEffect, useMemo } from 'react';
+import { ActionId, CredentialMap, CredentialType } from '../../../hooks';
 
 export const CredentialScreen = ({
   onRevoke,
   onAction,
   onLogout,
   onClose,
-  actionLabels,
   credentials,
-  checkLogin,
 }: {
   onRevoke?: () => void;
-  actionLabels?: string[];
-  onAction: (index: number, label: string) => void;
-  credentials: CredentialData[];
+  onAction: (credentialkey: CredentialType, actionId: ActionId) => void;
+  credentials: CredentialMap;
   onLogout?: () => void;
   onClose?: () => void;
-  checkLogin: () => boolean;
 }) => {
   const dialogController = useDialog();
   const revokeDialog: DialogProps = {
@@ -113,23 +108,6 @@ export const CredentialScreen = ({
       },
     ],
   };
-  const goHomeDialog: DialogProps = useMemo(
-    () => ({
-      title: 'You are not logged in',
-      children: 'Please login to continue.',
-      actions: [
-        {
-          text: 'OK',
-          onClick: () => {
-            dialogController.close();
-            onClose && onClose();
-          },
-          type: 'primary',
-        },
-      ],
-    }),
-    [dialogController, onClose]
-  );
   function confirmRevoke() {
     dialogController.open(revokeDialog);
   }
@@ -147,11 +125,7 @@ export const CredentialScreen = ({
     <Container>
       <div className={styles.CredentialScreen}>
         {credentials && (
-          <CredentialCardList
-            credentials={credentials}
-            actionLabels={actionLabels || []}
-            onAction={onAction}
-          />
+          <CredentialCardList credentials={credentials} onAction={onAction} />
         )}
         <FlexSpace />
         {onRevoke && (
