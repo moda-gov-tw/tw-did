@@ -10,7 +10,7 @@ import { MongoConfig, getConfig } from '../config/configuration';
 import { AuthModule } from '../auth/auth.module';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { IssuerModule } from '../issuer/issuer.module';
+import { IssuanceModule } from '../issuance/issuance.module';
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { IssuerModule } from '../issuer/issuer.module';
     }),
     UsersModule,
     AuthModule,
-    IssuerModule,
+    IssuanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,14 +10,14 @@ import {
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
 import { User } from './user.entity';
-import { IssuerService } from '../issuer/issuer.service';
+import { IssuanceService } from '../issuance/issuance.service';
 import { VerifiableCredential } from '@veramo/core-types';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private issuerService: IssuerService
+    private issuanceService: IssuanceService
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -46,7 +46,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    return this.issuerService.signEthereumVerifiableCredential(
+    return this.issuanceService.signEthereumVerifiableCredential(
       user.id,
       user.ethereumAccount
     );

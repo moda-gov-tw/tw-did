@@ -11,7 +11,10 @@ import {
   IIdentifier,
   VerifiableCredential,
   CredentialPayload,
+  ICredentialStatusVerifier,
 } from '@veramo/core';
+import { CredentialStatusPlugin } from '@veramo/credential-status';
+import { CredentialJwtOrJSON, CredentialStatus } from 'credential-status';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { IDataStoreORM } from '@veramo/data-store';
 import { KeyStoreJson } from '@veramo/data-store-json';
@@ -20,11 +23,12 @@ import { KeyManager, MemoryPrivateKeyStore } from '@veramo/key-manager';
 import { EthrDIDProvider } from '@veramo/did-provider-ethr';
 import { CredentialPlugin } from '@veramo/credential-w3c';
 import { DIDResolverPlugin } from '@veramo/did-resolver';
-import { Resolver } from 'did-resolver';
+import { DIDDocument, Resolver } from 'did-resolver';
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver';
 import { getResolver as webDidResolver } from 'web-did-resolver';
 import { ConfigService } from '@nestjs/config';
 import { VeramoConfig } from '../config/configuration';
+import { CREDENTIAL_STATUS_METHOD } from '@tw-did/core';
 
 export const KMS_NAME = 'local';
 
@@ -33,6 +37,7 @@ type AgentType = IDIDManager &
   IDataStore &
   IDataStoreORM &
   IResolver &
+  ICredentialStatusVerifier &
   ICredentialPlugin;
 
 interface IssuerInfo {
@@ -40,7 +45,7 @@ interface IssuerInfo {
 }
 
 @Injectable()
-export class IssuerService implements OnModuleInit {
+export class IssuanceService implements OnModuleInit {
   private agent: AgentType;
   private ethrProvider: string;
   private issuer: IIdentifier;
@@ -80,11 +85,15 @@ export class IssuerService implements OnModuleInit {
           }),
         }),
         new CredentialPlugin(),
+        new CredentialStatusPlugin({
+          [CREDENTIAL_STATUS_METHOD]: this.checkStatus.bind(this),
+        }),
       ],
     });
 
     this.ethrProvider = ethrProvider;
   }
+
   async onModuleInit() {
     const privateKey = generatePrivateKey();
     const account = privateKeyToAccount(privateKey);
@@ -109,6 +118,16 @@ export class IssuerService implements OnModuleInit {
 
   getIssuerInfo(): IssuerInfo {
     return { did: this.issuer.did };
+  }
+
+  checkStatus(
+    credential: CredentialJwtOrJSON,
+    didDoc: DIDDocument
+  ): Promise<CredentialStatus> {
+    const status: CredentialStatus = {
+      revoked: false,
+    };
+    return Promise.resolve(status);
   }
 
   async signEthereumVerifiableCredential(
