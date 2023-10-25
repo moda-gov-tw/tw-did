@@ -42,13 +42,15 @@ export class UsersController {
   async createCredential(@Request() req): Promise<VerifiableCredential> {
     const { userId } = req.user;
     const user = await this.usersService.findOneById(userId);
-    if (!user) {
-      throw new NotFoundException();
+    if (!user.currentIdentity) {
+      throw new NotFoundException(
+        `the currentIdentity of User ${user._id} not found`
+      );
     }
 
     return this.issuanceService.signEthereumVerifiableCredential(
       user._id.toHexString(),
-      user.ethereumAccount
+      user.currentIdentity.ethereumAccount
     );
   }
 }

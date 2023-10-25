@@ -146,7 +146,8 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
     });
     const user = await res.json();
     if (res.status === 200) {
-      const { nationalId, ethereumAccount, semaphoreCommitment } = user;
+      const { nationalId, currentIdentity } = user;
+      const { ethereumAccount, semaphoreCommitment } = currentIdentity || {};
       setUser({
         nationalId,
         ethereumAccount,

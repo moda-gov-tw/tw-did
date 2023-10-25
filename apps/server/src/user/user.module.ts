@@ -6,10 +6,14 @@ import { IssuanceModule } from '../issuance/issuance.module';
 import { IssuanceService } from '../issuance/issuance.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Identity, IdentitySchema } from './identity.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Identity.name, schema: IdentitySchema },
+    ]),
     IssuanceModule,
     ConfigModule,
   ],

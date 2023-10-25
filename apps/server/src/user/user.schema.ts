@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, SchemaTypes } from 'mongoose';
+import { Identity } from './identity.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -8,11 +9,8 @@ export class User {
   @Prop({ required: true })
   nationalId: string;
 
-  @Prop()
-  ethereumAccount: string;
-
-  @Prop()
-  semaphoreCommitment: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Identity' })
+  currentIdentity: Identity;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
