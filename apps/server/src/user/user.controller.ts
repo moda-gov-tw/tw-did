@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
-import { User } from './user.entity';
+import { User } from './user.schema';
 import { IssuanceService } from '../issuance/issuance.service';
 import { VerifiableCredential } from '@veramo/core-types';
 
@@ -47,7 +47,7 @@ export class UsersController {
     }
 
     return this.issuanceService.signEthereumVerifiableCredential(
-      user.id,
+      user._id.toHexString(),
       user.ethereumAccount
     );
   }

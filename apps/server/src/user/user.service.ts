@@ -1,23 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { User, UserDocument } from './user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   create(nationalId: string): Promise<User> {
-    const id = uuid();
-    const createdUser = this.usersRepository.create({ id, nationalId });
-    return this.usersRepository.save(createdUser);
+    const createdUser = new this.userModel({ nationalId });
+    return createdUser.save();
   }
 
-  async findOneById(id: string): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
+  async findOneById(id: string): Promise<UserDocument> {
+    const user = await this.userModel.findById(id);
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -27,45 +23,40 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.userModel.find();
   }
 
   async findAllCommitments(): Promise<string[]> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: any = {
-      where: { semaphoreCommitment: { $exists: true, $ne: null } },
-    };
-    const users = await this.usersRepository.find(query);
+    const users = await this.userModel
+      .find({
+        semaphoreCommitment: { $exists: true, $ne: null },
+      })
+      .select('semaphoreCommitment')
+      .exec();
     return users.map((user) => user.semaphoreCommitment);
   }
 
-  async findOrCreate(nationalId: string): Promise<User> {
-    let user = await this.usersRepository.findOne({ where: { nationalId } });
-
-    if (!user) {
-      user = await this.create(nationalId);
-    }
-
-    return user;
+  async findOrCreate(nationalId: string): Promise<UserDocument> {
+    return this.userModel.findOneAndUpdate(
+      { nationalId },
+      { nationalId },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
   }
 
   async updateEthereumAccount(id: string, ethereumAccount: string) {
-    const user = await this.findOneById(id);
-    user.ethereumAccount = ethereumAccount;
-    await this.usersRepository.save(user);
-
-    return user;
+    return this.userModel.findByIdAndUpdate(id, {
+      ethereumAccount,
+    });
   }
 
   async updateSemaphoreIdentity(id: string, semaphoreCommitment: string) {
-    const user = await this.findOneById(id);
-    user.semaphoreCommitment = semaphoreCommitment;
-    await this.usersRepository.save(user);
-
-    return user;
+    return this.userModel.findByIdAndUpdate(id, {
+      semaphoreCommitment,
+    });
   }
 
   findOne(nationalId: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { nationalId } });
+    return this.userModel.findOne({ nationalId });
   }
 }
