@@ -47,6 +47,15 @@ export class UsersService {
     return users.map((user) => user.currentIdentity.semaphoreCommitment);
   }
 
+  async findAllRevocation(): Promise<string[]> {
+    const revokedIdentities = await this.identityModel
+      .find({ revoked: true })
+      .select('_id')
+      .exec();
+
+    return revokedIdentities.map((identity) => identity._id.toHexString());
+  }
+
   async findOrCreate(nationalId: string): Promise<UserDocument> {
     return this.userModel.findOneAndUpdate(
       { nationalId },
@@ -89,5 +98,24 @@ export class UsersService {
 
   findOne(nationalId: string): Promise<User | null> {
     return this.userModel.findOne({ nationalId });
+  }
+
+  async revokeIdentity(userId: string): Promise<boolean> {
+    const user = await this.findOneById(userId);
+    if (!user.currentIdentity) {
+      throw new NotFoundException(
+        `the currentIdentity of User ${user._id} not found`
+      );
+    }
+
+    const identityId = (user.currentIdentity as IdentityDocument)._id;
+    const identity = await this.identityModel.findById(identityId);
+    if (identity) {
+      identity.revoked = true;
+      await identity.save();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

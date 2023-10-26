@@ -2,6 +2,7 @@ export interface Config {
   mongo: MongoConfig;
   twfido: TwFidoConfig;
   veramo: VeramoConfig;
+  server: ServerConfig;
 }
 
 export interface MongoConfig {
@@ -20,6 +21,10 @@ export interface TwFidoConfig {
 export interface VeramoConfig {
   infuraProjectId: string;
   ethrNetwork: string;
+}
+
+export interface ServerConfig {
+  apiPrefix: string;
 }
 
 class PropertyNotFoundError extends Error {
@@ -47,6 +52,9 @@ export function getConfig(): Config {
     veramo: {
       infuraProjectId: process.env.VERAMO_INFURA_PROJECT_ID,
       ethrNetwork: process.env.VERAMO_ETHR_NETWORK,
+    },
+    server: {
+      apiPrefix: process.env.SERVER_API_PREFIX || 'http://localhost:3000/api',
     },
   };
 

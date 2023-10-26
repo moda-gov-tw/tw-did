@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { IssuanceService as IssuanceService } from './issuance.service';
+import { IssuanceService } from './issuance.service';
 
 @Controller('issuance')
 export class IssuanceController {

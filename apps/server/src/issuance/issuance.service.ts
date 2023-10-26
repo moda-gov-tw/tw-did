@@ -13,8 +13,6 @@ import {
   CredentialPayload,
   ICredentialStatusVerifier,
 } from '@veramo/core';
-import { CredentialStatusPlugin } from '@veramo/credential-status';
-import { CredentialJwtOrJSON, CredentialStatus } from 'credential-status';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { IDataStoreORM } from '@veramo/data-store';
 import { KeyStoreJson } from '@veramo/data-store-json';
@@ -23,7 +21,7 @@ import { KeyManager, MemoryPrivateKeyStore } from '@veramo/key-manager';
 import { EthrDIDProvider } from '@veramo/did-provider-ethr';
 import { CredentialPlugin } from '@veramo/credential-w3c';
 import { DIDResolverPlugin } from '@veramo/did-resolver';
-import { DIDDocument, Resolver } from 'did-resolver';
+import { Resolver } from 'did-resolver';
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver';
 import { getResolver as webDidResolver } from 'web-did-resolver';
 import { ConfigService } from '@nestjs/config';
@@ -49,6 +47,7 @@ export class IssuanceService implements OnModuleInit {
   private agent: AgentType;
   private ethrProvider: string;
   private issuer: IIdentifier;
+  private apiPrefix: string;
 
   constructor(configService: ConfigService) {
     const { infuraProjectId, ethrNetwork } =
@@ -58,6 +57,8 @@ export class IssuanceService implements OnModuleInit {
     const memoryJsonStore = {
       notifyUpdate: () => Promise.resolve(),
     };
+
+    this.apiPrefix = configService.get('server.apiPrefix');
 
     this.agent = createAgent<AgentType>({
       plugins: [
@@ -85,9 +86,6 @@ export class IssuanceService implements OnModuleInit {
           }),
         }),
         new CredentialPlugin(),
-        new CredentialStatusPlugin({
-          [CREDENTIAL_STATUS_METHOD]: this.checkStatus.bind(this),
-        }),
       ],
     });
 
@@ -120,18 +118,9 @@ export class IssuanceService implements OnModuleInit {
     return { did: this.issuer.did };
   }
 
-  checkStatus(
-    credential: CredentialJwtOrJSON,
-    didDoc: DIDDocument
-  ): Promise<CredentialStatus> {
-    const status: CredentialStatus = {
-      revoked: false,
-    };
-    return Promise.resolve(status);
-  }
-
   async signEthereumVerifiableCredential(
     id: string,
+    identityId: string,
     account: string
   ): Promise<VerifiableCredential> {
     const credential: CredentialPayload = {
@@ -139,6 +128,11 @@ export class IssuanceService implements OnModuleInit {
       credentialSubject: {
         id: `${this.ethrProvider}:${account}`,
         value: id,
+      },
+      credentialStatus: {
+        id: `${this.apiPrefix}/users/revocation`,
+        type: CREDENTIAL_STATUS_METHOD,
+        value: identityId,
       },
     };
     const vc = await this.agent.createVerifiableCredential(
