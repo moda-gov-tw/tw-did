@@ -6,8 +6,10 @@ import {
   TAgent,
 } from '@veramo/core';
 import { ICredentialIssuerEIP712 } from '@veramo/credential-eip712';
+import { CredentialStatusPlugin } from '@veramo/credential-status';
 import { DIDResolverPlugin } from '@veramo/did-resolver';
 import { Resolver } from 'did-resolver';
+import { CredentialJwtOrJSON, CredentialStatus } from 'credential-status';
 import { EthrDIDProvider } from '@veramo/did-provider-ethr';
 import { WebDIDProvider } from '@veramo/did-provider-web';
 import { KeyManager, MemoryPrivateKeyStore } from '@veramo/key-manager';
@@ -17,6 +19,7 @@ import { DIDManager, MemoryDIDStore } from '@veramo/did-manager';
 import { getResolver as getEthrResolver } from 'ethr-did-resolver';
 import { getResolver as getWebResolver } from 'web-did-resolver';
 import {
+  CREDENTIAL_STATUS_METHOD,
   SEMAPHORE_EXTRA_CONTEXTS,
   SemaphoreKeyManagementSystem,
   SemaphoreSignature2023,
@@ -51,6 +54,25 @@ export const WEB_DID_PROVIDER = 'did:web';
 export const DID_CLIENT_NAME = 'metamask';
 export const WEB3_KMS = 'web3';
 export const SEMAPHORE_KMS = 'semaphore';
+
+async function checkCredentialStatus(
+  credential: CredentialJwtOrJSON
+): Promise<CredentialStatus> {
+  const status: CredentialStatus = {
+    revoked: false,
+  };
+  if (typeof credential !== 'string' && credential.credentialStatus) {
+    const { id, value } = credential.credentialStatus;
+    const revokedCredentials: string[] = await fetch(id).then((res) =>
+      res.json()
+    );
+    if (revokedCredentials.includes(value)) {
+      status.revoked = true;
+    }
+  }
+
+  return status;
+}
 
 export async function getAgent(): Promise<TAgent<InstalledPlugins>> {
   if (import.meta.env.VITE_INFURA_PROJECT_ID === undefined) {
@@ -101,6 +123,9 @@ export async function getAgent(): Promise<TAgent<InstalledPlugins>> {
       new CredentialPlugin(),
       new TwDidCredentialIssuerLD({ suites, contextMaps }),
       new TwDidCredentialIssuerEIP712(),
+      new CredentialStatusPlugin({
+        [CREDENTIAL_STATUS_METHOD]: checkCredentialStatus,
+      }),
     ],
   });
 }
