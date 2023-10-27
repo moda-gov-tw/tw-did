@@ -18,21 +18,7 @@ describe('UsersModule', () => {
   let usersService: UsersService;
   let nationalService: NationalService;
 
-  beforeEach(async () => {
-    mongod = await setupMongoDb();
-    const result = await setupTestApplication(mongod.getUri());
-    usersService = result.testingModule.get<UsersService>(UsersService);
-    nationalService =
-      result.testingModule.get<NationalService>(NationalService);
-    app = result.app;
-  });
-
-  afterEach(async () => {
-    await mongod.stop();
-    await app.close();
-  });
-
-  it('should get 2 array of semaphore commitments', async () => {
+  async function fullRegister() {
     const server = app.getHttpServer();
     const domain = getDomain(server);
 
@@ -66,6 +52,27 @@ describe('UsersModule', () => {
       .send({ id, commitment })
       .set('Authorization', `Bearer ${token}`);
 
+    return { commitment, token, userId: id };
+  }
+
+  beforeEach(async () => {
+    mongod = await setupMongoDb();
+    const result = await setupTestApplication(mongod.getUri());
+    usersService = result.testingModule.get<UsersService>(UsersService);
+    nationalService =
+      result.testingModule.get<NationalService>(NationalService);
+    app = result.app;
+  });
+
+  afterEach(async () => {
+    await mongod.stop();
+    await app.close();
+  });
+
+  it('should get 2 array of semaphore commitments', async () => {
+    const server = app.getHttpServer();
+    const { commitment } = await fullRegister();
+
     const expcetedCommitment = {
       activated: [commitment],
       revoked: [],
@@ -75,6 +82,55 @@ describe('UsersModule', () => {
       .get('/api/users/commitments')
       .expect((res) => {
         expect(res.body).toEqual(expcetedCommitment);
+      });
+  });
+
+  it('should move the commitment from activated to revoked array', async () => {
+    const server = app.getHttpServer();
+    const { commitment, token } = await fullRegister();
+
+    const expcetedCommitment = {
+      activated: [commitment],
+      revoked: [],
+    };
+
+    await request(server)
+      .get('/api/users/commitments')
+      .expect((res) => {
+        expect(res.body).toEqual(expcetedCommitment);
+      });
+
+    expcetedCommitment.activated = [];
+    expcetedCommitment.revoked = [commitment];
+
+    await request(server)
+      .post('/api/users/revoke')
+      .set('Authorization', `Bearer ${token}`);
+  });
+
+  it('should have one more id in revocation array', async () => {
+    const server = app.getHttpServer();
+    const { token, userId } = await fullRegister();
+
+    const res = await request(server)
+      .get(`/api/users/${userId}`)
+      .set('Authorization', `Bearer ${token}`);
+    const identityId = res.body.currentIdentity._id;
+
+    await request(server)
+      .get('/api/users/revocation')
+      .expect((res) => {
+        expect(res.body).toEqual([]);
+      });
+
+    await request(server)
+      .post('/api/users/revoke')
+      .set('Authorization', `Bearer ${token}`);
+
+    await request(server)
+      .get('/api/users/revocation')
+      .expect((res) => {
+        expect(res.body).toEqual([identityId]);
       });
   });
 });
