@@ -11,6 +11,7 @@ import {
   IIdentifier,
   VerifiableCredential,
   CredentialPayload,
+  ICredentialStatusVerifier,
 } from '@veramo/core';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { IDataStoreORM } from '@veramo/data-store';
@@ -25,6 +26,7 @@ import { getResolver as ethrDidResolver } from 'ethr-did-resolver';
 import { getResolver as webDidResolver } from 'web-did-resolver';
 import { ConfigService } from '@nestjs/config';
 import { VeramoConfig } from '../config/configuration';
+import { CREDENTIAL_STATUS_METHOD } from '@tw-did/core';
 
 export const KMS_NAME = 'local';
 
@@ -33,6 +35,7 @@ type AgentType = IDIDManager &
   IDataStore &
   IDataStoreORM &
   IResolver &
+  ICredentialStatusVerifier &
   ICredentialPlugin;
 
 interface IssuerInfo {
@@ -40,10 +43,11 @@ interface IssuerInfo {
 }
 
 @Injectable()
-export class IssuerService implements OnModuleInit {
+export class IssuanceService implements OnModuleInit {
   private agent: AgentType;
   private ethrProvider: string;
   private issuer: IIdentifier;
+  private apiPrefix: string;
 
   constructor(configService: ConfigService) {
     const { infuraProjectId, ethrNetwork } =
@@ -53,6 +57,8 @@ export class IssuerService implements OnModuleInit {
     const memoryJsonStore = {
       notifyUpdate: () => Promise.resolve(),
     };
+
+    this.apiPrefix = configService.get('server.apiPrefix');
 
     this.agent = createAgent<AgentType>({
       plugins: [
@@ -85,6 +91,7 @@ export class IssuerService implements OnModuleInit {
 
     this.ethrProvider = ethrProvider;
   }
+
   async onModuleInit() {
     const privateKey = generatePrivateKey();
     const account = privateKeyToAccount(privateKey);
@@ -113,6 +120,7 @@ export class IssuerService implements OnModuleInit {
 
   async signEthereumVerifiableCredential(
     id: string,
+    identityId: string,
     account: string
   ): Promise<VerifiableCredential> {
     const credential: CredentialPayload = {
@@ -120,6 +128,11 @@ export class IssuerService implements OnModuleInit {
       credentialSubject: {
         id: `${this.ethrProvider}:${account}`,
         value: id,
+      },
+      credentialStatus: {
+        id: `${this.apiPrefix}/users/revocation`,
+        type: CREDENTIAL_STATUS_METHOD,
+        value: identityId,
       },
     };
     const vc = await this.agent.createVerifiableCredential(

@@ -1,5 +1,6 @@
 import { Identity } from '@semaphore-protocol/identity';
 import {
+  CommitmentsDto,
   SEMAPHORE_CONTEXT_URI,
   SEMAPHORE_GROUP_DEPTH,
   SEMAPHORE_GROUP_ID,
@@ -104,9 +105,15 @@ export function App() {
       ],
     });
 
-    const commitments: string[] = await fetch(
+    const commitments: CommitmentsDto = await fetch(
       `http://localhost:3000/api/users/commitments`
     ).then((res) => res.json());
+
+    const members = commitments.activated.includes(
+      identity.commitment.toString()
+    )
+      ? commitments.activated
+      : commitments.revoked;
 
     const credential: CredentialPayload = {
       '@context': [SEMAPHORE_CONTEXT_URI],
@@ -114,7 +121,7 @@ export function App() {
       credentialSubject: {
         groupId: SEMAPHORE_GROUP_ID,
         depth: SEMAPHORE_GROUP_DEPTH,
-        members: commitments,
+        members,
       },
     };
 

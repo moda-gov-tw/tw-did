@@ -32,11 +32,11 @@ describe('UsersModule', () => {
     await app.close();
   });
 
-  it('should get an array of semaphore commitments', async () => {
+  it('should get 2 array of semaphore commitments', async () => {
     const server = app.getHttpServer();
     const domain = getDomain(server);
 
-    const user = await usersService.create('A123456789');
+    const user = await usersService.findOrCreate('A123456789');
     const { id, token } = await nationalService.generateJwtPayload(user);
 
     const challengeRes = await request(server)
@@ -66,10 +66,15 @@ describe('UsersModule', () => {
       .send({ id, commitment })
       .set('Authorization', `Bearer ${token}`);
 
+    const expcetedCommitment = {
+      activated: [commitment],
+      revoked: [],
+    };
+
     await request(server)
       .get('/api/users/commitments')
       .expect((res) => {
-        expect(res.body).toEqual([commitment]);
+        expect(res.body).toEqual(expcetedCommitment);
       });
   });
 });

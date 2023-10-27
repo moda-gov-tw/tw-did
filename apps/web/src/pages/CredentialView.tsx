@@ -8,7 +8,6 @@ import {
 } from '@tw-did/react-library';
 import { VerifiableCredential } from '@veramo/core-types';
 import { useNavigate } from '@tanstack/react-router';
-import { MessageAction } from '@tw-did/core';
 
 export function CredentialView() {
   const {

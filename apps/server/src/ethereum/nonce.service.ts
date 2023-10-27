@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { getRandomHexString } from '../utils';
 import { Request } from 'express';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Nonce } from './nonce.entity';
-import { Repository } from 'typeorm';
+import { Nonce } from './nonce.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 type Callback<T> = (
   error: Error | null,
@@ -13,20 +13,18 @@ type Callback<T> = (
 
 @Injectable()
 export class NonceService {
-  constructor(
-    @InjectRepository(Nonce) private nonceRepository: Repository<Nonce>
-  ) {}
+  constructor(@InjectModel(Nonce.name) private nonceModel: Model<Nonce>) {}
 
   challenge(): Promise<Nonce> {
-    const nonce = this.nonceRepository.create();
+    const nonce = new this.nonceModel();
     nonce.value = getRandomHexString();
-    return this.nonceRepository.save(nonce);
+    return nonce.save();
   }
 
   async verify(_req: Request, nonceValue: string, cb?: Callback<boolean>) {
-    const nonce = await this.nonceRepository.findOne({
-      where: { value: nonceValue },
-    });
+    const nonce = await this.nonceModel
+      .findOneAndDelete({ value: nonceValue })
+      .exec();
 
     // this callback is for compatible of passport-siwe
     if (!nonce) {
@@ -38,8 +36,6 @@ export class NonceService {
       }
       throw error;
     }
-
-    await this.nonceRepository.remove(nonce);
 
     if (cb) {
       cb(null, true);

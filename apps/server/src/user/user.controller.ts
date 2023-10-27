@@ -9,15 +9,21 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from '../national/guards/jwt-auth.guard';
-import { User } from './user.entity';
-import { IssuerService } from '../issuer/issuer.service';
+import { User } from './user.schema';
+import { IssuanceService } from '../issuance/issuance.service';
 import { VerifiableCredential } from '@veramo/core-types';
+import { IdentityDocument } from './identity.schema';
+import { CommitmentsDto } from '@tw-did/core';
+
+interface RevocationResult {
+  result: boolean;
+}
 
 @Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private issuerService: IssuerService
+    private issuanceService: IssuanceService
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -27,8 +33,13 @@ export class UsersController {
   }
 
   @Get('commitments')
-  findAllCommitments(): Promise<string[]> {
+  findAllCommitments(): Promise<CommitmentsDto> {
     return this.usersService.findAllCommitments();
+  }
+
+  @Get('revocation')
+  getRevocation() {
+    return this.usersService.findAllRevocation();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -42,13 +53,26 @@ export class UsersController {
   async createCredential(@Request() req): Promise<VerifiableCredential> {
     const { userId } = req.user;
     const user = await this.usersService.findOneById(userId);
-    if (!user) {
-      throw new NotFoundException();
+    if (!user.currentIdentity) {
+      throw new NotFoundException(
+        `the currentIdentity of User ${user._id} not found`
+      );
     }
 
-    return this.issuerService.signEthereumVerifiableCredential(
-      user.id,
-      user.ethereumAccount
+    const identityId = (user.currentIdentity as IdentityDocument)._id;
+
+    return this.issuanceService.signEthereumVerifiableCredential(
+      user._id.toHexString(),
+      identityId.toHexString(),
+      user.currentIdentity.ethereumAccount
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('revoke')
+  async revokeIdentity(@Request() req): Promise<RevocationResult> {
+    const { userId } = req.user;
+    const result = await this.usersService.revokeIdentity(userId);
+    return { result };
   }
 }
