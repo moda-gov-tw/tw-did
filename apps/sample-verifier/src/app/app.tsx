@@ -55,7 +55,7 @@ export function App() {
     // tw did service host
     const serviceHost = 'http://localhost:3000';
     const service = new TwDidService(serviceHost);
-    const msg = await service.selectCredential();
+    const msg = await service.selectCredential(window);
     if (msg.payload) {
       setPayload(msg.payload);
     }

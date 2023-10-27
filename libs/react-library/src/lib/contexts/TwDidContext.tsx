@@ -23,11 +23,13 @@ import {
   SEMAPHORE_HIDDEN_DID,
   SEMAPHORE_HIDDEN_PUBLIC_KEY,
   SEMAPHORE_TYPE,
+  TwDidService,
 } from '@tw-did/core';
 import { signMessage } from '@wagmi/core';
 import { Identity } from '@semaphore-protocol/identity';
 import { SEMAPHORE_KMS, WEB_DID_PROVIDER, getAgent } from './veramo';
 import { useMessage } from '../hooks';
+import { EthereumLoginDto } from '@tw-did/core';
 
 declare global {
   interface Window {
@@ -55,14 +57,6 @@ class NoTwDidProviderError extends Error {
     super(message);
     this.name = 'NoAuthProviderError';
     Object.setPrototypeOf(this, NoTwDidProviderError.prototype);
-  }
-}
-
-class EthereumLoginError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'EthereumLoginError';
-    Object.setPrototypeOf(this, EthereumLoginError.prototype);
   }
 }
 
@@ -132,6 +126,7 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
   const [loginInfo, setLoginInfo] = useState<LoginInfo | null>(null);
   const urlPrefix =
     import.meta.env.MODE === 'development' ? 'http://localhost:3000' : '';
+  const twDidService = new TwDidService(urlPrefix, user?.token);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -247,20 +242,8 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
       );
     }
 
-    const challengeRes = await fetch(
-      `${urlPrefix}/api/auth/ethereum/challenge`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${user.token}` },
-      }
-    );
-
-    const challengeData = await challengeRes.json();
-    if (challengeRes.status !== 201) {
-      throw new EthereumLoginError('Failed to get Ethereum challenge');
-    }
-
-    const nonce = challengeData.value;
+    const nonceDto = await twDidService.ethereumChallenge();
+    const nonce = nonceDto.value;
 
     if (window.ethereum) {
       const [account] = await window.ethereum.request({
@@ -282,24 +265,13 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
         method: 'personal_sign',
         params: [message, address],
       });
-      console.log('signature', signature);
-      console.log('message', rawMessage);
 
       const id = user.id;
-      const loginRes = await fetch(`${urlPrefix}/api/auth/ethereum/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify({ message, signature, account, id }),
-      });
+      const loginDto: EthereumLoginDto = { message, signature, account, id };
 
-      if (loginRes.status === 201) {
+      const res = await twDidService.ethereumLogin(loginDto);
+      if (res.address === address) {
         await setUserInfo(user.id, user.token);
-      } else {
-        throw new EthereumLoginError('Ethereum login failed');
       }
     }
   };
