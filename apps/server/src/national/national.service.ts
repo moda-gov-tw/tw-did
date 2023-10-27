@@ -18,7 +18,7 @@ export class NationalService {
   generateJwtPayload(user: UserDocument): LoginResponse {
     const payload = { username: user.nationalId, sub: user._id.toHexString() };
     return {
-      id: user.id,
+      id: user._id.toHexString(),
       token: this.jwtService.sign(payload),
     };
   }
