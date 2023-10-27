@@ -6,7 +6,8 @@ import { AuthModule } from '../src/auth/auth.module';
 import { SiweMessage } from 'siwe';
 import { PrivateKeyAccount } from 'viem/accounts';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Config } from '../src/config/configuration';
 
 export function setupMongoDb(): Promise<MongoMemoryServer> {
   return MongoMemoryServer.create();
@@ -21,6 +22,10 @@ export async function setupTestApplication(
       apiKey: '',
       serviceId: '',
     },
+    veramo: {
+      infuraProjectId: 'fake-infura-project-id',
+      ethrNetwork: 'goerli',
+    },
   };
 
   const testingModule: TestingModule = await Test.createTestingModule({
@@ -28,11 +33,7 @@ export async function setupTestApplication(
       ConfigModule.forRoot({
         load: [() => config],
       }),
-      TypeOrmModule.forRoot({
-        type: 'mongodb',
-        url: mongoUri,
-        autoLoadEntities: true,
-      }),
+      MongooseModule.forRoot(mongoUri),
       UsersModule,
       AuthModule,
     ],
