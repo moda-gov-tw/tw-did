@@ -13,6 +13,7 @@ import { User } from './user.schema';
 import { IssuanceService } from '../issuance/issuance.service';
 import { VerifiableCredential } from '@veramo/core-types';
 import { IdentityDocument } from './identity.schema';
+import { CommitmentsDto } from '@tw-did/core';
 
 interface RevocationResult {
   result: boolean;
@@ -32,7 +33,7 @@ export class UsersController {
   }
 
   @Get('commitments')
-  findAllCommitments(): Promise<string[]> {
+  findAllCommitments(): Promise<CommitmentsDto> {
     return this.usersService.findAllCommitments();
   }
 

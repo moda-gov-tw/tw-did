@@ -3,6 +3,7 @@ import { User, UserDocument } from './user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Identity, IdentityDocument } from './identity.schema';
+import { CommitmentsDto } from '@tw-did/core';
 
 @Injectable()
 export class UsersService {
@@ -10,11 +11,6 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Identity.name) private identityModel: Model<Identity>
   ) {}
-
-  create(nationalId: string): Promise<User> {
-    const createdUser = new this.userModel({ nationalId });
-    return createdUser.save();
-  }
 
   async findOneById(id: string): Promise<UserDocument> {
     const user = await this.userModel
@@ -33,18 +29,24 @@ export class UsersService {
     return this.userModel.find();
   }
 
-  async findAllCommitments(): Promise<string[]> {
-    const users = await this.userModel
-      .find({
-        currentIdentity: { $exists: true },
-      })
-      .populate({
-        path: 'currentIdentity',
-        match: { semaphoreCommitment: { $exists: true, $ne: null } },
-      })
-      .select('semaphoreCommitment')
-      .exec();
-    return users.map((user) => user.currentIdentity.semaphoreCommitment);
+  async findAllCommitments(): Promise<CommitmentsDto> {
+    const allIdentities = await this.identityModel.find().exec();
+
+    const activated: string[] = [];
+    const revoked: string[] = [];
+
+    for (const identity of allIdentities) {
+      if (identity.revoked) {
+        revoked.push(identity.semaphoreCommitment);
+      } else {
+        activated.push(identity.semaphoreCommitment);
+      }
+    }
+
+    return {
+      activated,
+      revoked,
+    };
   }
 
   async findAllRevocation(): Promise<string[]> {

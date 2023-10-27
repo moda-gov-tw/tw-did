@@ -14,6 +14,7 @@ import {
 } from '@veramo/core-types';
 import { Group } from '@semaphore-protocol/group';
 import {
+  CommitmentsDto,
   MessageAction,
   SEMAPHORE_CONTEXT_URI,
   SEMAPHORE_DID_ALIAS,
@@ -341,10 +342,14 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
   };
 
   const getSemaphoreGroup = async (): Promise<Group> => {
-    const commitments: string[] = await fetch(
+    const commitments: CommitmentsDto = await fetch(
       `${urlPrefix}/api/users/commitments`
     ).then((res) => res.json());
-    return new Group(SEMAPHORE_GROUP_ID, SEMAPHORE_GROUP_DEPTH, commitments);
+    return new Group(
+      SEMAPHORE_GROUP_ID,
+      SEMAPHORE_GROUP_DEPTH,
+      commitments.activated
+    );
   };
 
   const generateSemaphoreIdentity = async () => {
