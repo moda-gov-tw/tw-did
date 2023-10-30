@@ -7,6 +7,29 @@ import React, {
 } from 'react';
 import { EIP1193Provider, getAddress } from 'viem';
 import { SiweMessage } from 'siwe';
+import {
+  VerifiableCredential,
+  IIdentifier,
+  CredentialPayload,
+} from '@veramo/core-types';
+import { Group } from '@semaphore-protocol/group';
+import {
+  CommitmentsDto,
+  MessageAction,
+  SEMAPHORE_CONTEXT_URI,
+  SEMAPHORE_DID_ALIAS,
+  SEMAPHORE_GROUP_DEPTH,
+  SEMAPHORE_GROUP_ID,
+  SEMAPHORE_HIDDEN_DID,
+  SEMAPHORE_HIDDEN_PUBLIC_KEY,
+  SEMAPHORE_TYPE,
+  TwDidService,
+} from '@tw-did/core';
+import { signMessage } from '@wagmi/core';
+import { Identity } from '@semaphore-protocol/identity';
+import { SEMAPHORE_KMS, WEB_DID_PROVIDER, getAgent } from './veramo';
+import { useMessage } from '../hooks';
+import { EthereumLoginDto } from '@tw-did/core';
 
 declare global {
   interface Window {
@@ -29,19 +52,11 @@ class LoginError extends Error {
   }
 }
 
-class NoAuthProviderError extends Error {
+class NoTwDidProviderError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'NoAuthProviderError';
-    Object.setPrototypeOf(this, NoAuthProviderError.prototype);
-  }
-}
-
-class EthereumLoginError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'EthereumLoginError';
-    Object.setPrototypeOf(this, EthereumLoginError.prototype);
+    Object.setPrototypeOf(this, NoTwDidProviderError.prototype);
   }
 }
 
@@ -82,24 +97,36 @@ export interface LoginInfo {
   qrcode: QrcodeLoginMetadata;
 }
 
-interface AuthContextProps {
+interface TwDidContextProps {
   user: User | null;
   loginInfo: LoginInfo | null;
   requestLogin: (nationalId: string) => Promise<void>;
   logout: () => void;
   ethereumLogin: () => Promise<void>;
+  getEthereumVerifiableCredential: () => Promise<VerifiableCredential>;
+  generateSemaphoreVerifiableCredential: (
+    identity: Identity,
+    group: Group
+  ) => Promise<VerifiableCredential>;
+  getSemaphoreGroup: () => Promise<Group>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
+  generateSemaphoreIdentity: () => Promise<Identity>;
+  sendCredential: (action: MessageAction, vc: VerifiableCredential) => void;
 }
 
-interface AuthProviderProps {
+interface TwDidProviderProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const TwDidContext = createContext<TwDidContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
+  const { postMessage } = useMessage<VerifiableCredential>();
   const [user, setUser] = useState<User | null>(null);
   const [loginInfo, setLoginInfo] = useState<LoginInfo | null>(null);
+  const urlPrefix =
+    import.meta.env.MODE === 'development' ? 'http://localhost:3000' : '';
+  const twDidService = new TwDidService(urlPrefix, user?.token);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -110,12 +137,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const setUserInfo = async (id: string, token: string) => {
-    const res = await fetch(`/api/users/${id}`, {
+    const res = await fetch(`${urlPrefix}/api/users/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const user = await res.json();
     if (res.status === 200) {
-      const { nationalId, ethereumAccount, semaphoreCommitment } = user;
+      const { nationalId, currentIdentity } = user;
+      const { ethereumAccount, semaphoreCommitment } = currentIdentity || {};
       setUser({
         nationalId,
         ethereumAccount,
@@ -135,11 +163,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     nationalId: string,
     method: 'QRCODE' | 'NOTIFY'
   ): Promise<RequestLoginResponse> => {
-    const requestRes = await fetch('/api/auth/national/request-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nationalId, method }),
-    });
+    const requestRes = await fetch(
+      `${urlPrefix}/api/auth/national/request-login`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nationalId, method }),
+      }
+    );
 
     const res: RequestLoginResponse = await requestRes.json();
     return res;
@@ -156,7 +187,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       spTicketId,
     };
 
-    const loginRes = await fetch('/api/auth/national/login', {
+    const loginRes = await fetch(`${urlPrefix}/api/auth/national/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(loginDto),
@@ -206,22 +237,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const ethereumLogin = async (): Promise<void> => {
     if (!user) {
-      throw new NoAuthProviderError(
+      throw new NoTwDidProviderError(
         'User must be authenticated for Ethereum login'
       );
     }
 
-    const challengeRes = await fetch('/api/auth/ethereum/challenge', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-
-    const challengeData = await challengeRes.json();
-    if (challengeRes.status !== 201) {
-      throw new EthereumLoginError('Failed to get Ethereum challenge');
-    }
-
-    const nonce = challengeData.value;
+    const nonceDto = await twDidService.ethereumChallenge();
+    const nonce = nonceDto.value;
 
     if (window.ethereum) {
       const [account] = await window.ethereum.request({
@@ -243,36 +265,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         method: 'personal_sign',
         params: [message, address],
       });
-      console.log('signature', signature);
-      console.log('message', rawMessage);
 
       const id = user.id;
-      const loginRes = await fetch('/api/auth/ethereum/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify({ message, signature, account, id }),
-      });
+      const loginDto: EthereumLoginDto = { message, signature, account, id };
 
-      if (loginRes.status === 201) {
+      const res = await twDidService.ethereumLogin(loginDto);
+      if (res.address === address) {
         await setUserInfo(user.id, user.token);
-      } else {
-        throw new EthereumLoginError('Ethereum login failed');
       }
     }
   };
 
   const updateSemaphoreCommitment = async (commitment: string) => {
     if (!user || !user.id) {
-      throw new NoAuthProviderError(
+      throw new NoTwDidProviderError(
         'User must be authenticated to update Semaphore commitment'
       );
     }
 
-    const res = await fetch('/api/auth/semaphore', {
+    const res = await fetch(`${urlPrefix}/api/auth/semaphore`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -290,8 +301,87 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const getEthereumVerifiableCredential = async () => {
+    const res: VerifiableCredential = await fetch(
+      `${urlPrefix}/api/users/credential`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${user?.token}` },
+      }
+    ).then((res) => res.json());
+
+    return res;
+  };
+
+  const getSemaphoreGroup = async (): Promise<Group> => {
+    const commitments: CommitmentsDto = await fetch(
+      `${urlPrefix}/api/users/commitments`
+    ).then((res) => res.json());
+    return new Group(
+      SEMAPHORE_GROUP_ID,
+      SEMAPHORE_GROUP_DEPTH,
+      commitments.activated
+    );
+  };
+
+  const generateSemaphoreIdentity = async () => {
+    const message = `Sign this message to generate your Semaphore identity.`;
+    const result = await signMessage({ message });
+    return new Identity(result);
+  };
+
+  const generateSemaphoreVerifiableCredential = async (
+    identity: Identity,
+    group: Group
+  ) => {
+    const alias = SEMAPHORE_DID_ALIAS;
+    const did = SEMAPHORE_HIDDEN_DID;
+    const provider = WEB_DID_PROVIDER;
+    const kms = SEMAPHORE_KMS;
+    const type = SEMAPHORE_TYPE;
+    const privateKeyHex = identity.toString();
+    const publicKeyHex = SEMAPHORE_HIDDEN_PUBLIC_KEY;
+    const kid = 'default';
+    const proofFormat = 'lds';
+
+    const agent = await getAgent();
+    let holder: IIdentifier;
+
+    try {
+      holder = await agent.didManagerGetByAlias({ alias });
+    } catch (e) {
+      holder = await agent.didManagerImport({
+        did,
+        provider,
+        keys: [{ kid, kms, type, privateKeyHex, publicKeyHex }],
+      });
+    }
+
+    const credential: CredentialPayload = {
+      '@context': [SEMAPHORE_CONTEXT_URI],
+      issuer: holder.did,
+      credentialSubject: {
+        groupId: group.id,
+        depth: group.depth,
+        members: group.members.map((m) => m.toString()),
+      },
+    };
+
+    return agent.createVerifiableCredential({
+      credential,
+      proofFormat,
+    });
+  };
+
+  const sendCredential = async (
+    action: MessageAction,
+    vc: VerifiableCredential
+  ) => {
+    postMessage(action, vc);
+  };
+
   return (
-    <AuthContext.Provider
+    <TwDidContext.Provider
       value={{
         user,
         loginInfo,
@@ -299,18 +389,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         logout,
         ethereumLogin,
         updateSemaphoreCommitment,
+        getEthereumVerifiableCredential,
+        getSemaphoreGroup,
+        generateSemaphoreIdentity,
+        generateSemaphoreVerifiableCredential,
+        sendCredential,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </TwDidContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextProps => {
-  const context = useContext(AuthContext);
+export const useTwDid = (): TwDidContextProps => {
+  const context = useContext(TwDidContext);
   if (!context) {
-    throw new NoAuthProviderError(
-      'No AuthProvider found in the component tree.'
+    throw new NoTwDidProviderError(
+      'No TwDidProvider found in the component tree.'
     );
   }
   return context;

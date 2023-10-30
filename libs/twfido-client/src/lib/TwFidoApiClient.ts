@@ -33,7 +33,8 @@ export class TwFidoApiClient {
   constructor(
     private apiUrl: string,
     private apiKey: string,
-    private serviceId: string
+    private serviceId: string,
+    private enableValidation: boolean = true
   ) {}
 
   async getSpTicket(
@@ -50,7 +51,9 @@ export class TwFidoApiClient {
     const params = await this.prepareParams(userParams, checksumPayload);
     const res = await this.execute<AuthResult>('getSpTicket', params);
 
-    this.validateAuth(res);
+    if (this.enableValidation) {
+      this.validateAuth(res);
+    }
     return res;
   }
 
@@ -68,7 +71,9 @@ export class TwFidoApiClient {
     const params = await this.prepareParams(userParams, checksumPayload);
     const res = await this.execute<AuthResult>('requestAthOrSignPush', params);
 
-    this.validateAuth(res);
+    if (this.enableValidation) {
+      this.validateAuth(res);
+    }
     return res;
   }
 
@@ -82,7 +87,9 @@ export class TwFidoApiClient {
       params
     );
 
-    this.validateGetResult(res);
+    if (this.enableValidation) {
+      this.validateGetResult(res);
+    }
     return res;
   }
 

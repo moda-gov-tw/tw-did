@@ -1,5 +1,10 @@
 import { VerifiableCredential } from '@veramo/core';
-import { GroupInfo, MessageAction } from '.';
+import {
+  EthereumLoginDto,
+  EthereumLoginResponseDto,
+  MessageAction,
+  NonceDto,
+} from '.';
 
 export class InvalidOriginError extends Error {
   constructor(origin: string) {
@@ -8,44 +13,79 @@ export class InvalidOriginError extends Error {
   }
 }
 
+class EthereumLoginError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EthereumLoginError';
+    Object.setPrototypeOf(this, EthereumLoginError.prototype);
+  }
+}
+
 export type SelectCredentialMessage = {
   action: MessageAction;
   payload?: VerifiableCredential;
 };
 
-export interface ISemaphoreGroupService {
-  fetchGroupInfo(groupId: string): Promise<GroupInfo>;
-}
-export class TwDidService implements ISemaphoreGroupService {
+export class TwDidService {
   host: string;
-  constructor(host: string) {
+  token?: string;
+
+  constructor(host: string, token?: string) {
     this.host = host;
+    this.token = token;
   }
 
-  selectCredential(): Promise<SelectCredentialMessage> {
-    const childWindow = window.open(`${this.host}/select-credential`, '_blank');
+  async ethereumChallenge(): Promise<NonceDto> {
+    const challengeRes = await fetch(
+      `${this.host}/api/auth/ethereum/challenge`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${this.token}` },
+      }
+    );
+
+    const challengeData: NonceDto = await challengeRes.json();
+    if (challengeRes.status !== 201) {
+      throw new EthereumLoginError('Failed to get Ethereum challenge');
+    }
+
+    return challengeData;
+  }
+
+  async ethereumLogin(
+    loginDto: EthereumLoginDto
+  ): Promise<EthereumLoginResponseDto> {
+    const loginRes = await fetch(`${this.host}/api/auth/ethereum/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${this.token}`,
+      },
+      body: JSON.stringify(loginDto),
+    });
+
+    if (loginRes.status === 201) {
+      const response: EthereumLoginResponseDto = await loginRes.json();
+      return response;
+    } else {
+      throw new EthereumLoginError('Ethereum login failed');
+    }
+  }
+
+  selectCredential(win: Window): Promise<SelectCredentialMessage> {
+    const childWindow = win.open(`${this.host}/select-credential`, '_blank');
 
     return new Promise<SelectCredentialMessage>((resolve) => {
       const handler = (event: MessageEvent) => {
         if (event.origin !== this.host) return;
 
-        window.removeEventListener('message', handler);
+        win.removeEventListener('message', handler);
         resolve(event.data as SelectCredentialMessage);
         return childWindow?.close();
       };
 
-      window.addEventListener('message', handler, false);
-    });
-  }
-
-  // TODO: this is a mock implementation
-  fetchGroupInfo(groupId: string): Promise<GroupInfo> {
-    return Promise.resolve({
-      id: groupId,
-      depth: 20,
-      members: [
-        '18247677939749764709615722514754949329375911953462583983649646599131197861128',
-      ],
+      win.addEventListener('message', handler, false);
     });
   }
 }

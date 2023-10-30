@@ -1,4 +1,4 @@
-export class LoginEthereumDto {
+export interface EthereumLoginDto {
   message: string;
   signature: string;
   id: string;

@@ -12,6 +12,7 @@ interface TwFidoStrategyOptions {
   apiUrl: string;
   apiKey: string;
   serviceId: string;
+  enableValidation: boolean;
 }
 
 export interface RequestLoginResponse {
@@ -28,14 +29,19 @@ class TimeoutError extends Error {
 }
 
 export function Strategy(
-  { apiUrl, apiKey, serviceId }: TwFidoStrategyOptions,
+  { apiUrl, apiKey, serviceId, enableValidation }: TwFidoStrategyOptions,
   verify
 ) {
   if (!verify) {
     throw new TypeError('TwFidoStrategy requires a verify callback');
   }
 
-  this.twFidoClient = new TwFidoApiClient(apiUrl, apiKey, serviceId);
+  this.twFidoClient = new TwFidoApiClient(
+    apiUrl,
+    apiKey,
+    serviceId,
+    enableValidation
+  );
 
   PassportStrategy.call(this);
 

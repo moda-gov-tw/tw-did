@@ -1,3 +1,3 @@
-export * from './CredentialContext';
-export * from './CredentialData';
-export * from './AuthContext';
+export * from '../hooks/CredentialData';
+export * from './TwDidContext';
+export * from './veramo';

@@ -7,16 +7,15 @@ import {
 } from '@veramo/core-types';
 import { DIDDocument, VerificationMethod } from 'did-resolver';
 import { SEMAPHORE_TYPE } from './SemaphoreConstants';
-import { ISemaphoreGroupService, TwDidService } from '.';
 import { FullProof, verifyProof } from '@semaphore-protocol/proof';
 import { RequiredAgentMethods, VeramoLdSignature } from '@tw-did/credential-ld';
+import { GroupInfo } from './SemaphoreTypes';
 
 type SemaphoreSignature2023Options = {
   context?: IAgentContext<RequiredAgentMethods>;
   verificationMethod?: string;
   key?: IKey;
   issuerDid?: string;
-  groupService?: ISemaphoreGroupService;
 };
 
 type Purpose = {
@@ -69,14 +68,12 @@ export class PropertyNotFountError extends Error {
 }
 
 export class SemaphoreSignature2023 extends VeramoLdSignature {
-  groupService: ISemaphoreGroupService;
   context?: IAgentContext<RequiredAgentMethods>;
   verificationMethod?: string;
   key?: IKey;
   issuerDid?: string;
 
   constructor({
-    groupService = new TwDidService(''),
     context,
     verificationMethod,
     issuerDid,
@@ -88,7 +85,6 @@ export class SemaphoreSignature2023 extends VeramoLdSignature {
     this.verificationMethod = verificationMethod;
     this.key = key;
     this.issuerDid = issuerDid;
-    this.groupService = groupService;
   }
 
   override getSupportedVerificationType(): string {
@@ -155,15 +151,9 @@ export class SemaphoreSignature2023 extends VeramoLdSignature {
     }
 
     const { credentialSubject } = document;
-    const groupId = credentialSubject['group'];
-
-    if (!groupId) {
-      throw new PropertyNotFountError('document.credentialSubject', 'group');
-    }
 
     const challenge = Date.now();
-    const group = await this.groupService.fetchGroupInfo(groupId);
-    const data = { challenge, group };
+    const data = { challenge, group: credentialSubject };
 
     const result = await this.context.agent.keyManagerSign({
       keyRef: this.key.kid,
@@ -190,9 +180,8 @@ export class SemaphoreSignature2023 extends VeramoLdSignature {
     const { proof, document } = args;
     const id = proof.verificationMethod;
     const controller = document.issuer as string;
-    const group = await this.groupService.fetchGroupInfo(
-      document.credentialSubject['group']
-    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const group: GroupInfo = document.credentialSubject as any;
 
     if (!controller) {
       throw new PropertyNotFountError('document', 'issuer');

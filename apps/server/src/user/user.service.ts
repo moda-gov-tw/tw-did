@@ -1,23 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { User, UserDocument } from './user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Identity, IdentityDocument } from './identity.schema';
+import { CommitmentsDto } from '@tw-did/core';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Identity.name) private identityModel: Model<Identity>
   ) {}
 
-  create(nationalId: string): Promise<User> {
-    const id = uuid();
-    const createdUser = this.usersRepository.create({ id, nationalId });
-    return this.usersRepository.save(createdUser);
-  }
-
-  async findOneById(id: string): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
+  async findOneById(id: string): Promise<UserDocument> {
+    const user = await this.userModel
+      .findById(id)
+      .populate('currentIdentity')
+      .exec();
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -27,45 +26,98 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.userModel.find();
   }
 
-  async findAllCommitments(): Promise<string[]> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: any = {
-      where: { semaphoreCommitment: { $exists: true, $ne: null } },
-    };
-    const users = await this.usersRepository.find(query);
-    return users.map((user) => user.semaphoreCommitment);
-  }
+  async findAllCommitments(): Promise<CommitmentsDto> {
+    const allIdentities = await this.identityModel.find().exec();
 
-  async findOrCreate(nationalId: string): Promise<User> {
-    let user = await this.usersRepository.findOne({ where: { nationalId } });
+    const activated: string[] = [];
+    const revoked: string[] = [];
 
-    if (!user) {
-      user = await this.create(nationalId);
+    for (const identity of allIdentities) {
+      if (identity.revoked) {
+        revoked.push(identity.semaphoreCommitment);
+      } else {
+        activated.push(identity.semaphoreCommitment);
+      }
     }
 
-    return user;
+    return {
+      activated,
+      revoked,
+    };
   }
 
-  async updateEthereumAccount(id: string, ethereumAccount: string) {
-    const user = await this.findOneById(id);
-    user.ethereumAccount = ethereumAccount;
-    await this.usersRepository.save(user);
+  async findAllRevocation(): Promise<string[]> {
+    const revokedIdentities = await this.identityModel
+      .find({ revoked: true })
+      .select('_id')
+      .exec();
 
-    return user;
+    return revokedIdentities.map((identity) => identity._id.toHexString());
   }
 
-  async updateSemaphoreIdentity(id: string, semaphoreCommitment: string) {
-    const user = await this.findOneById(id);
-    user.semaphoreCommitment = semaphoreCommitment;
-    await this.usersRepository.save(user);
+  async findOrCreate(nationalId: string): Promise<UserDocument> {
+    return this.userModel.findOneAndUpdate(
+      { nationalId },
+      { nationalId },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+  }
 
-    return user;
+  private async updateIdentity(
+    userId: string,
+    field: 'ethereumAccount' | 'semaphoreCommitment',
+    value: string
+  ) {
+    const user = await this.findOneById(userId);
+    if (!user.currentIdentity) {
+      const createdIdentity = new this.identityModel({
+        userId,
+        [field]: value,
+      });
+      await createdIdentity.save();
+      user.currentIdentity = createdIdentity;
+      await user.save();
+    } else {
+      const identityId = (user.currentIdentity as IdentityDocument)._id;
+      const identity = await this.identityModel.findById(identityId);
+      if (identity) {
+        identity[field] = value;
+        await identity.save();
+      }
+    }
+  }
+
+  updateEthereumAccount(userId: string, value: string) {
+    return this.updateIdentity(userId, 'ethereumAccount', value);
+  }
+
+  updateSemaphoreIdentity(userId: string, value: string) {
+    return this.updateIdentity(userId, 'semaphoreCommitment', value);
   }
 
   findOne(nationalId: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { nationalId } });
+    return this.userModel.findOne({ nationalId });
+  }
+
+  async revokeIdentity(userId: string): Promise<boolean> {
+    const user = await this.findOneById(userId);
+    if (!user.currentIdentity) {
+      throw new NotFoundException(
+        `the currentIdentity of User ${user._id} not found`
+      );
+    }
+
+    const identityId = (user.currentIdentity as IdentityDocument)._id;
+    const identity = await this.identityModel.findById(identityId);
+    if (identity) {
+      identity.revoked = true;
+      await identity.save();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

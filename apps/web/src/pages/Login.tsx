@@ -1,8 +1,8 @@
-import { LoginScreen, useAuth } from '@tw-did/react-library';
+import { LoginScreen, useTwDid } from '@tw-did/react-library';
 import { useNavigate } from '@tanstack/react-router';
 
 export function Login() {
-  const { user, loginInfo } = useAuth();
+  const { user, loginInfo } = useTwDid();
 
   const handleLogin = async () => {
     /* TODO: handleFidoLogin */

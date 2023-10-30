@@ -1,0 +1,44 @@
+diff --git a/node_modules/uint8arrays/dist/index.min.js b/node_modules/uint8arrays/dist/index.min.cjs
+similarity index 100%
+rename from node_modules/uint8arrays/dist/index.min.js
+rename to node_modules/uint8arrays/dist/index.min.cjs
+diff --git a/node_modules/uint8arrays/package.json b/node_modules/uint8arrays/package.json
+index d41a925..5b84275 100644
+--- a/node_modules/uint8arrays/package.json
++++ b/node_modules/uint8arrays/package.json
+@@ -39,7 +39,8 @@
+   "exports": {
+     ".": {
+       "types": "./dist/src/index.d.ts",
+-      "import": "./dist/src/index.js"
++      "import": "./dist/src/index.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./alloc": {
+       "types": "./dist/src/alloc.d.ts",
+@@ -51,7 +52,8 @@
+     },
+     "./concat": {
+       "types": "./dist/src/concat.d.ts",
+-      "import": "./dist/src/concat.js"
++      "import": "./dist/src/concat.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./equals": {
+       "types": "./dist/src/equals.d.ts",
+@@ -59,11 +61,13 @@
+     },
+     "./from-string": {
+       "types": "./dist/src/from-string.d.ts",
+-      "import": "./dist/src/from-string.js"
++      "import": "./dist/src/from-string.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./to-string": {
+       "types": "./dist/src/to-string.d.ts",
+-      "import": "./dist/src/to-string.js"
++      "import": "./dist/src/to-string.js",
++      "require": "./dist/index.min.cjs"
+     },
+     "./xor": {
+       "types": "./dist/src/xor.d.ts",
