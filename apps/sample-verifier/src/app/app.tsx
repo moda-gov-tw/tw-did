@@ -27,8 +27,25 @@ import {
 
 enum VerificationResult {
   Verified = 'Verified',
+  Revoked = 'Revoked',
   NotVerified = 'Not Verified',
   Pending = 'Pending',
+}
+
+function createSemaphoreCrdentialContent(
+  issuer: string,
+  members: string[]
+): CredentialPayload {
+  const credential: CredentialPayload = {
+    '@context': [SEMAPHORE_CONTEXT_URI],
+    issuer: issuer,
+    credentialSubject: {
+      groupId: SEMAPHORE_GROUP_ID,
+      depth: SEMAPHORE_GROUP_DEPTH,
+      members,
+    },
+  };
+  return credential;
 }
 
 export function App() {
@@ -109,43 +126,45 @@ export function App() {
       `http://localhost:3000/api/users/commitments`
     ).then((res) => res.json());
 
-    const members = commitments.activated.includes(
-      identity.commitment.toString()
-    )
-      ? commitments.activated
-      : commitments.revoked;
-
-    const credential: CredentialPayload = {
-      '@context': [SEMAPHORE_CONTEXT_URI],
-      issuer: holder.did,
-      credentialSubject: {
-        groupId: SEMAPHORE_GROUP_ID,
-        depth: SEMAPHORE_GROUP_DEPTH,
-        members,
-      },
-    };
-
-    const verifiableCredential = await agent.createVerifiableCredential({
-      credential,
-      proofFormat: 'lds',
-    });
-    setSemaphoreCredential(JSON.stringify(verifiableCredential, null, 2));
-
-    const verified = await agent.verifyCredential({
-      credential: verifiableCredential,
-    });
-    setSemaphoreVerified(
-      verified.verified
-        ? VerificationResult.Verified
-        : VerificationResult.NotVerified
-    );
-    console.log(verified);
-
-    verifiableCredential.proof.fullProof.externalNullifier = '1694084344541';
-    console.log(
-      'should fail',
-      await agent.verifyCredential({ credential: verifiableCredential })
-    );
+    let verifiableCredential: VerifiableCredential;
+    try {
+      verifiableCredential = await agent.createVerifiableCredential({
+        credential: createSemaphoreCrdentialContent(
+          holder.did,
+          commitments.activated
+        ),
+        proofFormat: 'lds',
+      });
+      setSemaphoreCredential(JSON.stringify(verifiableCredential, null, 2));
+      const verified = await agent.verifyCredential({
+        credential: verifiableCredential,
+      });
+      setSemaphoreVerified(
+        verified.verified
+          ? VerificationResult.Verified
+          : VerificationResult.NotVerified
+      );
+      console.log(verified);
+    } catch (e) {
+      // the identity is not in the group, try revoked group
+      verifiableCredential = await agent.createVerifiableCredential({
+        credential: createSemaphoreCrdentialContent(
+          holder.did,
+          commitments.revoked
+        ),
+        proofFormat: 'lds',
+      });
+      setSemaphoreCredential(JSON.stringify(verifiableCredential, null, 2));
+      const verified = await agent.verifyCredential({
+        credential: verifiableCredential,
+      });
+      setSemaphoreVerified(
+        verified.verified
+          ? VerificationResult.Revoked
+          : VerificationResult.NotVerified
+      );
+      console.log(verified);
+    }
   };
 
   // verify via ethereum injected wallet and issue a verifiable presentation
@@ -186,12 +205,21 @@ export function App() {
     setPresentation(JSON.stringify(vp, null, 2));
 
     const result = await agent.verifyPresentation({ presentation: vp });
-    setVerified(
+    const revocationResult = await agent.checkCredentialStatus({
+      credential: cred,
+    });
+
+    let finalResult = VerificationResult.NotVerified;
+    if (revocationResult.revoked) {
+      finalResult = VerificationResult.Revoked;
+    } else if (
       result.verified &&
-        cred.credentialSubject.id?.toLowerCase() === vp.holder.toLowerCase()
-        ? VerificationResult.Verified
-        : VerificationResult.NotVerified
-    );
+      cred.credentialSubject.id?.toLowerCase() === vp.holder.toLowerCase()
+    ) {
+      finalResult = VerificationResult.Verified;
+    }
+
+    setVerified(finalResult);
   };
 
   const renderVerificationResult = (result: VerificationResult) => {
@@ -199,6 +227,8 @@ export function App() {
       return <span data-testid="verification-pending">Pending</span>;
     } else if (result === VerificationResult.Verified) {
       return <span data-testid="verification-succeeds">Verified</span>;
+    } else if (result === VerificationResult.Revoked) {
+      return <span data-testid="verification-fails">Revoked</span>;
     } else {
       return <span data-testid="verification-fails">Not Verified</span>;
     }

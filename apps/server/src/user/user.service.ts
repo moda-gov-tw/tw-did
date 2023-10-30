@@ -115,6 +115,8 @@ export class UsersService {
     if (identity) {
       identity.revoked = true;
       await identity.save();
+      user.currentIdentity = null;
+      await user.save();
       return true;
     } else {
       return false;
