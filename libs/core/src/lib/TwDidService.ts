@@ -4,6 +4,7 @@ import {
   EthereumLoginResponseDto,
   MessageAction,
   NonceDto,
+  RevocationResponseDto,
 } from '.';
 
 export class InvalidOriginError extends Error {
@@ -18,6 +19,14 @@ class EthereumLoginError extends Error {
     super(message);
     this.name = 'EthereumLoginError';
     Object.setPrototypeOf(this, EthereumLoginError.prototype);
+  }
+}
+
+class RevocationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RevocationError';
+    Object.setPrototypeOf(this, RevocationError.prototype);
   }
 }
 
@@ -70,6 +79,24 @@ export class TwDidService {
       return response;
     } else {
       throw new EthereumLoginError('Ethereum login failed');
+    }
+  }
+
+  async revoke(): Promise<RevocationResponseDto> {
+    const res = await fetch(`${this.host}/api/users/revoke`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+
+    if (res.status === 201) {
+      const response: RevocationResponseDto = await res.json();
+      return response;
+    } else {
+      throw new RevocationError('revocation failed');
     }
   }
 

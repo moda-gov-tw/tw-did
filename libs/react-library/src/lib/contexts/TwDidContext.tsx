@@ -16,6 +16,7 @@ import { Group } from '@semaphore-protocol/group';
 import {
   CommitmentsDto,
   MessageAction,
+  RevocationResponseDto,
   SEMAPHORE_CONTEXT_URI,
   SEMAPHORE_DID_ALIAS,
   SEMAPHORE_GROUP_DEPTH,
@@ -111,6 +112,7 @@ interface TwDidContextProps {
   getSemaphoreGroup: () => Promise<Group>;
   updateSemaphoreCommitment: (semaphoreCommitment: string) => Promise<void>;
   generateSemaphoreIdentity: () => Promise<Identity>;
+  revoke: () => Promise<RevocationResponseDto>;
   sendCredential: (action: MessageAction, vc: VerifiableCredential) => void;
 }
 
@@ -373,6 +375,13 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
     });
   };
 
+  const revoke = async (): Promise<RevocationResponseDto> => {
+    const result = await twDidService.revoke();
+    await setUserInfo(user?.id || '', user?.token || '');
+
+    return result;
+  };
+
   const sendCredential = async (
     action: MessageAction,
     vc: VerifiableCredential
@@ -394,6 +403,7 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
         generateSemaphoreIdentity,
         generateSemaphoreVerifiableCredential,
         sendCredential,
+        revoke,
       }}
     >
       {children}

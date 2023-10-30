@@ -13,11 +13,7 @@ import { User } from './user.schema';
 import { IssuanceService } from '../issuance/issuance.service';
 import { VerifiableCredential } from '@veramo/core-types';
 import { IdentityDocument } from './identity.schema';
-import { CommitmentsDto } from '@tw-did/core';
-
-interface RevocationResult {
-  result: boolean;
-}
+import { CommitmentsDto, RevocationResponseDto } from '@tw-did/core';
 
 @Controller('users')
 export class UsersController {
@@ -70,7 +66,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post('revoke')
-  async revokeIdentity(@Request() req): Promise<RevocationResult> {
+  async revokeIdentity(@Request() req): Promise<RevocationResponseDto> {
     const { userId } = req.user;
     const result = await this.usersService.revokeIdentity(userId);
     return { result };

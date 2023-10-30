@@ -38,7 +38,6 @@ export const CredentialScreen = ({
           } catch (e) {
             notifyError();
           }
-          notifyDone();
         },
         type: 'danger',
       },
@@ -102,7 +101,6 @@ export const CredentialScreen = ({
           } catch (e) {
             notifyError();
           }
-          notifyDone();
         },
         type: 'danger',
       },
