@@ -30,16 +30,44 @@ $ npm install
 
 This command installs all necessary packages for the project.
 
-## Web and Sample Verifier
+# Server Setup
 
-Firstly, add a `.env.local` file to the `<rootFolder>/apps/sample-verifier` directory. You can simply copy `.env.local.example` to `.env.local` and insert your Infura project ID.
+## Development Environment
 
-Next, to set up a minimal development environment, you'll need to start both the `web` and `sample-verifier` servers. Execute the following commands to do so:
+For local development, you'll need to spin up a MongoDB instance using Docker. Execute the following command to start the database:
 
 ```shell
-$ nx serve web --port 4201
+$ nx start-db server
+```
 
-# Open a new terminal tab
+Next, configure the environment variables by referencing `apps/server/.env.example`. Copy its contents into a new file named `.env.local` within the same directory. To start the server, run:
+
+```shell
+$ nx serve server
+```
+
+## Testing with Twfido API Service
+
+If you require a mock Twfido API service for testing, you can start it on port 3001 using the following command:
+
+```shell
+$ PORT=3001 nx serve mock-twfido
+```
+
+Then, set the `TWFIDO_API_URL` and `TWFIDO_ENABLE_VALIDATION` environment variables. Relaunch the server using `nx serve server` with the new settings:
+
+```shell
+TWFIDO_API_URL=http://localhost:3001/api
+TWFIDO_ENABLE_VALIDATION="0"
+```
+
+## Sample Verifier
+
+The Sample Verifier serves as a demonstration on how to use tw-did. Firstly, add a `.env.local` file to the `<rootFolder>/apps/sample-verifier` directory. You can simply copy `.env.local.example` to `.env.local` and insert your Infura project ID.
+
+Next, to set up a minimal development environment, you'll need to start `sample-verifier` project. Execute the following commands to do so:
+
+```shell
 $ nx preview sample-verifier --watch
 ```
 

@@ -16,6 +16,7 @@ export interface TwFidoConfig {
   apiKey: string;
   serviceId: string;
   apiUrl: string;
+  enableValidation: boolean;
 }
 
 export interface VeramoConfig {
@@ -48,6 +49,7 @@ export function getConfig(): Config {
       serviceId: process.env.TWFIDO_SERVICE_ID,
       apiKey: process.env.TWFIDO_API_KEY,
       apiUrl: process.env.TWFIDO_API_URL,
+      enableValidation: process.env.TWFIDO_ENABLE_VALIDATION !== '0',
     },
     veramo: {
       infuraProjectId: process.env.VERAMO_INFURA_PROJECT_ID,

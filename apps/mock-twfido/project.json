@@ -1,0 +1,64 @@
+{
+  "name": "mock-twfido",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mock-twfido/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/mock-twfido",
+        "main": "apps/mock-twfido/src/main.ts",
+        "tsConfig": "apps/mock-twfido/tsconfig.app.json",
+        "assets": ["apps/mock-twfido/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/mock-twfido/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "mock-twfido:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "mock-twfido:build:development"
+        },
+        "production": {
+          "buildTarget": "mock-twfido:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/mock-twfido/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/mock-twfido/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
