@@ -1,4 +1,4 @@
-import styles from './connectionCardSimple.module.scss';
+import styles from './ConnectionCardSimple.module.scss';
 import { ShortenAddr } from '../../common/shortenAddr';
 
 export const ConnectionCardSimple = ({

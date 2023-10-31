@@ -7,7 +7,7 @@ import { GoIcon } from '../../common/icons/go';
 import { ErrorIcon } from '../../common/icons/error';
 import { SuccessIcon } from '../../common/icons/success';
 import { Button } from '../../common/button';
-import { ConnectionCardSimple } from '../connectionsCardSimple';
+import { ConnectionCardSimple } from '../ConnectionsCardSimple/ConnectionCardSimple';
 
 export const WalletHomeScreen = ({
   user,

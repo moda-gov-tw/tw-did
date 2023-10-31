@@ -1,5 +1,5 @@
 import { Container, FlexSpace } from '../../common/container';
-import { CredentialCardList } from '../credentialCard/CredentialCardList';
+import { CredentialCardList } from '../CredentialCard/CredentialCardList';
 import { Button } from '../../common/button';
 import styles from './CredentialScreen.module.scss';
 import { Dialog, useDialog, DialogProps } from '../../common/dialog';

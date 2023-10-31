@@ -2,7 +2,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import styles from './layout.module.scss';
 import { Button } from '../../common/button';
 import { Container, FlexSpace } from '../../common/container';
-import { ConnectionCard } from '../connectionsCard';
+import { ConnectionCard } from '../ConnectionsCard/ConnectionCard';
 import { Logo } from '../../common/icons/logo';
 import { ReactNode, useState } from 'react';
 import { FidoMin } from '../../common/icons/fidoMin';
