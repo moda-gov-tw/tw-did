@@ -11,14 +11,18 @@ import { ConnectionCardSimple } from '../connectionsCardSimple';
 
 export const WalletHomeScreen = ({
   user,
+  mode, 
   gotoRegister,
+  gotoView,
   gotoSelect,
 }: {
   user?: {
     nationalId: string;
     walletAddr: string;
   };
+  mode: 'view' | 'select';
   gotoRegister: () => void;
+  gotoView: () => void;
   gotoSelect: () => void;
 }) => {
   interface ScreenState {
@@ -39,7 +43,15 @@ export const WalletHomeScreen = ({
       buttonIcon: GoIcon,
       buttonAction: gotoRegister,
     },
-    connected: {
+    view: {
+      icon: SuccessIcon,
+      title: 'Your identity',
+      instructions: 'View your credentials',
+      button: 'View',
+      buttonIcon: GoIcon,
+      buttonAction: gotoView,
+    },
+    select: {
       icon: SuccessIcon,
       title: 'Your identity',
       instructions: 'Select your credentials',
@@ -55,7 +67,7 @@ export const WalletHomeScreen = ({
 
   useEffect(() => {
     if (user) {
-      setCurrentState(ScreenStates.connected);
+      setCurrentState(ScreenStates[mode]);
     }
   }, [user]);
   return (

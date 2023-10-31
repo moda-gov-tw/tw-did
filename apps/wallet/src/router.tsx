@@ -26,6 +26,7 @@ export const viewCredentialRoute = new Route({
 const routeTree = rootRoute.addChildren([
   homeRoute,
   selectCredentialRoute,
+  viewCredentialRoute,
 ]);
 export const router = new Router({ routeTree });
 

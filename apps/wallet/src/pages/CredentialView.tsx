@@ -1,57 +1,64 @@
 import {
   CredentialScreen,
-  useAuth,
+  CredentialType,
+  useTwDid,
   useCredentials,
+  CredentialMode,
+  ActionId,
 } from '@tw-did/react-library';
+import { VerifiableCredential } from '@veramo/core-types';
 import { useNavigate } from '@tanstack/react-router';
 
 export function CredentialView() {
-  const { logout } = useAuth();
-  const { credentials } = useCredentials();
+  const {
+    logout,
+    user,
+    getEthereumVerifiableCredential,
+    generateSemaphoreVerifiableCredential,
+    getSemaphoreGroup,
+    generateSemaphoreIdentity,
+  } = useTwDid();
+  
+  const credentials = useCredentials(
+    CredentialMode.List,
+    user?.nationalId,
+    user?.ethereumAccount
+  );
 
-  const handleDownload = async (data: any) => {
-    /* TODO: send to wallet instead of download */
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(data)
-    )}`;
-    const link = document.createElement('a');
-    link.href = jsonString;
-    link.download = 'data.json';
-    link.click();
+  const handleAction = async (
+    credentialKey: CredentialType,
+    actionId: ActionId
+  ) => {
+    let vc: VerifiableCredential | null = null;
+    if (credentialKey === CredentialType.ETHEREUM) {
+      vc = await getEthereumVerifiableCredential();
+    } else if (credentialKey === CredentialType.SEMAPHORE) {
+      const identity = await generateSemaphoreIdentity();
+      const group = await getSemaphoreGroup();
+
+      vc = await generateSemaphoreVerifiableCredential(identity, group);
+    }
+
+    if (vc) {
+      if (actionId === ActionId.DOWNLOAD || actionId === ActionId.GENERATE) {
+        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+          JSON.stringify(vc)
+        )}`;
+        const link = document.createElement('a');
+        link.href = jsonString;
+        link.download = `vc-${credentialKey}.json`;
+        link.click();
+      }
+    }
   };
-
-  const handleRevoke = async () => {
-    /* TODO: handle revoke */
-  };
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
-  const navigate = useNavigate();
-  const handleClose = async () => {
-    navigate({ to: '/' });
-  };
-
-  /* TODO: get from AuthContext */
-  const checkLogin = () => {
-    return localStorage.getItem('user') ? true : false;
-  }
 
   return (
     <div>
       <CredentialScreen
         credentials={credentials}
-        actionLabels={['download']}
-        onAction={(index, label) => {
-          if (label === 'download')
-            handleDownload(credentials[index].verifiableCredential);
-          else return;
+        onAction={(credentialKey, actionId) => {
+          handleAction(credentialKey, actionId);
         }}
-        onRevoke={handleRevoke}
-        onLogout={handleLogout}
-        onClose={handleClose}
-        checkLogin={checkLogin}
       />
     </div>
   );

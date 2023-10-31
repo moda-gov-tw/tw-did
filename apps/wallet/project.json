@@ -24,16 +24,16 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "web:build",
+        "buildTarget": "wallet:build",
         "proxyConfig": "apps/wallet/proxy.conf.json"
       },
       "configurations": {
         "development": {
-          "buildTarget": "web:build:development",
+          "buildTarget": "wallet:build:development",
           "hmr": true
         },
         "production": {
-          "buildTarget": "web:build:production",
+          "buildTarget": "wallet:build:production",
           "hmr": false
         }
       }
@@ -42,14 +42,14 @@
       "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "web:build"
+        "buildTarget": "wallet:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "web:build:development"
+          "buildTarget": "wallet:build:development"
         },
         "production": {
-          "buildTarget": "web:build:production"
+          "buildTarget": "wallet:build:production"
         }
       }
     },
@@ -69,9 +69,9 @@
       }
     },
     "serve-static": {
-      "executor": "@nx/web:file-server",
+      "executor": "@nx/wallet:file-server",
       "options": {
-        "buildTarget": "web:build"
+        "buildTarget": "wallet:build"
       }
     }
   },

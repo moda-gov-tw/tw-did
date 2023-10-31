@@ -7,7 +7,7 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/wallet',
 
   server: {
-    port: 4200,
+    port: 4201,
     host: 'localhost',
   },
 
