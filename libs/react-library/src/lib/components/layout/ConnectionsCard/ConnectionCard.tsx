@@ -1,4 +1,4 @@
-import styles from './connectionCard.module.scss';
+import styles from './ConnectionCard.module.scss';
 import { FidoLogo } from '../../common/icons/fidoLogo';
 import { EthLogo } from '../../common/icons/ethLogo';
 import { SuccessIcon } from '../../common/icons/success';

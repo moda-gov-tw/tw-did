@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import styles from './button.module.scss';
-import { Link } from '@tanstack/react-router';
 
 export interface buttonProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,7 +8,7 @@ export interface buttonProps {
   text?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;
-  type?: 'danger' | 'primary' | 'secondary';
+  type?: 'danger' | 'primary' | 'secondary' | 'link';
 }
 
 export const Button = ({ onClick, icon, text, type, props }: buttonProps) => {

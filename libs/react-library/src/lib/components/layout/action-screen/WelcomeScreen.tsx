@@ -10,7 +10,7 @@ import { validateNationId } from '../../../utils/utils';
 
 export const WelcomeScreen = ({
   nationalId,
-  handleRegister,
+  handleRegister
 }: {
   nationalId: string;
   handleRegister: (nationalId: string) => void;
@@ -49,7 +49,7 @@ export const WelcomeScreen = ({
               commitValue={setIdInput}
               initialValue={nationalId}
             />
-            <Button type="primary" onClick={handleGo} icon={GoIcon} text="Go" />
+            <Button type="primary" onClick={handleGo} icon={GoIcon} text='Go' />
             {<p className={styles.warning}>{warning}</p>}
           </div>
         </div>

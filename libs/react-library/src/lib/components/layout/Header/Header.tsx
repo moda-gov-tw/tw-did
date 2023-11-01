@@ -1,4 +1,4 @@
-import styles from './header.module.scss';
+import styles from './Header.module.scss';
 import theme from '../../../styles/theme.module.scss';
 import { GoIcon } from '../../common/icons/go';
 import { Button } from '../../common/button';

@@ -1,5 +1,5 @@
 import { QRCodeCanvas } from 'qrcode.react';
-import { ConnectionCard } from '../connectionsCard';
+import { ConnectionCard } from '../ConnectionsCard/ConnectionCard';
 import { Logo } from '../../common/icons/logo';
 import { GoIcon } from '../../common/icons/go';
 import { FidoMin } from '../../common/icons/fidoMin';

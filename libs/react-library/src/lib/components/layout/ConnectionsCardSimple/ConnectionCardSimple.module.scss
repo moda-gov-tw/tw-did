@@ -1,0 +1,27 @@
+.ConnectionCardSimple {
+    border:none;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-color2);
+    position: relative;
+    display: flex;
+    width: 300px;
+    align-items: center;
+    justify-content: center;
+
+    .info {
+        width: 40%;
+        position: relative;
+        text-align: center;
+        margin: 1.5rem 0rem;
+    }
+
+    .label {
+        color: var(--text-color2);
+        letter-spacing: 0.1em;
+        font-weight: bold;
+        font-size: 0.8em;
+        margin-bottom: 0.5rem;
+    }
+
+
+}
