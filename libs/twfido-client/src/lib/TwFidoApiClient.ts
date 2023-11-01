@@ -104,7 +104,9 @@ export class TwFidoApiClient {
       this.serviceId,
       ...checksumPayload
     );
-    const checksum = await calculateChecksum(this.apiKey, payload);
+    const checksum = this.enableValidation
+      ? await calculateChecksum(this.apiKey, payload)
+      : '';
     const params = {
       ...userInputParams,
       transaction_id: transactionId,
