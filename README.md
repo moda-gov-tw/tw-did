@@ -61,6 +61,8 @@ TWFIDO_API_URL=http://localhost:3001/api
 TWFIDO_ENABLE_VALIDATION="0"
 ```
 
+and you can use mock National ID `A123456789` to sign in, it will be automatically passed in 5 seconds.
+
 ## Sample Verifier
 
 The Sample Verifier serves as a demonstration on how to use tw-did. Firstly, add a `.env.local` file to the `<rootFolder>/apps/sample-verifier` directory. You can simply copy `.env.local.example` to `.env.local` and insert your Infura project ID.
