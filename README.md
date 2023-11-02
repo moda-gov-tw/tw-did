@@ -34,34 +34,25 @@ This command installs all necessary packages for the project.
 
 ## Development Environment
 
-For local development, you'll need to spin up a MongoDB instance using Docker. Execute the following command to start the database:
+Firstly, configure the environment variables by referencing `apps/server/.env.example`. Copy its contents into a new file named `.env.local` within the same directory. The default settings in `.env.example` should work out of the box, with the exception of the `VERAMO_INFURA_PROJECT_ID` variable. You will need to create a project on [Infura](https://www.infura.io/) and provide the project id for `VERAMO_INFURA_PROJECT_ID` in your `.env.local` file.
+
+Next, for local development, you'll need to spin up a MongoDB instance using Docker. Execute the following command to start the database:
 
 ```shell
 $ nx start-db server
 ```
 
-Next, configure the environment variables by referencing `apps/server/.env.example`. Copy its contents into a new file named `.env.local` within the same directory. To start the server, run:
+For testing purposes, you can simultaneously start both the server and the mock Twfido API service using the following command:
 
 ```shell
-$ nx serve server
+$ npm run dev
 ```
 
-## Testing with Twfido API Service
+Executing the `npm run dev` command will actually start both the `server` and `mock-twfido` projects. The `server` project will be running on port `3000` and the `mock-twfido` project will be running on port `3001`. This is a convenient way to have both services running at the same time for local development and testing.
 
-If you require a mock Twfido API service for testing, you can start it on port 3001 using the following command:
+`mock-twfido` is a mock version of the Twfido API service provided by the Taiwanese government for identity verification. Due to the necessity of registration and IP whitelisting with the actual Twfido API, a mock service like `mock-twfido` is used during development. All requests sent to `mock-twfido` will automatically pass verification, making it a useful tool for testing purposes without having to interact with the real Twfido API.
 
-```shell
-$ PORT=3001 nx serve mock-twfido
-```
-
-Then, set the `TWFIDO_API_URL` and `TWFIDO_ENABLE_VALIDATION` environment variables. Relaunch the server using `nx serve server` with the new settings:
-
-```shell
-TWFIDO_API_URL=http://localhost:3001/api
-TWFIDO_ENABLE_VALIDATION="0"
-```
-
-and you can use mock National ID `A123456789` to sign in, it will be automatically passed in 5 seconds.
+After the server is up and running, you can use the mock National ID `A123456789` to sign in, it will be automatically passed in 5 seconds.
 
 ## Sample Verifier
 

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve web",
+    "dev": "nx run-many -t serve -p server,mock-twfido",
     "postinstall": "patch-package",
     "acceptance": "nx acceptance acceptance"
   },
