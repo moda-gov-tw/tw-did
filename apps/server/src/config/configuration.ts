@@ -28,12 +28,14 @@ export interface ServerConfig {
   apiPrefix: string;
 }
 
-class PropertyNotFoundError extends Error {
-  constructor(missingProperties: string[]) {
-    const missings = missingProperties.join(', ');
-    super(`The following properties could not be found: ${missings}`);
-    this.name = 'PropertyNotFoundError';
-    Object.setPrototypeOf(this, PropertyNotFoundError.prototype);
+class MissingEnvVarsError extends Error {
+  constructor(missingVars: string[]) {
+    const message = `The following environment variables are required but were not provided: ${missingVars.join(
+      ', '
+    )}`;
+    super(message);
+    this.name = 'MissingEnvVarsError';
+    Object.setPrototypeOf(this, MissingEnvVarsError.prototype);
   }
 }
 
@@ -60,12 +62,22 @@ export function getConfig(): Config {
     },
   };
 
-  const missingProperties = Object.keys(config.mongo).filter(
-    (key) => !config.mongo[key]
+  const requiredEnvs = [
+    'MONGO_DATABASE_USERNAME',
+    'MONGO_DATABASE_PASSWORD',
+    'MONGO_HOST',
+    'MONGO_DATABASE',
+    'TWFIDO_API_URL',
+    'VERAMO_INFURA_PROJECT_ID',
+    'VERAMO_ETHR_NETWORK',
+  ];
+
+  const missingEnvs = requiredEnvs.filter(
+    (envVar) => typeof process.env[envVar] === 'undefined'
   );
 
-  if (missingProperties.length > 0) {
-    throw new PropertyNotFoundError(missingProperties);
+  if (missingEnvs.length > 0) {
+    throw new MissingEnvVarsError(missingEnvs);
   }
 
   return config;
