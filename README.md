@@ -88,13 +88,15 @@ If you simply want to build a Docker image, you can use this command:
 nx build docker
 ```
 
-## E2E Tests Locally
+## Running End-to-End (e2e) Tests
 
-If you are planning to run e2e tests locally, you'll also need to set a `VITE_MOCK_WALLET_PRIVATE_KEY` in your `.env.local` file. Due to security reasons, please reach out to @yurenju to obtain this key.
+You can execute the e2e tests for this project using the following command:
 
-```shell
-$ nx run-many -t e2e
+```bash
+nx run-many -t e2e
 ```
+
+In this context, e2e tests refer to the testing process where the server is integrated with MongoDB to ensure that the entire process from the client request to the server and then to the database and back is functioning as expected. It's important to note that these e2e tests do not cover the User Interface (UI) testing.
 
 ## Acceptance tests
 
