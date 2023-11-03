@@ -1,6 +1,6 @@
-# tw-did
+# Taiwan DID
 
-tw-did is a bridging service that integrates [TW FidO](https://fido.moi.gov.tw/pt/) with W3C [Decentralized Identifiers (DIDs)](https://www.w3.org/TR/did-core/) and [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/) standards. After verifying a user's Taiwanese residency through TW FidO, the user's identity is linked to a specified decentralized identity, providing various identity verification use cases.
+Taiwan Decentralized Identifiers (tw-did) is a bridging service that integrates [TW FidO](https://fido.moi.gov.tw/pt/) with W3C [Decentralized Identifiers (DIDs)](https://www.w3.org/TR/did-core/) and [Verifiable Credentials](https://www.w3.org/TR/vc-data-model-2.0/) standards. After verifying a user's Taiwanese residency through TW FidO, the user's identity is linked to a specified decentralized identity, providing various identity verification use cases.
 
 tw-did mainly has three functions:
 
