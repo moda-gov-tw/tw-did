@@ -1,6 +1,7 @@
 import {
   createAgent,
   ICredentialPlugin,
+  ICredentialStatusVerifier,
   IDIDManager,
   IResolver,
   TAgent,
@@ -46,6 +47,7 @@ class InfuraProjectIdNotExistError extends Error {
 type InstalledPlugins = IResolver &
   IDIDManager &
   ICredentialPlugin &
+  ICredentialStatusVerifier &
   ICredentialIssuerEIP712;
 
 export const ETHEREUM_NETWORK = getNetworkName(getChain());

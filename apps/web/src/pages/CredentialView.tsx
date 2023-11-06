@@ -17,12 +17,15 @@ export function CredentialView() {
     generateSemaphoreVerifiableCredential,
     getSemaphoreGroup,
     generateSemaphoreIdentity,
+    revoke,
   } = useTwDid();
   const credentials = useCredentials(
     CredentialMode.List,
     user?.nationalId,
     user?.ethereumAccount
   );
+
+  const navigate = useNavigate();
 
   const handleAction = async (
     credentialKey: CredentialType,
@@ -52,14 +55,15 @@ export function CredentialView() {
   };
 
   const handleRevoke = async () => {
-    /* TODO: handle revoke */
+    await revoke();
+    await logout();
+    navigate({ to: '/' });
   };
 
   const handleLogout = async () => {
     await logout();
   };
 
-  const navigate = useNavigate();
   const handleClose = async () => {
     navigate({ to: '/' });
   };
