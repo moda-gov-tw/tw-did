@@ -7,7 +7,7 @@ import {
 } from '@veramo/core-types';
 import { DIDDocument, VerificationMethod } from 'did-resolver';
 import { SEMAPHORE_TYPE } from './SemaphoreConstants';
-import { FullProof, verifyProof } from '@semaphore-protocol/proof';
+import { SemaphoreProof, verifyProof } from '@semaphore-protocol/proof';
 import { RequiredAgentMethods, VeramoLdSignature } from '@tw-did/credential-ld';
 import { GroupInfo } from './SemaphoreTypes';
 
@@ -41,7 +41,7 @@ type SemaphoreSignatureProof = {
   verificationMethod: string;
   proofPurpose: string;
   created: string;
-  fullProof: FullProof;
+  fullProof: SemaphoreProof;
 };
 
 type MatchProofArgs = {
