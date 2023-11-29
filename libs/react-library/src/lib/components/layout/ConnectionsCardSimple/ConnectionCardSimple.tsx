@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import styles from './ConnectionCardSimple.module.scss';
 import { ShortenAddr } from '../../common/shortenAddr';
 
@@ -7,18 +8,22 @@ export const ConnectionCardSimple = ({
 }: {
   nationID: string;
   walletAddr: string;
-}) => (
-  <div className={styles.ConnectionCardSimple}>
-    <div className={styles.info}>
-      <div className={styles.label}>National ID</div>
-      <div className={styles.value}>{nationID}</div>
-    </div>
+}) => {
+  const { t } = useTranslation();
 
-    <div className={styles.info}>
-      <div className={styles.label}>Wallet Addr</div>
-      <div className={styles.value}>
-        <ShortenAddr addr={walletAddr} />
+  return (
+    <div className={styles.ConnectionCardSimple}>
+      <div className={styles.info}>
+        <div className={styles.label}>{t('nationalId')}</div>
+        <div className={styles.value}>{nationID}</div>
+      </div>
+
+      <div className={styles.info}>
+        <div className={styles.label}>{t('walletAddress')}</div>
+        <div className={styles.value}>
+          <ShortenAddr addr={walletAddr} />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

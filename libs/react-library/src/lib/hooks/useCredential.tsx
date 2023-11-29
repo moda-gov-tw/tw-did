@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   CredentialViewData,
   CredentialType,
@@ -21,22 +22,23 @@ export function useCredentials(
   nationalId = '',
   ethereumAccount = ''
 ): CredentialMap {
+  const { t } = useTranslation();
   const actions: CredentialAction[] =
     mode === CredentialMode.List
-      ? [{ key: ActionId.GENERATE, label: 'Generate' }]
-      : [{ key: ActionId.SELECT, label: 'Select' }];
+      ? [{ key: ActionId.GENERATE, label: t('generate') }]
+      : [{ key: ActionId.SELECT, label: t('select') }];
   return {
     [CredentialType.ETHEREUM]: {
       type: CredentialType.ETHEREUM,
       fields: [
         {
           key: CredentialFieldKey.NATION_ID,
-          label: 'National ID',
+          label: t('nationalId'),
           value: nationalId,
         },
         {
           key: CredentialFieldKey.ETHEREUM_ADDRESS,
-          label: 'Account',
+          label: t('account'),
           value: ethereumAccount,
         },
       ],
@@ -44,8 +46,7 @@ export function useCredentials(
     },
     [CredentialType.SEMAPHORE]: {
       type: CredentialType.SEMAPHORE,
-      description:
-        'Verify your Taiwan resident status without revealing your true identity',
+      description: t('verifyTaiwanResidentStatus'),
       actions,
       fields: [],
     },

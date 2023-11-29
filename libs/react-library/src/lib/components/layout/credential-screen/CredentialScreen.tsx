@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Container, FlexSpace } from '../../common/container';
 import { CredentialCardList } from '../CredentialCard/CredentialCardList';
 import { Button } from '../../common/button';
@@ -18,20 +19,21 @@ export const CredentialScreen = ({
   onLogout?: () => void;
   onClose?: () => void;
 }) => {
+  const { t } = useTranslation();
   const dialogController = useDialog();
   const revokeDialog: DialogProps = {
-    title: 'Are you sure to revoke?',
-    children: `Wallet address will not be bind to your national ID anymore.`,
+    title: t('confirmRevoke'),
+    children: t('revokeWarning'),
     actions: [
       {
-        text: 'Cancel',
+        text: t('cancel'),
         onClick: () => {
           dialogController.close();
         },
         type: 'secondary',
       },
       {
-        text: 'Revoke',
+        text: t('revoke'),
         onClick: async () => {
           try {
             onRevoke && (await onRevoke());
@@ -44,18 +46,18 @@ export const CredentialScreen = ({
     ],
   };
   const logoutDialog: DialogProps = {
-    title: 'Are you sure to logout?',
-    children: `You will not be able to access your wallet anymore.`,
+    title: t('confirmLogout'),
+    children: t('logoutWarning'),
     actions: [
       {
-        text: 'Cancel',
+        text: t('cancel'),
         onClick: () => {
           dialogController.close();
         },
         type: 'secondary',
       },
       {
-        text: 'Logout',
+        text: t('logout'),
         onClick: async () => {
           try {
             onLogout && (await onLogout());
@@ -69,11 +71,11 @@ export const CredentialScreen = ({
     ],
   };
   const doneDialog: DialogProps = {
-    title: 'Done Successfully',
-    children: 'The app will be closed.',
+    title: t('doneSuccessfully'),
+    children: t('appClosing'),
     actions: [
       {
-        text: 'OK',
+        text: t('ok'),
         onClick: () => {
           dialogController.close();
           onClose && onClose();
@@ -83,18 +85,18 @@ export const CredentialScreen = ({
     ],
   };
   const errorDialog: DialogProps = {
-    title: 'Some error happened',
-    children: 'Please try again later.',
+    title: t('errorOccurred'),
+    children: t('tryAgainLater'),
     actions: [
       {
-        text: 'Cancel',
+        text: t('cancel'),
         onClick: () => {
           dialogController.close();
         },
         type: 'secondary',
       },
       {
-        text: 'Revoke',
+        text: t('revoke'),
         onClick: async () => {
           try {
             onRevoke && (await onRevoke());
@@ -128,11 +130,11 @@ export const CredentialScreen = ({
         <FlexSpace />
         {onRevoke && (
           <>
-            <div className={styles.Instructions}>Lost your wallet?</div>
-            <Button onClick={confirmRevoke} text="Revoke Binding" />
+            <div className={styles.Instructions}>{t('lostYourWallet')}</div>
+            <Button onClick={confirmRevoke} text={t('revokeBinding')} />
           </>
         )}
-        {onLogout && <Button onClick={confirmLogout} text="Logout" />}
+        {onLogout && <Button onClick={confirmLogout} text={t('logout')} />}
         {dialogController.props && <Dialog {...dialogController.props} />}
       </div>
     </Container>

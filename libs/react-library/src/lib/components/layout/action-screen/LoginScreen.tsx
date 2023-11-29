@@ -6,7 +6,6 @@ import { ConnectionCard } from '../ConnectionsCard/ConnectionCard';
 import { Logo } from '../../common/icons/logo';
 import { ReactNode, useState } from 'react';
 import { FidoMin } from '../../common/icons/fidoMin';
-import { GoIcon } from '../../common/icons/go';
 
 interface Props {
   nationID: string;
@@ -69,7 +68,7 @@ export const LoginScreen = ({
         onClick: connectFido,
         icon: FidoMin,
       },
-    }
+    },
   };
 
   function isMobile() {
