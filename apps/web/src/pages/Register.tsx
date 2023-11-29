@@ -1,6 +1,4 @@
 import { StepId, RegisterScreen, useTwDid } from '@tw-did/react-library';
-import { signMessage } from '@wagmi/core';
-import { Identity } from '@semaphore-protocol/identity';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount, useConfig, useConnect } from 'wagmi';
