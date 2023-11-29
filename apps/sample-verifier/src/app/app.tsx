@@ -25,11 +25,7 @@ import {
   VerifiableCredential,
 } from '@veramo/core';
 import { Group } from '@semaphore-protocol/group';
-import {
-  FullProof,
-  generateProof,
-  verifyProof,
-} from '@semaphore-protocol/proof';
+import { generateProof, verifyProof } from '@semaphore-protocol/proof';
 
 enum VerificationResult {
   Verified = 'Verified',
