@@ -5,6 +5,7 @@
 
 import { LogLevel, Logger } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app/app.module';
 import { AllExceptionsFilter } from './exception/all-exceptions.filter';
@@ -14,12 +15,13 @@ async function bootstrap() {
     ? (process.env.LOGGER_LEVEL.split(',') as LogLevel[])
     : ['log', 'error', 'warn', 'debug', 'verbose'];
 
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: logLevel,
   });
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.set('trust proxy', true);
 
   const globalPrefix = 'api';
   app.enableCors();
