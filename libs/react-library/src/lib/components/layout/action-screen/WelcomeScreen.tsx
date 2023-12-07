@@ -20,14 +20,15 @@ export const WelcomeScreen = ({
   const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
-  function handleGo() {
+  async function handleGo() {
     if (!validateNationId(idInput)) {
       setWarning(t('enterValidNationalId'));
       return;
     }
     try {
-      handleRegister(idInput);
+      await handleRegister(idInput);
     } catch (e) {
+      setWarning(t('noFido'))
       console.log(e);
     }
   }
