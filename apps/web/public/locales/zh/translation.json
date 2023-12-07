@@ -1,6 +1,7 @@
 {
   "welcome": "歡迎！",
   "enterNationalIdToStart": "請輸入你的身分證字號",
+  "nationalIDExplanation": "我們不會存儲您的號碼, 這只是用於驗證您的身份",
   "enterValidNationalId": "請輸入有效的身分證字號",
   "nationalId": "身分證字號",
   "noFido": "請先申請行動自然人憑證，再綁定TaiwanDID",

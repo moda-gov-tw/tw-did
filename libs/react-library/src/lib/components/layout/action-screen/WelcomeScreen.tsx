@@ -44,7 +44,11 @@ export const WelcomeScreen = ({
 
           <div>
             <h1 className={styles.textLarge}>{t('welcome')}</h1>
-            <p className={styles.Instructions}>{t('enterNationalIdToStart')}</p>
+            <p className={styles.Instructions}><span>
+              {t('enterNationalIdToStart')}
+              <br/>
+              <small>{t('nationalIDExplanation')}</small>
+            </span></p>
             <Input
               placeholder={t('nationalId')}
               commitValue={setIdInput}
