@@ -15,25 +15,27 @@ export function Welcome() {
   const gotoView = async () => {
     navigate({ to: '/view-credential' });
     return;
-  }
+  };
 
   const gotoSelect = async () => {
     navigate({ to: '/select-credential' });
     return;
-  }
-  
+  };
+
   /* TODO: the credentials should be loaded from ls */
   /* TODO: let user be undefined if no credential stored */
-  const user = credentials ? {
-    nationalId: credentials[CredentialType.ETHEREUM].fields[0].value,
-    walletAddr: credentials[CredentialType.ETHEREUM].fields[1].value,
-  } : undefined;
+  const user = credentials
+    ? {
+        hashedNationalId: credentials[CredentialType.ETHEREUM].fields[0].value,
+        walletAddr: credentials[CredentialType.ETHEREUM].fields[1].value,
+      }
+    : undefined;
 
   return (
     <>
       <WalletHomeScreen
         user={user}
-        mode='view' // TODO: change to 'select' if requested
+        mode="view" // TODO: change to 'select' if requested
         gotoRegister={gotoRegister}
         gotoView={gotoView}
         gotoSelect={gotoSelect}

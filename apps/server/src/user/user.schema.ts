@@ -7,7 +7,7 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User {
   @Prop({ required: true })
-  nationalId: string;
+  hashedNationalId: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Identity' })
   currentIdentity: Identity;

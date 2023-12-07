@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { QRCodeCanvas } from 'qrcode.react';
 import { ConnectionCard } from '../ConnectionsCard/ConnectionCard';
 import { Logo } from '../../common/icons/logo';
@@ -50,83 +51,83 @@ export const RegisterScreen = ({
   spTicketPayload,
   onAction,
 }: Props) => {
+  const { t } = useTranslation();
   const steps: Record<StepId, Step> = {
     [StepId.Qrcode]: {
       stepIndex: 0,
-      message: 'Scan this QR code on TW FidO mobile app.',
+      message: t('scanQrCodeOnTwFidoApp'),
       qrcode: spTicketPayload,
-      instructions: 'or click the push notification on your mobile phone',
+      instructions: t('clickPushNotificationOnPhone'),
     },
     [StepId.ConnectFidoFailed]: {
       stepIndex: 0,
-      message: 'Authenticate failed!',
-      instructions: 'Please try again.',
+      message: t('authenticationFailed'),
+      instructions: t('pleaseTryAgain'),
       center: {
         fidoState: 3,
         walletState: 0,
       },
       cta: {
-        text: 'Connect TW Fido',
+        text: t('connectTwFido'),
         icon: FidoMin,
       },
     },
     [StepId.BindEthereumAccount]: {
       stepIndex: 1,
-      message: 'Successfully connected to your TW-Fido.',
-      instructions:
-        'Please sign in with ethereum and bind it to your nation identity.',
+      message: t('successfullyConnectedToFido'),
+      instructions: t('signInWithEthereum'),
       center: {
         fidoState: 2,
         walletState: 1,
       },
       cta: {
-        text: 'Connect Wallet',
+        text: t('connectWallet'),
         icon: EthMin,
       },
     },
     [StepId.BindEthereumAccountFailed]: {
       stepIndex: 1,
-      message: 'User injected!',
-      instructions: 'Please try again.',
+      message: t('userInjected'),
+      instructions: t('pleaseTryAgain'),
       center: {
         fidoState: 2,
         walletState: 3,
       },
       cta: {
-        text: 'Connect Wallet',
+        text: t('connectWallet'),
         icon: EthMin,
       },
     },
     [StepId.BindSemaphoreIdentity]: {
       stepIndex: 2,
-      message: 'All the information you need has been prepared.',
-      instructions: 'Please confirm the information and bind your wallet.',
+      message: t('informationPrepared'),
+      instructions: t('confirmAndBindWallet'),
       center: {
         fidoState: 2,
         walletState: 2,
       },
       cta: {
-        text: 'Bind',
+        text: t('bind'),
         icon: EthMin,
       },
     },
     [StepId.BindSemaphoreIdentityFailed]: {
       stepIndex: 2,
-      message: 'Binding failed!',
-      instructions: 'Please try again.',
+      message: t('bindingFailed'),
+      instructions: t('pleaseTryAgain'),
       center: { bindState: 2 },
       cta: {
-        text: 'Bind',
+        text: t('bind'),
         icon: EthMin,
       },
     },
     [StepId.ViewCredentials]: {
       stepIndex: 3,
-      message: 'Successfully bound to your nation identity.',
-      instructions: 'Your credentials are generated. View it now!',
+      message: t('successfullyBound'),
+      instructions: t('credentialsGenerated'),
       center: { bindState: 1 },
       cta: {
-        text: 'View Credential',
+        text: t('viewCredential'),
         icon: GoIcon,
       },
     },

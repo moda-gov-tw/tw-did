@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { BackgroundContainer } from '../../common/background';
 import { Container, FlexSpace } from '../../common/container';
 import { Logo } from '../../common/icons/logo';
@@ -10,17 +11,18 @@ import { validateNationId } from '../../../utils/utils';
 
 export const WelcomeScreen = ({
   nationalId,
-  handleRegister
+  handleRegister,
 }: {
   nationalId: string;
   handleRegister: (nationalId: string) => void;
 }) => {
+  const { t } = useTranslation();
   const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
   function handleGo() {
     if (!validateNationId(idInput)) {
-      setWarning('Please enter a valid nation ID.');
+      setWarning(t('enterValidNationalId'));
       return;
     }
     try {
@@ -40,16 +42,19 @@ export const WelcomeScreen = ({
           </div>
 
           <div>
-            <h1 className={styles.textLarge}>Welcome!</h1>
-            <p className={styles.Instructions}>
-              Please enter your nation ID to get started.
-            </p>
+            <h1 className={styles.textLarge}>{t('welcome')}</h1>
+            <p className={styles.Instructions}>{t('enterNationalIdToStart')}</p>
             <Input
-              placeholder="Nation ID"
+              placeholder={t('nationalId')}
               commitValue={setIdInput}
               initialValue={nationalId}
             />
-            <Button type="primary" onClick={handleGo} icon={GoIcon} text='Go' />
+            <Button
+              type="primary"
+              onClick={handleGo}
+              icon={GoIcon}
+              text={t('go')}
+            />
             {<p className={styles.warning}>{warning}</p>}
           </div>
         </div>

@@ -22,12 +22,12 @@ export function CredentialSelection() {
 
   const credentials = useCredentials(
     CredentialMode.Select,
-    user?.nationalId,
+    user?.hashedNationalId,
     user?.ethereumAccount
   );
 
   const handleAction = async (
-    credentialKey: CredentialType, 
+    credentialKey: CredentialType,
     actionId: ActionId
   ) => {
     let vc: VerifiableCredential | null = null;
@@ -45,7 +45,7 @@ export function CredentialSelection() {
         sendCredential(MessageAction.SELECT_CREDENTIAL, vc);
       }
     }
-  }
+  };
 
   // if (isConnected)
   return (

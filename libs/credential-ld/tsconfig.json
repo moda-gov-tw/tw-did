@@ -1,12 +1,13 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ES2022",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
+    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true
   },
   "files": [],
