@@ -11,13 +11,13 @@ import { ConnectionCardSimple } from '../ConnectionsCardSimple/ConnectionCardSim
 
 export const WalletHomeScreen = ({
   user,
-  mode, 
+  mode,
   gotoRegister,
   gotoView,
   gotoSelect,
 }: {
   user?: {
-    nationalId: string;
+    hashedNationalId: string;
     walletAddr: string;
   };
   mode: 'view' | 'select';
@@ -84,7 +84,7 @@ export const WalletHomeScreen = ({
             <h1 className={styles.textLarge}> {currentState.title} </h1>
             {user && (
               <ConnectionCardSimple
-                nationID={user.nationalId}
+                nationID={user.hashedNationalId}
                 walletAddr={user.walletAddr}
               />
             )}

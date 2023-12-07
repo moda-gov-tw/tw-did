@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User, UserDocument } from './user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -59,9 +60,11 @@ export class UsersService {
   }
 
   async findOrCreate(nationalId: string): Promise<UserDocument> {
+    const hashFunc = createHash('sha256');
+    const hashedNationalId = hashFunc.update(nationalId).digest('hex');
     return this.userModel.findOneAndUpdate(
-      { nationalId },
-      { nationalId },
+      { hashedNationalId },
+      { hashedNationalId },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
   }
@@ -98,8 +101,8 @@ export class UsersService {
     return this.updateIdentity(userId, 'semaphoreCommitment', value);
   }
 
-  findOne(nationalId: string): Promise<User | null> {
-    return this.userModel.findOne({ nationalId });
+  findOne(hashedNationalId: string): Promise<User | null> {
+    return this.userModel.findOne({ hashedNationalId });
   }
 
   async revokeIdentity(userId: string): Promise<boolean> {

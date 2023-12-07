@@ -75,7 +75,7 @@ export function Register() {
   return (
     <RegisterScreen
       currentStepId={currentStep}
-      nationalId={user?.nationalId || ''}
+      nationalId=""
       ethereumAccount={ethereumAccount}
       spTicketPayload={loginInfo?.qrcode?.spTicketPayload || ''}
       onAction={onAction}
