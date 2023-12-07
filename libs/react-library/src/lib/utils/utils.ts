@@ -7,7 +7,7 @@ export function isMobile() {
 }
 
 export function validateNationId(nationID: string) {
-  const regex = /^[A-Z]{1}[1-2]{1}[0-9]{8}$/;
+  const regex = /^[A-Z]{1}[1-2|8-9]{1}[0-9]{8}$/;
   return regex.test(nationID);
 }
 
