@@ -22,7 +22,7 @@ export function CredentialSelection() {
   const { isConnected } = useAccount();
   const credentials = useCredentials(
     CredentialMode.Select,
-    user?.nationalId,
+    user?.hashedNationalId,
     user?.ethereumAccount
   );
 

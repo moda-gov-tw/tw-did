@@ -15,7 +15,7 @@ export function Login() {
 
   return (
     <LoginScreen
-      nationID={user?.nationalId || ''}
+      nationID=""
       walletAddr="0x***********"
       spTicketPayload={loginInfo?.qrcode?.spTicketPayload || ''}
       handleFidoLogin={handleLogin}

@@ -70,7 +70,7 @@ class UpdateSemaphoreCommitmentError extends Error {
 }
 
 interface User {
-  nationalId: string;
+  hashedNationalId: string;
   ethereumAccount: string;
   semaphoreCommitment: string;
   id: string;
@@ -144,10 +144,10 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
     });
     const user = await res.json();
     if (res.status === 200) {
-      const { nationalId, currentIdentity } = user;
+      const { hashedNationalId, currentIdentity } = user;
       const { ethereumAccount, semaphoreCommitment } = currentIdentity || {};
       setUser({
-        nationalId,
+        hashedNationalId,
         ethereumAccount,
         semaphoreCommitment,
         id,

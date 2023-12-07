@@ -19,7 +19,7 @@ export enum CredentialMode {
 
 export function useCredentials(
   mode: CredentialMode,
-  nationalId = '',
+  hashedNationalId = '',
   ethereumAccount = ''
 ): CredentialMap {
   const { t } = useTranslation();
@@ -31,11 +31,6 @@ export function useCredentials(
     [CredentialType.ETHEREUM]: {
       type: CredentialType.ETHEREUM,
       fields: [
-        {
-          key: CredentialFieldKey.NATION_ID,
-          label: t('nationalId'),
-          value: nationalId,
-        },
         {
           key: CredentialFieldKey.ETHEREUM_ADDRESS,
           label: t('account'),

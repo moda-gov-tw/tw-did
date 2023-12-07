@@ -5,13 +5,11 @@ import { EthLogo } from '../../common/icons/ethLogo';
 import { SuccessIcon } from '../../common/icons/success';
 import { ErrorIcon } from '../../common/icons/error';
 import { ShortenAddr } from '../../common/shortenAddr';
-import { maskString } from '../../../utils/utils';
 
 export const ConnectionCard = ({
   fidoState,
   walletState,
   bindState,
-  nationID,
   walletAddr,
 }: {
   fidoState?: number;
@@ -35,12 +33,6 @@ export const ConnectionCard = ({
         <FidoLogo />
         {fidoState !== undefined && fidoState === 2 && <SuccessIcon />}
         {fidoState !== undefined && fidoState === 3 && <ErrorIcon />}
-        {nationID && (
-          <div className={styles.info}>
-            <div className={styles.label}>{t('nationalId')}</div>
-            <div className={styles.value}>{maskString(nationID)}</div>
-          </div>
-        )}
       </div>
 
       {bindState !== undefined && bindState === 1 && <SuccessIcon />}

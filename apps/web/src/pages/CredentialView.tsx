@@ -21,7 +21,7 @@ export function CredentialView() {
   } = useTwDid();
   const credentials = useCredentials(
     CredentialMode.List,
-    user?.nationalId,
+    user?.hashedNationalId,
     user?.ethereumAccount
   );
 

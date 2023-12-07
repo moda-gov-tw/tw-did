@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { registerRoute } from '../router';
 
 export function Welcome() {
-  const { user, requestLogin } = useTwDid();
+  const { requestLogin } = useTwDid();
   const navigate = useNavigate();
 
   const handleLogin = async (nationalId: string) => {
@@ -19,7 +19,7 @@ export function Welcome() {
 
   return (
     <WelcomeScreen
-      nationalId={user?.nationalId || ''} // use user nationalId if logined before
+      nationalId="" // use user nationalId if logined before
       handleRegister={handleLogin}
     />
   );

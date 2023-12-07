@@ -18,10 +18,10 @@ export function CredentialView() {
     getSemaphoreGroup,
     generateSemaphoreIdentity,
   } = useTwDid();
-  
+
   const credentials = useCredentials(
     CredentialMode.List,
-    user?.nationalId,
+    user?.hashedNationalId,
     user?.ethereumAccount
   );
 
