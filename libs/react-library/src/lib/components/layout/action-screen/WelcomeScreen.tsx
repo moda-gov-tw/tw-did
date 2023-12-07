@@ -20,14 +20,15 @@ export const WelcomeScreen = ({
   const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
 
-  function handleGo() {
+  async function handleGo() {
     if (!validateNationId(idInput)) {
       setWarning(t('enterValidNationalId'));
       return;
     }
     try {
-      handleRegister(idInput);
+      await handleRegister(idInput);
     } catch (e) {
+      setWarning(t('noFido'))
       console.log(e);
     }
   }
@@ -43,7 +44,11 @@ export const WelcomeScreen = ({
 
           <div>
             <h1 className={styles.textLarge}>{t('welcome')}</h1>
-            <p className={styles.Instructions}>{t('enterNationalIdToStart')}</p>
+            <p className={styles.Instructions}><span>
+              {t('enterNationalIdToStart')}
+              <br/>
+              <small>{t('nationalIDExplanation')}</small>
+            </span></p>
             <Input
               placeholder={t('nationalId')}
               commitValue={setIdInput}

@@ -1,8 +1,10 @@
 {
   "welcome": "歡迎！",
   "enterNationalIdToStart": "請輸入你的身分證字號",
+  "nationalIDExplanation": "我們不會存儲您的號碼, 這只是用於驗證您的身份",
   "enterValidNationalId": "請輸入有效的身分證字號",
   "nationalId": "身分證字號",
+  "noFido": "請先申請行動自然人憑證，再綁定TaiwanDID",
   "scanQrCodeOnTwFidoApp": "請在手機上的行動自然人憑證 app 掃描此 QR 碼。",
   "clickPushNotificationOnPhone": "或點擊您手機上的推送通知",
   "authenticationFailed": "認證失敗！",

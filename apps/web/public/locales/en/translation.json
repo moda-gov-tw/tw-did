@@ -1,8 +1,10 @@
 {
   "welcome": "Welcome!",
   "enterNationalIdToStart": "Please enter your national ID to get started.",
+  "nationalIDExplanation": "We will not store your national ID. It is only used to verify your identity.",
   "enterValidNationalId": "Please enter a valid nation ID.",
   "nationalId": "National ID",
+  "noFido": "Please apply for TW FidO before registering for the TaiwanDID.",
   "scanQrCodeOnTwFidoApp": "Scan this QR code on TW FidO mobile app.",
   "clickPushNotificationOnPhone": "or click the push notification on your mobile phone",
   "authenticationFailed": "Authenticate failed!",

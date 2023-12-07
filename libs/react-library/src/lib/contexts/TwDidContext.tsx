@@ -175,6 +175,11 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
     );
 
     const res: RequestLoginResponse = await requestRes.json();
+
+    if(requestRes.status == 500){
+      throw new LoginError('Request Login failed');
+    }
+
     return res;
   };
 
@@ -205,31 +210,31 @@ export const TwDidProvider: React.FC<TwDidProviderProps> = ({ children }) => {
   };
 
   const requestLogin = async (nationalId: string) => {
-    const notifyRes = await _requestLogin(nationalId, 'NOTIFY');
-    const qrcodeRes = await _requestLogin(nationalId, 'QRCODE');
+      const notifyRes = await _requestLogin(nationalId, 'NOTIFY');
+      const qrcodeRes = await _requestLogin(nationalId, 'QRCODE');
 
-    const notification = {
-      transactionId: notifyRes.transactionId,
-      spTicketId: notifyRes.spTicketId,
-    };
-    const qrcode = {
-      transactionId: qrcodeRes.transactionId,
-      spTicketId: qrcodeRes.spTicketId,
-      spTicketPayload: qrcodeRes.spTicketPayload,
-    };
+      const notification = {
+        transactionId: notifyRes.transactionId,
+        spTicketId: notifyRes.spTicketId,
+      };
+      const qrcode = {
+        transactionId: qrcodeRes.transactionId,
+        spTicketId: qrcodeRes.spTicketId,
+        spTicketPayload: qrcodeRes.spTicketPayload,
+      };
 
-    const info: LoginInfo = {
-      nationalId,
-      notification,
-      qrcode,
-    };
+      const info: LoginInfo = {
+        nationalId,
+        notification,
+        qrcode,
+      };
 
-    setLoginInfo(info);
+      setLoginInfo(info);
 
-    // qrcode login
-    _login(nationalId, qrcode.transactionId, qrcode.spTicketId);
-    // notification login
-    _login(nationalId, notification.transactionId, notification.spTicketId);
+      // qrcode login
+      _login(nationalId, qrcode.transactionId, qrcode.spTicketId);
+      // notification login
+      _login(nationalId, notification.transactionId, notification.spTicketId);
   };
 
   const logout = () => {
