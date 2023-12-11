@@ -46,5 +46,7 @@
   "errorOccurred": "Some error happened",
   "tryAgainLater": "Please try again later.",
   "revokeBinding": "Revoke Binding",
-  "lostYourWallet": "Lost your wallet?"
+  "lostYourWallet": "Lost your wallet?",
+  "noMetamask": "No metamask detected.",
+  "openInMetamask": "Please install metamask and try again. If you are using mobile phone, please open this page in metamask."
 }
