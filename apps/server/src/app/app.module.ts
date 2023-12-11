@@ -27,6 +27,33 @@ import { IssuanceModule } from '../issuance/issuance.module';
           return [
             {
               rootPath: clientPath,
+              serveStaticOptions: {
+                setHeaders(res) {
+                  const cspHeader = (
+                    "default-src 'self'; " +
+                    "img-src 'self'; " +
+                    "child-src 'none'; " +
+                    "script-src 'self' 'wasm-unsafe-eval'; " +
+                    "connect-src 'self' https://tw-did.github.io https://mainnet.infura.io; " +
+                    "style-src 'self' https://fonts.googleapis.com; " +
+                    "font-src 'self' https://fonts.gstatic.com; " +
+                    "object-src 'self'; " +
+                    "base-uri 'self'; " +
+                    "form-action 'self'; " +
+                    "frame-ancestors 'self'; " +
+                    "frame-src 'self'; " +
+                    "block-all-mixed-content; " +
+                    "upgrade-insecure-requests;"
+                  ).replace(/\s{2,}/g, " ").trim()
+
+                  res.setHeader('Content-Security-Policy', cspHeader)
+                  res.setHeader('X-Frame-Options', 'DENY')
+                  res.setHeader('X-Content-Type-Options', 'nosniff')
+                  res.setHeader('Referrer-Policy', 'origin-when-cross-origin')
+
+                  res.removeHeader('access-control-allow-origin')
+                },
+              }
             },
           ];
         } else {
