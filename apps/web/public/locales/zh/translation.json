@@ -46,5 +46,7 @@
   "errorOccurred": "發生了一些錯誤",
   "tryAgainLater": "請稍後再試。",
   "revokeBinding": "撤銷綁定",
-  "lostYourWallet": "遺失了您的 Ethereum Wallet 了？"
+  "lostYourWallet": "遺失了您的 Ethereum Wallet 了？",
+  "noMetamask": "無法偵測到 Metamask",
+  "openInMetamask": "請先安裝 Metamask 插件。若您使用手機，請在 Metamask 中開啟"
 }
