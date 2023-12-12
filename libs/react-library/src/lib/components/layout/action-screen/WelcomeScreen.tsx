@@ -8,6 +8,8 @@ import { GoIcon } from '../../common/icons/go';
 import { useState } from 'react';
 import { Button } from '../../common/button';
 import { validateNationId } from '../../../utils/utils';
+import { Dialog, DialogProps, useDialog } from '../../common/dialog';
+import { useEffect } from 'react';
 
 export const WelcomeScreen = ({
   nationalId,
@@ -19,6 +21,7 @@ export const WelcomeScreen = ({
   const { t } = useTranslation();
   const [idInput, setIdInput] = useState<string>(nationalId);
   const [warning, setWarning] = useState<string>('');
+
 
   async function handleGo() {
     if (!validateNationId(idInput)) {
@@ -32,11 +35,34 @@ export const WelcomeScreen = ({
       console.log(e);
     }
   }
+  
+  const dialogController = useDialog();
+  const noMetamaskDialog: DialogProps = {
+    title: t('noMetamask'),
+    children: t('openInMetamask'),
+    actions: [
+      {
+        text: t('ok'),
+        onClick: () => {
+          dialogController.close();
+        },
+        type: 'primary',
+      },
+    ],
+  };
+
+  useEffect(() => {
+    if (!window.ethereum) {
+      dialogController.open(noMetamaskDialog);
+    }
+  }, []);
+
 
   return (
     <BackgroundContainer>
       <Container>
         <div className={styles.ActionScreen}>
+          {dialogController.props && <Dialog {...dialogController.props}/>}
           <FlexSpace />
           <div className={styles.Center}>
             <Logo />

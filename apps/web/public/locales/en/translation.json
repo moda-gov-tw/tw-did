@@ -5,8 +5,8 @@
   "enterValidNationalId": "Please enter a valid nation ID.",
   "nationalId": "National ID",
   "noFido": "Please apply for TW FidO before registering for the TaiwanDID.",
-  "scanQrCodeOnTwFidoApp": "Scan this QR code on TW FidO mobile app.",
-  "clickPushNotificationOnPhone": "or click the push notification on your mobile phone",
+  "scanQrCodeOnTwFidoApp": "Click the push notification on your mobile phone or scan this QR code on TW FidO mobile app.",
+  "clickPushNotificationOnPhone": "",
   "authenticationFailed": "Authenticate failed!",
   "pleaseTryAgain": "Please try again.",
   "connectTwFido": "Connect TW Fido",
@@ -46,5 +46,7 @@
   "errorOccurred": "Some error happened",
   "tryAgainLater": "Please try again later.",
   "revokeBinding": "Revoke Binding",
-  "lostYourWallet": "Lost your wallet?"
+  "lostYourWallet": "Lost your wallet?",
+  "noMetamask": "No metamask detected.",
+  "openInMetamask": "Please install metamask and try again. If you are using mobile phone, please open this page in metamask."
 }
