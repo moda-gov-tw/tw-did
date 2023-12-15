@@ -22,6 +22,9 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.set('trust proxy', true);
+  const server = httpAdapter.getHttpServer();
+  server.keepAliveTimeout = 61 * 1000;
+  server.headersTimeout = 65 * 1000;
 
   const globalPrefix = 'api';
   app.enableCors();
