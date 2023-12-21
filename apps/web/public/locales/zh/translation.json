@@ -1,11 +1,11 @@
 {
   "welcome": "歡迎！",
   "enterNationalIdToStart": "請輸入你的身分證字號",
-  "nationalIDExplanation": "我們不會存儲您的號碼, 這只是用於驗證您的身份",
+  "nationalIDExplanation": "您的個人資料不會留存於本網站, 僅在綁定時用於驗證身份",
   "enterValidNationalId": "請輸入有效的身分證字號",
   "nationalId": "身分證字號",
   "noFido": "請先申請行動自然人憑證，再綁定TaiwanDID",
-  "scanQrCodeOnTwFidoApp": "請點擊您手機上的推送通知或在手機上的行動自然人憑證 app 掃描此 QR 碼。",
+  "scanQrCodeOnTwFidoApp": "請點擊您手機上的推送通知或在手機上的行動自然人憑證 app 掃描此 QR code。",
   "clickPushNotificationOnPhone": "",
   "authenticationFailed": "認證失敗！",
   "pleaseTryAgain": "請再試一次。",
@@ -30,11 +30,11 @@
   "semaphore": "Semaphore",
   "go": "進行",
   "account": "帳號",
-  "verifyTaiwanResidentStatus": "用於驗證您為台灣居民，並且不透露確切真實身份",
+  "verifyTaiwanResidentStatus": "用於驗證您為臺灣居民，並且不透露確切真實身份",
   "generate": "產生",
   "select": "選擇",
   "confirmRevoke": "您確定要撤銷嗎？",
-  "revokeWarning": "錢包地址將不再與您的身份證綁定。",
+  "revokeWarning": "錢包地址將不再與您的身份綁定。",
   "cancel": "取消",
   "revoke": "撤銷",
   "confirmLogout": "您確定要登出嗎？",
@@ -48,5 +48,5 @@
   "revokeBinding": "撤銷綁定",
   "lostYourWallet": "遺失了您的 Ethereum Wallet 了？",
   "noMetamask": "無法偵測到 Metamask",
-  "openInMetamask": "請先安裝 Metamask 插件。若您使用手機，請在 Metamask 中開啟"
+  "openInMetamask": "請先安裝 Metamask 擴充功能。若您使用手機，請在 Metamask 中開啟"
 }
