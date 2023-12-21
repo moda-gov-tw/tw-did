@@ -13,4 +13,4 @@ mongo`;
 
 shell.exec(`docker stop ${process.env.MONGO_CONTAINER_NAME}`);
 shell.exec(`docker rm ${process.env.MONGO_CONTAINER_NAME}`);
-shell.exec(command);
+// shell.exec(command);
