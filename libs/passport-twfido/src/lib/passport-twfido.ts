@@ -118,12 +118,15 @@ Strategy.prototype.authenticate = async function (req) {
   try {
     let result;
     const startTime = Date.now();
-    const timeout = 20000; // 20 secs
+    const timeout = 50;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      if (Date.now() - startTime >= timeout) {
-        throw new TimeoutError('Operation timed out after 20 seconds');
+      if (Date.now() - startTime >= timeout * 1000) {
+        return this.fail(
+          { message: `Operation timed out after ${timeout} seconds` },
+          408
+        );
       }
 
       await delay(4000);
