@@ -107,4 +107,4 @@ A big thank you to everyone who has contributed to this project:
 - **[Philip Hsu](https://github.com/JHong-Hsu)** - Kubernetes Deployment, Technical Support
 - **[Timothy Chen](https://github.com/timothychen1999)** - Kubernetes Deployment, Technical Support
 - **[Dennis Sung](https://github.com/S-H-Ming)** - Coordination, Technical Support
-- **[Noah Yeh](https://www.noahyeh.xyz/)** - Project Management, Coordination
+- **[Noah Yeh](https://github.com/noahda0)** - Project Management, Coordination
