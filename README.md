@@ -98,12 +98,13 @@ nx run-many -t e2e
 
 In this context, e2e tests refer to the testing process where the server is integrated with MongoDB to ensure that the entire process from the client request to the server and then to the database and back is functioning as expected. It's important to note that these e2e tests do not cover the User Interface (UI) testing.
 
-## Acceptance tests
+## Contributors
 
-You can also use the following command to run acceptance test cases:
+A big thank you to everyone who has contributed to this project:
 
-```shell
-$ npm run acceptance
-```
-
-This command runs end-to-end acceptance tests for the project.
+- **[Yuren Ju](https://github.com/yurenju)** - Research, Architecture Design, Documentation, Backend Implementation, Frontend Prototype Development
+- **[Foo Jia Wen](https://github.com/fjwntut)** - Visual Design, Major Frontend Development
+- **[Philip Hsu](https://github.com/JHong-Hsu)** - Kubernetes Deployment, Technical Support
+- **[Timothy Chen](https://github.com/timothychen1999)** - Kubernetes Deployment, Technical Support
+- **[Dennis Sung](https://github.com/S-H-Ming)** - Coordination, Technical Support
+- **[Noah Yeh](https://www.noahyeh.xyz/)** - Project Management, Coordination
