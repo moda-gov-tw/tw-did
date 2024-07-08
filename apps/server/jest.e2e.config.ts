@@ -4,6 +4,6 @@ export default {
   ...baseConfig,
   testMatch: ['**/*.e2e-spec.ts'],
   transformIgnorePatterns: [
-    '/node_modules/(?!(@veramo|uint8arrays|multiformats|did-jwt-vc))',
+    '/node_modules/(?!(@veramo|uint8arrays|multiformats|did-jwt-vc|@ipld|ipfs-unixfs|@tw-did))',
   ],
 };
