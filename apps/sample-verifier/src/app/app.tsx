@@ -34,7 +34,7 @@ enum VerificationResult {
   Pending = 'Pending',
 }
 
-function createSemaphoreCrdentialContent(
+function createSemaphoreCredentialContent(
   issuer: string,
   members: string[]
 ): CredentialPayload {
@@ -140,7 +140,7 @@ export function App() {
     let verifiableCredential: VerifiableCredential;
     try {
       verifiableCredential = await agent.createVerifiableCredential({
-        credential: createSemaphoreCrdentialContent(
+        credential: createSemaphoreCredentialContent(
           holder.did,
           commitments.activated
         ),
@@ -159,7 +159,7 @@ export function App() {
     } catch (e) {
       // the identity is not in the group, try revoked group
       verifiableCredential = await agent.createVerifiableCredential({
-        credential: createSemaphoreCrdentialContent(
+        credential: createSemaphoreCredentialContent(
           holder.did,
           commitments.revoked
         ),
