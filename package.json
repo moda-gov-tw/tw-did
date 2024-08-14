@@ -130,6 +130,9 @@
     },
     "viem": {
       "ws": "^8.17.1"
+    },
+    "@ethersproject/signing-key": {
+      "elliptic": "^6.5.7"
     }
   },
   "nx": {
